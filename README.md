@@ -13,6 +13,9 @@ npm install
 ## Usage
 
 ```bash
+#Add .env file from .env-example
+touch .env
+
 #Run the service
 npm run dev
 ```
