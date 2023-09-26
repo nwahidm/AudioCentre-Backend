@@ -45,8 +45,8 @@ class Products {
     console.log("[ Order ]", searchOrder);
 
     const where = {};
-    if (!isEmpty(name)) assign(where, { name });
-    if (!isEmpty(brand)) assign(where, { brand });
+    if (!isEmpty(name)) assign(where, { name: { $regex: name, '$options' : 'i' } });
+    if (!isEmpty(brand)) assign(where, { brand: { $regex: brand, '$options' : 'i' } });
     if (!isEmpty(category)) assign(where, { category });
     if (!isEmpty(minimumPrice) && !isEmpty(maximumPrice)) {
       assign(where, {
@@ -62,10 +62,16 @@ class Products {
   }
 
   static async findByPk(id) {
-    const data = await this.productModel().findOne({
+    return await this.productModel().findOne({
       _id: new ObjectId(`${id}`),
     });
-    return data;
+  }
+
+  static async update(id, payload) {
+    return await this.productModel().updateOne(
+      { _id: new ObjectId(id) },
+      {$set: payload}
+    ); 
   }
 
   static async destroy(id) {

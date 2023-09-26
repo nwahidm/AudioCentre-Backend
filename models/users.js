@@ -1,3 +1,4 @@
+const { assign, isEmpty } = require("lodash");
 const { getDB } = require("../config");
 const { ObjectId } = require("mongodb");
 
@@ -27,14 +28,16 @@ class Users {
   }
 
   static async findByPk(id) {
-    const data = await this.userModel().findOne({ _id: new ObjectId(`${id}`) });
-    return data;
+    return await this.userModel().findOne({ _id: new ObjectId(`${id}`) });
   }
 
-  static async update(id) {
+  static async update(id, payload) {
+    if (isEmpty(payload)) payload = {} 
+    assign(payload, {enabled: true});
+
     return await this.userModel().updateOne(
       { _id: new ObjectId(id) },
-      {$set: { enabled: true }}
+      {$set: payload}
     );
   }
 

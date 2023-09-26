@@ -1,12 +1,20 @@
 const Users = require("../models/users");
 const { createToken } = require("../helpers/jwt");
-const { isEmpty } = require("lodash");
+const { isEmpty, assign } = require("lodash");
 const { hashPassword, verifyPassword } = require("../helpers/bcrypt");
-const send = require('../helpers/nodemailer');
+const send = require("../helpers/nodemailer");
 
 class User {
   static async register(req, res) {
     const { username, email, password, phoneNumber, address } = req.body;
+    console.log(
+      "[Register User]",
+      username,
+      email,
+      password,
+      phoneNumber,
+      address
+    );
     try {
       await Users.create({
         username,
@@ -16,9 +24,11 @@ class User {
         address,
       });
 
-      send(email)
+      send(email);
 
-      res.status(201).json({ message: `Akun anda telah berhasil dibuat, silahkan cek email untuk melakukan aktivasi` });
+      res.status(201).json({
+        message: `Akun anda telah berhasil dibuat, silahkan cek email untuk melakukan aktivasi`,
+      });
     } catch (error) {
       res.status(500).json({ message: "Internal Server Error" });
     }
@@ -26,6 +36,7 @@ class User {
 
   static async activate(req, res) {
     const { id } = req.params;
+    console.log("[Activate User]", id);
     try {
       const targetUser = await Users.findByPk(id);
 
@@ -33,7 +44,7 @@ class User {
         throw {
           status: 404,
           error: "Bad Request",
-          message: "User tidak ada",
+          message: "User tidak ditemukan",
         };
 
       await Users.update(id);
@@ -56,6 +67,7 @@ class User {
 
       if (isEmpty(user))
         throw {
+          status: 401,
           error: "Bad Request",
           message: "Username atau password salah",
         };
@@ -105,13 +117,14 @@ class User {
   static async findUser(req, res) {
     const { id } = req.params;
     try {
+      //check if the user exist or not
       const data = await Users.findByPk(id);
 
       if (isEmpty(data))
         throw {
           status: 404,
           error: "Bad Request",
-          message: "User not found",
+          message: "User tidak ditemukan",
         };
 
       const user = {
@@ -130,6 +143,50 @@ class User {
     }
   }
 
+  static async updateUser(req, res) {
+    const { id } = req.params;
+    const { username, email, password, phoneNumber, address } = req.body;
+    console.log(
+      "[Update User]",
+      id,
+      username,
+      email,
+      password,
+      phoneNumber,
+      address
+    );
+    try {
+      //update data
+      const payload = {};
+      if (!isEmpty(username)) assign(payload, { username });
+      if (!isEmpty(email)) assign(payload, { email });
+      if (!isEmpty(password))
+        assign(payload, { password: await hashPassword(password) });
+      if (!isEmpty(phoneNumber)) assign(payload, { phoneNumber });
+      if (!isEmpty(address)) assign(payload, { address });
+
+      //check if the user exist or not
+      const targetUser = await Users.findByPk(id);
+
+      if (isEmpty(targetUser))
+        throw {
+          status: 404,
+          error: "Bad Request",
+          message: "User tidak ditemukan",
+        };
+
+      await Users.update(id, payload);
+
+      res.status(201).json({message: `Update akun berhasil`})
+    } catch (error) {
+      if (error.status == 404) {
+        res.status(404).json(error);
+      } else {
+        res.status(500).json({ message: "Internal Server Error" });
+      }
+    }
+  }
+
   static async deleteUser(req, res) {
     const { id } = req.params;
     try {
@@ -139,7 +196,7 @@ class User {
         throw {
           status: 404,
           error: "Bad Request",
-          message: "User not found",
+          message: "User tidak ditemukan",
         };
 
       await Users.destroy(id);

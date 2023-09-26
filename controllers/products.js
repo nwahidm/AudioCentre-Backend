@@ -26,9 +26,11 @@ class Product {
       specification
     );
     try {
-      let imagePath = [];
-      for (let image of images) {
-        imagePath.push(image.path);
+      if (!isEmpty(images)) {
+        let imagePath = [];
+        for (let image of images) {
+          imagePath.push(image.path);
+        }
       }
 
       await Products.create({
@@ -115,13 +117,73 @@ class Product {
         brand: data.brand,
         name: data.name,
         description: data.description,
-        stock: data.stock,
         price: data.price,
         color: data.color,
         category: data.category,
+        images: data.images,
+        weight: data.weight,
+        specification: data.specification
       };
 
       res.status(200).json(Product);
+    } catch (error) {
+      if (error.status == 404) {
+        res.status(404).json(error);
+      } else {
+        res.status(500).json({ message: "Internal Server Error" });
+      }
+    }
+  }
+
+  static async updateProduct(req, res) {
+    const { id } = req.params;
+    const {
+      brand,
+      name,
+      description,
+      price,
+      color,
+      category,
+      weight,
+      specification,
+    } = req.body;
+    console.log(
+      "[Update Product]",
+      id,
+      brand,
+      name,
+      description,
+      price,
+      color,
+      category,
+      weight,
+      specification
+    );
+    try {
+      //update data
+      const payload = {};
+      if (!isEmpty(brand)) assign(payload, { brand });
+      if (!isEmpty(name)) assign(payload, { name });
+      if (!isEmpty(description)) assign(payload, { description });
+      if (!isEmpty(price)) assign(payload, { price: +price });
+      if (!isEmpty(color)) assign(payload, { color });
+      if (!isEmpty(category)) assign(payload, { category });
+      if (!isEmpty(weight)) assign(payload, { weight });
+      if (!isEmpty(specification)) assign(payload, { specification });
+
+      //check if the product exist or not
+      const targetProduct = await Products.findByPk(id);
+
+      if (isEmpty(targetProduct))
+        throw {
+          status: 404,
+          error: "Bad Request",
+          message: "Produk tidak ditemukan",
+        };
+
+      await Products.update(id, payload);
+
+      res.status(201).json({ message: `Produk berhasil diupdate` });
     } catch (error) {
       if (error.status == 404) {
         res.status(404).json(error);
