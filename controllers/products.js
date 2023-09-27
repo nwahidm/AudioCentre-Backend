@@ -166,10 +166,10 @@ class Product {
       if (!isEmpty(name)) assign(payload, { name });
       if (!isEmpty(description)) assign(payload, { description });
       if (!isEmpty(price)) assign(payload, { price: +price });
-      if (!isEmpty(color)) assign(payload, { color });
+      if (!isEmpty(color)) assign(payload, { color: JSON.parse(color) });
       if (!isEmpty(category)) assign(payload, { category });
       if (!isEmpty(weight)) assign(payload, { weight });
-      if (!isEmpty(specification)) assign(payload, { specification });
+      if (!isEmpty(specification)) assign(payload, { specification: JSON.parse(specification) });
 
       //check if the product exist or not
       const targetProduct = await Products.findByPk(id);
