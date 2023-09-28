@@ -54,7 +54,7 @@ class Products {
     if (!isEmpty(category)) assign(where, { category });
     if (!isEmpty(minimumPrice) && !isEmpty(maximumPrice)) {
       assign(where, {
-        price: { $gt: Number(minimumPrice), $lt: Number(maximumPrice) },
+        discountPrice: { $gt: Number(minimumPrice), $lt: Number(maximumPrice) },
       });
     }
 
