@@ -7,23 +7,27 @@ class Product {
       brand,
       name,
       description,
-      price,
+      realPrice,
+      discountPrice,
       color,
       category,
       weight,
       specification,
+      status
     } = req.body;
     const images = req.files.images;
     console.log(
       brand,
       name,
       description,
-      price,
+      realPrice,
+      discountPrice,
       color,
       category,
       images,
       weight,
-      specification
+      specification,
+      status
     );
     try {
       if (!isEmpty(images)) {
@@ -37,12 +41,14 @@ class Product {
         brand,
         name,
         description,
-        price,
+        realPrice,
+        discountPrice,
         color,
         category,
         imagePath,
         weight,
         specification,
+        status
       });
 
       res.status(201).json({ message: `Produk berhasil ditambahkan` });
@@ -117,12 +123,14 @@ class Product {
         brand: data.brand,
         name: data.name,
         description: data.description,
-        price: data.price,
+        realPrice: data.realPrice,
+        discountPrice: data.discountPrice,
         color: data.color,
         category: data.category,
         images: data.images,
         weight: data.weight,
-        specification: data.specification
+        specification: data.specification,
+        status: data.status
       };
 
       res.status(200).json(Product);
@@ -141,11 +149,13 @@ class Product {
       brand,
       name,
       description,
-      price,
+      realPrice,
+      discountPrice,
       color,
       category,
       weight,
       specification,
+      status
     } = req.body;
     console.log(
       "[Update Product]",
@@ -153,11 +163,13 @@ class Product {
       brand,
       name,
       description,
-      price,
+      realPrice,
+      discountPrice,
       color,
       category,
       weight,
-      specification
+      specification,
+      status
     );
     try {
       //update data
@@ -165,11 +177,14 @@ class Product {
       if (!isEmpty(brand)) assign(payload, { brand });
       if (!isEmpty(name)) assign(payload, { name });
       if (!isEmpty(description)) assign(payload, { description });
-      if (!isEmpty(price)) assign(payload, { price: +price });
+      if (!isEmpty(realPrice)) assign(payload, { realPrice: +realPrice });
+      if (!isEmpty(discountPrice)) assign(payload, { discountPrice: +discountPrice });
       if (!isEmpty(color)) assign(payload, { color: JSON.parse(color) });
       if (!isEmpty(category)) assign(payload, { category });
       if (!isEmpty(weight)) assign(payload, { weight });
       if (!isEmpty(specification)) assign(payload, { specification: JSON.parse(specification) });
+      if (!isEmpty(status)) assign(payload, { status });
+
 
       //check if the product exist or not
       const targetProduct = await Products.findByPk(id);

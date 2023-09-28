@@ -11,23 +11,27 @@ class Products {
     brand,
     name,
     description,
-    price,
+    realPrice,
+    discountPrice,
     color,
     category,
     imagePath,
     weight,
     specification,
+    status
   }) {
     const newProduct = await this.productModel().insertOne({
       brand,
       name,
       description,
-      price: +price,
+      realPrice: +realPrice,
+      discountPrice: +discountPrice,
       color: JSON.parse(color),
       category,
       images: imagePath,
       weight,
       specification: JSON.parse(specification),
+      status
     });
     return newProduct;
   }

@@ -3,7 +3,7 @@ const { authMiddleware } = require("../middlewares/middlewares");
 const router = require("express").Router();
 
 router.post("/create", authMiddleware, Product.create);
-router.get("/", Product.fetchProducts);
+router.post("/", Product.fetchProducts);
 router.get("/:id", Product.findProduct);
 router.put("/:id", authMiddleware, Product.updateProduct);
 router.delete("/:id", authMiddleware, Product.deleteProduct);
