@@ -13,6 +13,7 @@ app.use(express.json());
 app.use("/", require("./routes/index"));
 app.use("/user", require("./routes/users"));
 app.use("/product", require("./routes/products"));
+app.use("/notification", require("./routes/notifications"));
 
 connect().then(() => {
   app.listen(port, () => {

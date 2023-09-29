@@ -15,6 +15,7 @@ class Users {
       phoneNumber,
       address,
       enabled: false,
+      notification: []
     });
     return newUser;
   }
