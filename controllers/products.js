@@ -13,10 +13,11 @@ class Product {
       category,
       weight,
       specification,
-      status
+      status,
     } = req.body;
     const images = req.files.images;
     console.log(
+      "[Create Product]",
       brand,
       name,
       description,
@@ -48,7 +49,7 @@ class Product {
         imagePath,
         weight,
         specification,
-        status
+        status,
       });
 
       res.status(201).json({ message: `Produk berhasil ditambahkan` });
@@ -67,7 +68,8 @@ class Product {
       brand,
       category,
       minimumPrice,
-      maximumPrice
+      maximumPrice,
+      order
     );
     try {
       //search query
@@ -130,7 +132,7 @@ class Product {
         images: data.images,
         weight: data.weight,
         specification: data.specification,
-        status: data.status
+        status: data.status,
       };
 
       res.status(200).json(Product);
@@ -155,7 +157,7 @@ class Product {
       category,
       weight,
       specification,
-      status
+      status,
     } = req.body;
     console.log(
       "[Update Product]",
@@ -178,13 +180,14 @@ class Product {
       if (!isEmpty(name)) assign(payload, { name });
       if (!isEmpty(description)) assign(payload, { description });
       if (!isEmpty(realPrice)) assign(payload, { realPrice: +realPrice });
-      if (!isEmpty(discountPrice)) assign(payload, { discountPrice: +discountPrice });
+      if (!isEmpty(discountPrice))
+        assign(payload, { discountPrice: +discountPrice });
       if (!isEmpty(color)) assign(payload, { color: JSON.parse(color) });
       if (!isEmpty(category)) assign(payload, { category });
       if (!isEmpty(weight)) assign(payload, { weight });
-      if (!isEmpty(specification)) assign(payload, { specification: JSON.parse(specification) });
+      if (!isEmpty(specification))
+        assign(payload, { specification: JSON.parse(specification) });
       if (!isEmpty(status)) assign(payload, { status });
-
 
       //check if the product exist or not
       const targetProduct = await Products.findByPk(id);
@@ -222,7 +225,9 @@ class Product {
 
       await Products.destroy(id);
 
-      res.status(200).json({ message: `Product with id ${id} deleted` });
+      res
+        .status(200)
+        .json({ message: `Product dengan id ${id} berhasil dihapus` });
     } catch (error) {
       if (error.status == 404) {
         res.status(404).json(error);

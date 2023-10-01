@@ -1,6 +1,6 @@
 const Users = require("../models/users");
 const { createToken } = require("../helpers/jwt");
-const { isEmpty, assign } = require("lodash");
+const { isEmpty, assign, map } = require("lodash");
 const { hashPassword, verifyPassword } = require("../helpers/bcrypt");
 const send = require("../helpers/nodemailer");
 
@@ -108,6 +108,11 @@ class User {
   static async fetchUsers(req, res) {
     try {
       const users = await Users.findAll();
+
+      map(users, (o) => {
+        delete o.notification
+      })
+
       res.status(200).json(users);
     } catch (error) {
       res.status(500).json({ message: "Internal Server Error" });

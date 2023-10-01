@@ -1,4 +1,4 @@
-require('dotenv').config()
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 4001;
@@ -12,6 +12,9 @@ app.use(express.json());
 
 app.use("/", require("./routes/index"));
 app.use("/user", require("./routes/users"));
+app.use("/brand", require("./routes/brands"));
+app.use("/category", require("./routes/categories"));
+app.use("/subcategory", require("./routes/subcategories"));
 app.use("/product", require("./routes/products"));
 app.use("/notification", require("./routes/notifications"));
 
