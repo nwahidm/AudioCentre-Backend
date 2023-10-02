@@ -8,57 +8,63 @@ class Products {
   }
 
   static async create({
-    brand,
     name,
     description,
-    realPrice,
-    discountPrice,
-    color,
-    category,
+    brandId,
+    categoryId,
+    subcategoryId,
+    price,
+    discount,
+    variant,
     imagePath,
     weight,
     specification,
     status
   }) {
     const newProduct = await this.productModel().insertOne({
-      brand,
       name,
       description,
-      realPrice: +realPrice,
-      discountPrice: +discountPrice,
-      color: JSON.parse(color),
-      category,
+      brandId: new ObjectId(brandId),
+      categoryId: new ObjectId(categoryId),
+      subcategoryId: new ObjectId(subcategoryId),
+      price: +price,
+      discount: +discount,
+      variant: JSON.parse(variant),
       images: imagePath,
       weight,
       specification: JSON.parse(specification),
-      status
+      status: +status
     });
     return newProduct;
   }
 
   static async findAll(payload, searchOrder) {
-    const { name, brand, category, minimumPrice, maximumPrice } = payload;
+    const { name, brandId, categoryId, subcategoryId, minimumPrice, maximumPrice, limit, offset } = payload;
     console.log(
       "[ Payload ]",
       name,
-      brand,
-      category,
+      brandId,
+      categoryId,
+      subcategoryId,
       minimumPrice,
-      maximumPrice
+      maximumPrice,
+      limit,
+      offset
     );
     console.log("[ Order ]", searchOrder);
 
     const where = {};
     if (!isEmpty(name)) assign(where, { name: { $regex: name, '$options' : 'i' } });
-    if (!isEmpty(brand)) assign(where, { brand: { $regex: brand, '$options' : 'i' } });
-    if (!isEmpty(category)) assign(where, { category });
+    if (!isEmpty(brandId)) assign(where, { brandId: new ObjectId(brandId) });
+    if (!isEmpty(categoryId)) assign(where, { categoryId: new ObjectId(categoryId) });
+    if (!isEmpty(subcategoryId)) assign(where, { subcategoryId: new ObjectId(subcategoryId) });
     if (!isEmpty(minimumPrice) && !isEmpty(maximumPrice)) {
       assign(where, {
         discountPrice: { $gt: Number(minimumPrice), $lt: Number(maximumPrice) },
       });
     }
 
-    return await this.productModel().find(where).sort(searchOrder).toArray();
+    return await this.productModel().find(where).sort(searchOrder).skip(+offset).limit(+limit).toArray();
   }
 
   static async findOne({ payload }) {

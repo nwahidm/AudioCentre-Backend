@@ -1,16 +1,21 @@
+const { ObjectId } = require("mongodb");
 const Products = require("../models/products");
-const { isEmpty, assign } = require("lodash");
+const Brands = require("../models/brands");
+const Categories = require("../models/categories");
+const Subcategories = require("../models/subcategories");
+const { isEmpty, assign, map } = require("lodash");
 
 class Product {
   static async create(req, res) {
     const {
-      brand,
       name,
       description,
-      realPrice,
-      discountPrice,
-      color,
-      category,
+      brandId,
+      categoryId,
+      subcategoryId,
+      price,
+      discount,
+      variant,
       weight,
       specification,
       status,
@@ -18,34 +23,34 @@ class Product {
     const images = req.files.images;
     console.log(
       "[Create Product]",
-      brand,
       name,
       description,
-      realPrice,
-      discountPrice,
-      color,
-      category,
+      brandId,
+      categoryId,
+      subcategoryId,
+      price,
+      discount,
+      variant,
       images,
       weight,
       specification,
       status
     );
     try {
-      if (!isEmpty(images)) {
-        let imagePath = [];
-        for (let image of images) {
-          imagePath.push(image.path);
-        }
+      let imagePath = [];
+      for (let image of images) {
+        imagePath.push(image.path);
       }
 
       await Products.create({
-        brand,
         name,
         description,
-        realPrice,
-        discountPrice,
-        color,
-        category,
+        brandId,
+        categoryId,
+        subcategoryId,
+        price,
+        discount,
+        variant,
         imagePath,
         weight,
         specification,
@@ -60,33 +65,46 @@ class Product {
   }
 
   static async fetchProducts(req, res) {
-    const { name, brand, category, minimumPrice, maximumPrice, order } =
-      req.body;
+    const {
+      name,
+      brandId,
+      categoryId,
+      subcategoryId,
+      minimumPrice,
+      maximumPrice,
+      order,
+      limit,
+      offset,
+    } = req.body;
     console.log(
       "[Fetch All Products]",
       name,
-      brand,
-      category,
+      brandId,
+      categoryId,
+      subcategoryId,
       minimumPrice,
       maximumPrice,
-      order
+      order,
+      limit,
+      offset
     );
     try {
       //search query
       const payload = {};
       if (!isEmpty(name)) assign(payload, { name });
-      if (!isEmpty(brand)) assign(payload, { brand });
-      if (!isEmpty(category)) assign(payload, { category });
+      if (!isEmpty(brandId)) assign(payload, { brandId });
+      if (!isEmpty(categoryId)) assign(payload, { categoryId });
+      if (!isEmpty(subcategoryId)) assign(payload, { subcategoryId });
       if (!isEmpty(minimumPrice)) assign(payload, { minimumPrice });
       if (!isEmpty(maximumPrice)) assign(payload, { maximumPrice });
+      if (!isEmpty(limit)) assign(payload, { limit });
+      if (!isEmpty(offset)) assign(payload, { offset });
 
       //order list
       let searchOrder = {};
       if (!isEmpty(order)) {
         if (order[0].column == 1) searchOrder = { nama: order[0].dir };
-        else if (order[0].column == 2) searchOrder = { brand: order[0].dir };
-        else if (order[0].column == 3) searchOrder = { category: order[0].dir };
-        else if (order[0].column == 4) searchOrder = { price: order[0].dir };
+        else if (order[0].column == 2) searchOrder = { price: order[0].dir };
       }
 
       const products = await Products.findAll(payload, searchOrder);
@@ -97,6 +115,10 @@ class Product {
           error: "Bad Request",
           message: "Produk tidak tersedia",
         };
+
+      map(products, (o) => {
+        o.priceAfterDiscount = o.price - o.discount;
+      })
 
       res.status(200).json(products);
     } catch (error) {
@@ -120,15 +142,21 @@ class Product {
           message: "Produk tidak ditemukan",
         };
 
+      const brand = await Brands.findByPk(data.brandId);
+      const category = await Categories.findByPk(data.categoryId);
+      const subcategory = await Subcategories.findByPk(data.subcategoryId);
+
       const Product = {
         _id: data._id,
-        brand: data.brand,
         name: data.name,
         description: data.description,
-        realPrice: data.realPrice,
-        discountPrice: data.discountPrice,
-        color: data.color,
-        category: data.category,
+        brand,
+        category,
+        subcategory,
+        price: data.price,
+        discount: data.discount,
+        priceAfterDiscount: data.price - data.discount,
+        variant: data.variant,
         images: data.images,
         weight: data.weight,
         specification: data.specification,
@@ -148,13 +176,14 @@ class Product {
   static async updateProduct(req, res) {
     const { id } = req.params;
     const {
-      brand,
       name,
       description,
-      realPrice,
-      discountPrice,
-      color,
-      category,
+      brandId,
+      categoryId,
+      subcategoryId,
+      price,
+      discount,
+      variant,
       weight,
       specification,
       status,
@@ -162,13 +191,14 @@ class Product {
     console.log(
       "[Update Product]",
       id,
-      brand,
       name,
       description,
-      realPrice,
-      discountPrice,
-      color,
-      category,
+      brandId,
+      categoryId,
+      subcategoryId,
+      price,
+      discount,
+      variant,
       weight,
       specification,
       status
@@ -176,18 +206,21 @@ class Product {
     try {
       //update data
       const payload = {};
-      if (!isEmpty(brand)) assign(payload, { brand });
       if (!isEmpty(name)) assign(payload, { name });
       if (!isEmpty(description)) assign(payload, { description });
-      if (!isEmpty(realPrice)) assign(payload, { realPrice: +realPrice });
-      if (!isEmpty(discountPrice))
-        assign(payload, { discountPrice: +discountPrice });
-      if (!isEmpty(color)) assign(payload, { color: JSON.parse(color) });
-      if (!isEmpty(category)) assign(payload, { category });
+      if (!isEmpty(brandId))
+        assign(payload, { brandId: new ObjectId(brandId) });
+      if (!isEmpty(categoryId))
+        assign(payload, { categoryId: new ObjectId(categoryId) });
+      if (!isEmpty(subcategoryId))
+        assign(payload, { subcategoryId: new ObjectId(subcategoryId) });
+      if (!isEmpty(price)) assign(payload, { price: +price });
+      if (!isEmpty(discount)) assign(payload, { discount: +discount });
+      if (!isEmpty(variant)) assign(payload, { variant: JSON.parse(variant) });
       if (!isEmpty(weight)) assign(payload, { weight });
       if (!isEmpty(specification))
         assign(payload, { specification: JSON.parse(specification) });
-      if (!isEmpty(status)) assign(payload, { status });
+      if (!isEmpty(status)) assign(payload, { status: +status });
 
       //check if the product exist or not
       const targetProduct = await Products.findByPk(id);

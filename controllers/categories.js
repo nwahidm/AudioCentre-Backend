@@ -64,14 +64,14 @@ class Category {
           message: "Category tidak tersedia",
         };
 
-      const payload = { categoryId: id }
-      const subcategories = await Subcategories.findAll(payload)
+      const payload = { categoryId: id };
+      const subcategories = await Subcategories.findAll(payload);
 
       const category = {
         _id: data._id,
         categoryName: data.categoryName,
         categoryCover: data.categoryCover,
-        subcategories
+        subcategories,
       };
 
       res.status(200).json(category);

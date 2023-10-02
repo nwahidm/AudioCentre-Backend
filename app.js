@@ -12,6 +12,7 @@ app.use(express.json());
 
 app.use("/", require("./routes/index"));
 app.use("/user", require("./routes/users"));
+app.use("/banner", require("./routes/banners"));
 app.use("/brand", require("./routes/brands"));
 app.use("/category", require("./routes/categories"));
 app.use("/subcategory", require("./routes/subcategories"));

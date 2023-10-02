@@ -5,7 +5,7 @@ const router = require("express").Router();
 router.post("/create", authMiddleware, Product.create);
 router.post("/", Product.fetchProducts);
 router.get("/:id", Product.findProduct);
-router.put("/:id", authMiddleware, Product.updateProduct);
+router.patch("/:id", authMiddleware, Product.updateProduct);
 router.delete("/:id", authMiddleware, Product.deleteProduct);
 
 module.exports = router;
