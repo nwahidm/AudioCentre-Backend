@@ -18,6 +18,7 @@ app.use("/category", require("./routes/categories"));
 app.use("/subcategory", require("./routes/subcategories"));
 app.use("/product", require("./routes/products"));
 app.use("/notification", require("./routes/notifications"));
+app.use("/article", require("./routes/articles"));
 
 connect().then(() => {
   app.listen(port, () => {

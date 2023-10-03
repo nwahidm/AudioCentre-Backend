@@ -89,7 +89,7 @@ class Subcategory {
       const payload = {};
       if (!isEmpty(subcategoryName)) assign(payload, { subcategoryName });
 
-      //check if the category exist or not
+      //check if the subcategory exist or not
       const targetSubcategory = await Subcategories.findByPk(id);
 
       if (isEmpty(targetSubcategory))
