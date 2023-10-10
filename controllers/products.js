@@ -115,10 +115,14 @@ class Product {
           error: "Bad Request",
           message: "Produk tidak tersedia",
         };
+      
+        for (let i = 0; i < products.length; i++) {
+          const product = products[i];
 
-      map(products, (o) => {
-        o.priceAfterDiscount = o.price - o.discount;
-      })
+          product.brand = await Brands.findByPk(product.brandId);
+          product.category = await Categories.findByPk(product.categoryId);
+          product.subcategory = await Subcategories.findByPk(product.subcategoryId);
+        }
 
       res.status(200).json(products);
     } catch (error) {
