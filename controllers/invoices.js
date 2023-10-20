@@ -1,5 +1,5 @@
 const Invoices = require("../models/invoices");
-const Brands = require("../models/brands");
+const Users = require("../models/users");
 const Products = require("../models/products");
 const { isEmpty, assign, map } = require("lodash");
 
@@ -8,10 +8,13 @@ class Invoice {
     const { product, customerData } = req.body;
     console.log("[Create Invoice]", product, customerData);
     try {
-      await Invoices.create({
+      const createdInvoice = await Invoices.create({
         product,
         customerData,
       });
+
+      const invoiceId = createdInvoice.insertedId
+      await Users.pushNotification(invoiceId)
 
       res.status(201).json({ message: `Invoice berhasil ditambahkan` });
     } catch (error) {

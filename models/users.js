@@ -15,7 +15,7 @@ class Users {
       phoneNumber,
       address,
       enabled: false,
-      notification: []
+      notification: [],
     });
     return newUser;
   }
@@ -33,12 +33,26 @@ class Users {
   }
 
   static async update(id, payload) {
-    if (isEmpty(payload)) payload = {} 
-    assign(payload, {enabled: true});
+    if (isEmpty(payload)) payload = {};
+    assign(payload, { enabled: true });
 
     return await this.userModel().updateOne(
       { _id: new ObjectId(id) },
-      {$set: payload}
+      { $set: payload }
+    );
+  }
+
+  static async pushNotification(invoiceId) {
+    return await this.userModel().updateOne(
+      { _id: new ObjectId("650e3777fdd3046ccf000455") },
+      {
+        $push: {
+          notification: {
+            message: "ada pesanan baru",
+            invoiceId,
+          },
+        },
+      }
     );
   }
 
