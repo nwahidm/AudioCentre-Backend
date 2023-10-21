@@ -18,11 +18,15 @@ class Article {
         articleImage: articleImage[0].path,
       });
 
-      res
-        .status(201)
-        .json({ status: true, message: `Article berhasil ditambahkan` });
+      res.status(201).json({
+        status: true,
+        message: `Article berhasil ditambahkan`,
+        result: "",
+      });
     } catch (error) {
-      res.status(500).json({ status: false, message: "Internal Server Error" });
+      res
+        .status(500)
+        .json({ status: false, message: "Internal Server Error", result: "" });
     }
   }
 
@@ -47,16 +51,21 @@ class Article {
           status: false,
           error: "Bad Request",
           message: "Article tidak tersedia",
+          result: "",
         };
 
-      res.status(200).json({ status: true, data: articles });
+      res
+        .status(200)
+        .json({ status: true, message: "success", result: articles });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
@@ -71,16 +80,19 @@ class Article {
           status: false,
           error: "Bad Request",
           message: "Article tidak tersedia",
+          result: "",
         };
 
-      res.status(200).json({ status: true, data });
+      res.status(200).json({ status: true, message: "success", result: data });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
@@ -103,20 +115,25 @@ class Article {
           status: false,
           error: "Bad Request",
           message: "Article tidak ditemukan",
+          result: "",
         };
 
       await Articles.update(id, payload);
 
-      res
-        .status(201)
-        .json({ status: true, message: `Article berhasil diupdate` });
+      res.status(201).json({
+        status: true,
+        message: `Article berhasil diupdate`,
+        result: "",
+      });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
@@ -131,23 +148,25 @@ class Article {
           status: false,
           error: "Bad Request",
           message: "Article tidak ditemukan",
+          result: "",
         };
 
       await Articles.destroy(id);
 
-      res
-        .status(200)
-        .json({
-          status: true,
-          message: `Article dengan id ${id} berhasil dihapus`,
-        });
+      res.status(200).json({
+        status: true,
+        message: `Article dengan id ${id} berhasil dihapus`,
+        result: "",
+      });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }

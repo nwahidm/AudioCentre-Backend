@@ -29,9 +29,12 @@ class User {
       res.status(201).json({
         status: true,
         message: `Akun anda telah berhasil dibuat, silahkan cek email untuk melakukan aktivasi`,
+        result: "",
       });
     } catch (error) {
-      res.status(500).json({ status: false, message: "Internal Server Error" });
+      res
+        .status(500)
+        .json({ status: false, message: "Internal Server Error", result: "" });
     }
   }
 
@@ -46,20 +49,29 @@ class User {
           status: false,
           error: "Bad Request",
           message: "User tidak ditemukan",
+          result: "",
         };
 
       await Users.update(id);
 
       res
         .status(201)
-        .json({ status: true, message: `user with ${id} has been activated` });
+        .json({
+          status: true,
+          message: `user with ${id} has been activated`,
+          result: "",
+        });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }
@@ -74,6 +86,7 @@ class User {
           status: false,
           error: "Bad Request",
           message: "Username atau password salah",
+          result: "",
         };
 
       const isValid = await verifyPassword(password, user.password);
@@ -83,6 +96,7 @@ class User {
           status: false,
           error: "Bad Request",
           message: "Username atau password salah",
+          result: "",
         };
 
       if (user.enabled == false)
@@ -91,6 +105,7 @@ class User {
           error: "Bad Request",
           message:
             "Akun anda belum diaktivasi, silahkan cek email untuk melakukan aktivasi akun",
+          result: "",
         };
 
       const access_token = await createToken(user, process.env.SECRET, {
@@ -99,6 +114,7 @@ class User {
 
       res.status(200).json({
         status: true,
+        message: "success",
         access_token,
       });
     } catch (error) {
@@ -107,7 +123,11 @@ class User {
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }
@@ -120,9 +140,11 @@ class User {
         delete o.notification;
       });
 
-      res.status(200).json({ status: true, users });
+      res.status(200).json({ status: true, message: "success", result: users });
     } catch (error) {
-      res.status(500).json({ status: false, message: "Internal Server Error" });
+      res
+        .status(500)
+        .json({ status: false, message: "Internal Server Error", result: "" });
     }
   }
 
@@ -137,6 +159,7 @@ class User {
           status: false,
           error: "Bad Request",
           message: "User tidak ditemukan",
+          result: "",
         };
 
       const user = {
@@ -145,14 +168,18 @@ class User {
         email: data.email,
       };
 
-      res.status(200).json({ status: true, user });
+      res.status(200).json({ status: true, message: "success", result: user });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }
@@ -187,18 +214,25 @@ class User {
           status: false,
           error: "Bad Request",
           message: "User tidak ditemukan",
+          result: "",
         };
 
       await Users.update(id, payload);
 
-      res.status(201).json({ status: true, message: `Update akun berhasil` });
+      res
+        .status(201)
+        .json({ status: true, message: `Update akun berhasil`, result: "" });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }
@@ -219,14 +253,22 @@ class User {
 
       res
         .status(200)
-        .json({ status: true, message: `User with id ${id} deleted` });
+        .json({
+          status: true,
+          message: `User with id ${id} deleted`,
+          result: "",
+        });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }

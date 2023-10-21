@@ -22,9 +22,15 @@ class Brand {
 
       res
         .status(201)
-        .json({ status: true, message: `Brand berhasil ditambahkan` });
+        .json({
+          status: true,
+          message: `Brand berhasil ditambahkan`,
+          result: "",
+        });
     } catch (error) {
-      res.status(500).json({ status: false, message: "Internal Server Error" });
+      res
+        .status(500)
+        .json({ status: false, message: "Internal Server Error", result: "" });
     }
   }
 
@@ -50,16 +56,23 @@ class Brand {
           status: false,
           error: "Bad Request",
           message: "Brand tidak tersedia",
+          result: "",
         };
 
-      res.status(200).json({ status: true, brands });
+      res
+        .status(200)
+        .json({ status: true, message: "success", result: brands });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }
@@ -74,6 +87,7 @@ class Brand {
           status: false,
           error: "Bad Request",
           message: "Brand tidak tersedia",
+          result: "",
         };
 
       const brand = {
@@ -84,14 +98,18 @@ class Brand {
         brandStatus: data.brandStatus,
       };
 
-      res.status(200).json({ status: true, brand });
+      res.status(200).json({ status: true, message: "success", result: brand });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }
@@ -121,20 +139,25 @@ class Brand {
           status: false,
           error: "Bad Request",
           message: "Brand tidak ditemukan",
+          result: "",
         };
 
       await Brands.update(id, payload);
 
       res
         .status(201)
-        .json({ status: true, message: `Brand berhasil diupdate` });
+        .json({ status: true, message: `Brand berhasil diupdate`, result: "" });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }
@@ -149,23 +172,27 @@ class Brand {
           status: false,
           error: "Bad Request",
           message: "Brand tidak ditemukan",
+          result: "",
         };
 
       await Brands.destroy(id);
 
-      res
-        .status(200)
-        .json({
-          status: true,
-          message: `Brand dengan id ${id} berhasil dihapus`,
-        });
+      res.status(200).json({
+        status: true,
+        message: `Brand dengan id ${id} berhasil dihapus`,
+        result: "",
+      });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }

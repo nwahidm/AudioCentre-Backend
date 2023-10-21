@@ -20,9 +20,15 @@ class Subcategory {
 
       res
         .status(201)
-        .json({ status: true, message: `Subcategory berhasil ditambahkan` });
+        .json({
+          status: true,
+          message: `Subcategory berhasil ditambahkan`,
+          result: "",
+        });
     } catch (error) {
-      res.status(500).json({ status: false, message: "Internal Server Error" });
+      res
+        .status(500)
+        .json({ status: false, message: "Internal Server Error", result: "" });
     }
   }
 
@@ -47,16 +53,23 @@ class Subcategory {
           status: false,
           error: "Bad Request",
           message: "Subcategory tidak tersedia",
+          result: "",
         };
 
-      res.status(200).json({ status: true, subcategories });
+      res
+        .status(200)
+        .json({ status: true, message: "success", result: subcategories });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }
@@ -71,6 +84,7 @@ class Subcategory {
           status: false,
           error: "Bad Request",
           message: "Category tidak tersedia",
+          result: "",
         };
 
       const subcategory = {
@@ -79,14 +93,20 @@ class Subcategory {
         subcategoryCover: data.subcategoryCover,
       };
 
-      res.status(200).json({ status: true, subcategory });
+      res
+        .status(200)
+        .json({ status: true, message: "success", result: subcategory });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }
@@ -108,20 +128,29 @@ class Subcategory {
           status: false,
           error: "Bad Request",
           message: "Subcategory tidak ditemukan",
+          result: "",
         };
 
       await Subcategories.update(id, payload);
 
       res
         .status(201)
-        .json({ status: true, message: `Subcategory berhasil diupdate` });
+        .json({
+          status: true,
+          message: `Subcategory berhasil diupdate`,
+          result: "",
+        });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }
@@ -136,23 +165,27 @@ class Subcategory {
           status: false,
           error: "Bad Request",
           message: "Subcategory tidak ditemukan",
+          result: "",
         };
 
       await Subcategories.destroy(id);
 
-      res
-        .status(200)
-        .json({
-          status: true,
-          message: `Subcategory dengan id ${id} berhasil dihapus`,
-        });
+      res.status(200).json({
+        status: true,
+        message: `Subcategory dengan id ${id} berhasil dihapus`,
+        result: "",
+      });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }

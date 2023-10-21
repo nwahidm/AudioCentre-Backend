@@ -59,9 +59,15 @@ class Product {
 
       res
         .status(201)
-        .json({ status: true, message: `Produk berhasil ditambahkan` });
+        .json({
+          status: true,
+          message: `Produk berhasil ditambahkan`,
+          result: "",
+        });
     } catch (error) {
-      res.status(500).json({ status: false, message: "Internal Server Error" });
+      res
+        .status(500)
+        .json({ status: false, message: "Internal Server Error", result: "" });
     }
   }
 
@@ -115,6 +121,7 @@ class Product {
           status: false,
           error: "Bad Request",
           message: "Produk tidak tersedia",
+          result: "",
         };
 
       for (let i = 0; i < products.length; i++) {
@@ -128,14 +135,20 @@ class Product {
         product.priceAfterDiscount = product.price - product.discount;
       }
 
-      res.status(200).json({ status: true, products });
+      res
+        .status(200)
+        .json({ status: true, message: "success", result: products });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }
@@ -150,6 +163,7 @@ class Product {
           status: false,
           error: "Bad Request",
           message: "Produk tidak ditemukan",
+          result: "",
         };
 
       const brand = await Brands.findByPk(data.brandId);
@@ -173,14 +187,20 @@ class Product {
         status: data.status,
       };
 
-      res.status(200).json({ status: true, Product });
+      res
+        .status(200)
+        .json({ status: true, message: "success", result: Product });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }
@@ -242,20 +262,29 @@ class Product {
           status: false,
           error: "Bad Request",
           message: "Produk tidak ditemukan",
+          result: "",
         };
 
       await Products.update(id, payload);
 
       res
         .status(201)
-        .json({ status: true, message: `Produk berhasil diupdate` });
+        .json({
+          status: true,
+          message: `Produk berhasil diupdate`,
+          result: "",
+        });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }
@@ -270,23 +299,27 @@ class Product {
           status: false,
           error: "Bad Request",
           message: "Produk tidak ditemukan",
+          result: "",
         };
 
       await Products.destroy(id);
 
-      res
-        .status(200)
-        .json({
-          status: true,
-          message: `Product dengan id ${id} berhasil dihapus`,
-        });
+      res.status(200).json({
+        status: true,
+        message: `Product dengan id ${id} berhasil dihapus`,
+        result: "",
+      });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }

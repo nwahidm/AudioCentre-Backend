@@ -14,9 +14,12 @@ class Notification {
           status: false,
           error: "Bad Request",
           message: "Notification tidak ditemukan",
+          result: "",
         };
 
-      res.status(200).json({ status: true, notification });
+      res
+        .status(200)
+        .json({ status: true, message: "success", result: notification });
     } catch (error) {
       console.log(error);
       if (error.status == false) {
@@ -24,7 +27,11 @@ class Notification {
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }

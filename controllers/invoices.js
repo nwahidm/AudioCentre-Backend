@@ -18,9 +18,15 @@ class Invoice {
 
       res
         .status(201)
-        .json({ status: true, message: `Invoice berhasil ditambahkan` });
+        .json({
+          status: true,
+          message: `Invoice berhasil ditambahkan`,
+          result: "",
+        });
     } catch (error) {
-      res.status(500).json({ status: false, message: "Internal Server Error" });
+      res
+        .status(500)
+        .json({ status: false, message: "Internal Server Error", result: "" });
     }
   }
 
@@ -46,6 +52,7 @@ class Invoice {
           status: false,
           error: "Bad Request",
           message: "Invoice tidak tersedia",
+          result: "",
         };
 
       for (let i = 0; i < invoices.length; i++) {
@@ -68,7 +75,9 @@ class Invoice {
         invoice.totalPriceAfterDiscount = totalPrice - invoice.discount;
       }
 
-      res.status(200).json({ status: true, invoices });
+      res
+        .status(200)
+        .json({ status: true, message: "success", result: invoices });
     } catch (error) {
       console.log(error);
       if (error.status == false) {
@@ -76,7 +85,11 @@ class Invoice {
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }
@@ -91,6 +104,7 @@ class Invoice {
           status: false,
           error: "Bad Request",
           message: "Invoice tidak tersedia",
+          result: "",
         };
 
       let totalPrice = 0;
@@ -110,14 +124,20 @@ class Invoice {
       invoice.totalPrice = totalPrice;
       invoice.totalPriceAfterDiscount = totalPrice - invoice.discount;
 
-      res.status(200).json({ status: true, invoice });
+      res
+        .status(200)
+        .json({ status: true, message: "success", result: invoice });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }
@@ -149,20 +169,29 @@ class Invoice {
           status: false,
           error: "Bad Request",
           message: "Invoice tidak ditemukan",
+          result: "",
         };
 
       await Invoices.update(id, payload);
 
       res
         .status(201)
-        .json({ status: true, message: `Invoice berhasil diupdate` });
+        .json({
+          status: true,
+          message: `Invoice berhasil diupdate`,
+          result: "",
+        });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }
@@ -177,23 +206,27 @@ class Invoice {
           status: false,
           error: "Bad Request",
           message: "Invoice tidak ditemukan",
+          result: "",
         };
 
       await Invoices.destroy(id);
 
-      res
-        .status(200)
-        .json({
-          status: true,
-          message: `Invoice dengan id ${id} berhasil dihapus`,
-        });
+      res.status(200).json({
+        status: true,
+        message: `Invoice dengan id ${id} berhasil dihapus`,
+        result: "",
+      });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
         res
           .status(500)
-          .json({ status: false, message: "Internal Server Error" });
+          .json({
+            status: false,
+            message: "Internal Server Error",
+            result: "",
+          });
       }
     }
   }
