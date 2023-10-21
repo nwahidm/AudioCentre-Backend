@@ -13,9 +13,11 @@ class Banner {
         status,
       });
 
-      res.status(201).json({ message: `Banner berhasil ditambahkan` });
+      res
+        .status(201)
+        .json({ status: true, message: `Banner berhasil ditambahkan` });
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error" });
+      res.status(500).json({ status: false, message: "Internal Server Error" });
     }
   }
 
@@ -38,17 +40,19 @@ class Banner {
 
       if (isEmpty(banners))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Banner tidak tersedia",
         };
 
-      res.status(200).json(banners);
+      res.status(200).json({ status: true, banners });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }
@@ -60,7 +64,7 @@ class Banner {
 
       if (isEmpty(data))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Banner tidak tersedia",
         };
@@ -72,12 +76,14 @@ class Banner {
         status: data.status,
       };
 
-      res.status(200).json(banner);
+      res.status(200).json({ status: true, banner });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }
@@ -96,19 +102,23 @@ class Banner {
 
       if (isEmpty(targetBanner))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Banner tidak ditemukan",
         };
 
       await Banners.update(id, payload);
 
-      res.status(201).json({ message: `Banner berhasil diupdate` });
+      res
+        .status(201)
+        .json({ status: true, message: `Banner berhasil diupdate` });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }
@@ -120,7 +130,7 @@ class Banner {
 
       if (isEmpty(targetBanner))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Banner tidak ditemukan",
         };
@@ -129,12 +139,17 @@ class Banner {
 
       res
         .status(200)
-        .json({ message: `Banner dengan id ${id} berhasil dihapus` });
+        .json({
+          status: true,
+          message: `Banner dengan id ${id} berhasil dihapus`,
+        });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }

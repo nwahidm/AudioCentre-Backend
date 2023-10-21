@@ -13,13 +13,14 @@ class Invoice {
         customerData,
       });
 
-      const invoiceId = createdInvoice.insertedId
-      await Users.pushNotification(invoiceId)
+      const invoiceId = createdInvoice.insertedId;
+      await Users.pushNotification(invoiceId);
 
-      res.status(201).json({ message: `Invoice berhasil ditambahkan` });
+      res
+        .status(201)
+        .json({ status: true, message: `Invoice berhasil ditambahkan` });
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: "Internal Server Error" });
+      res.status(500).json({ status: false, message: "Internal Server Error" });
     }
   }
 
@@ -42,7 +43,7 @@ class Invoice {
 
       if (isEmpty(invoices))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Invoice tidak tersedia",
         };
@@ -67,13 +68,15 @@ class Invoice {
         invoice.totalPriceAfterDiscount = totalPrice - invoice.discount;
       }
 
-      res.status(200).json(invoices);
+      res.status(200).json({ status: true, invoices });
     } catch (error) {
       console.log(error);
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }
@@ -85,7 +88,7 @@ class Invoice {
 
       if (isEmpty(invoice))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Invoice tidak tersedia",
         };
@@ -107,12 +110,14 @@ class Invoice {
       invoice.totalPrice = totalPrice;
       invoice.totalPriceAfterDiscount = totalPrice - invoice.discount;
 
-      res.status(200).json(invoice);
+      res.status(200).json({ status: true, invoice });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }
@@ -136,26 +141,28 @@ class Invoice {
       if (!isEmpty(discount)) assign(payload, { discount: +discount });
       if (!isEmpty(isPaid)) assign(payload, { isPaid: +isPaid });
 
-      console.log(payload, "ini dari controller");
-
       //check if the invoice exist or not
       const targetInvoice = await Invoices.findByPk(id);
 
       if (isEmpty(targetInvoice))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Invoice tidak ditemukan",
         };
 
       await Invoices.update(id, payload);
 
-      res.status(201).json({ message: `Invoice berhasil diupdate` });
+      res
+        .status(201)
+        .json({ status: true, message: `Invoice berhasil diupdate` });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }
@@ -167,7 +174,7 @@ class Invoice {
 
       if (isEmpty(targetInvoice))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Invoice tidak ditemukan",
         };
@@ -176,12 +183,17 @@ class Invoice {
 
       res
         .status(200)
-        .json({ message: `Invoice dengan id ${id} berhasil dihapus` });
+        .json({
+          status: true,
+          message: `Invoice dengan id ${id} berhasil dihapus`,
+        });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }

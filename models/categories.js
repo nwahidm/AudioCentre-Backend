@@ -24,7 +24,7 @@ class Categories {
     if (!isEmpty(categoryName))
       assign(where, { categoryName: { $regex: categoryName, $options: "i" } });
 
-    return await this.categoryModel().find(where).sort(searchOrder).toArray();
+    return await this.categoryModel().find(where).toArray();
   }
 
   static async findOne({ categoryName }) {

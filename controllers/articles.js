@@ -3,9 +3,14 @@ const { isEmpty, assign } = require("lodash");
 
 class Article {
   static async createArticle(req, res) {
-    const { articleTitle, articleDescription,  } = req.body;
+    const { articleTitle, articleDescription } = req.body;
     const articleImage = req.files.images;
-    console.log("[Create Article]", articleTitle, articleDescription, articleImage);
+    console.log(
+      "[Create Article]",
+      articleTitle,
+      articleDescription,
+      articleImage
+    );
     try {
       await Articles.create({
         articleTitle,
@@ -13,9 +18,11 @@ class Article {
         articleImage: articleImage[0].path,
       });
 
-      res.status(201).json({ message: `Article berhasil ditambahkan` });
+      res
+        .status(201)
+        .json({ status: true, message: `Article berhasil ditambahkan` });
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error" });
+      res.status(500).json({ status: false, message: "Internal Server Error" });
     }
   }
 
@@ -37,17 +44,19 @@ class Article {
 
       if (isEmpty(articles))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Article tidak tersedia",
         };
 
-      res.status(200).json(articles);
+      res.status(200).json({ status: true, data: articles });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }
@@ -59,17 +68,19 @@ class Article {
 
       if (isEmpty(data))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Article tidak tersedia",
         };
 
-      res.status(200).json(data);
+      res.status(200).json({ status: true, data });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }
@@ -89,19 +100,23 @@ class Article {
 
       if (isEmpty(targetArticle))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Article tidak ditemukan",
         };
 
       await Articles.update(id, payload);
 
-      res.status(201).json({ message: `Article berhasil diupdate` });
+      res
+        .status(201)
+        .json({ status: true, message: `Article berhasil diupdate` });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }
@@ -113,7 +128,7 @@ class Article {
 
       if (isEmpty(targetArticle))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Article tidak ditemukan",
         };
@@ -122,12 +137,17 @@ class Article {
 
       res
         .status(200)
-        .json({ message: `Article dengan id ${id} berhasil dihapus` });
+        .json({
+          status: true,
+          message: `Article dengan id ${id} berhasil dihapus`,
+        });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }

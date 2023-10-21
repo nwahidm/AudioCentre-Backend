@@ -57,10 +57,11 @@ class Product {
         status,
       });
 
-      res.status(201).json({ message: `Produk berhasil ditambahkan` });
+      res
+        .status(201)
+        .json({ status: true, message: `Produk berhasil ditambahkan` });
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: "Internal Server Error" });
+      res.status(500).json({ status: false, message: "Internal Server Error" });
     }
   }
 
@@ -111,7 +112,7 @@ class Product {
 
       if (isEmpty(products))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Produk tidak tersedia",
         };
@@ -127,12 +128,14 @@ class Product {
         product.priceAfterDiscount = product.price - product.discount;
       }
 
-      res.status(200).json(products);
+      res.status(200).json({ status: true, products });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }
@@ -144,7 +147,7 @@ class Product {
 
       if (isEmpty(data))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Produk tidak ditemukan",
         };
@@ -170,12 +173,14 @@ class Product {
         status: data.status,
       };
 
-      res.status(200).json(Product);
+      res.status(200).json({ status: true, Product });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }
@@ -234,19 +239,23 @@ class Product {
 
       if (isEmpty(targetProduct))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Produk tidak ditemukan",
         };
 
       await Products.update(id, payload);
 
-      res.status(201).json({ message: `Produk berhasil diupdate` });
+      res
+        .status(201)
+        .json({ status: true, message: `Produk berhasil diupdate` });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }
@@ -258,7 +267,7 @@ class Product {
 
       if (isEmpty(targetProduct))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Produk tidak ditemukan",
         };
@@ -267,12 +276,17 @@ class Product {
 
       res
         .status(200)
-        .json({ message: `Product dengan id ${id} berhasil dihapus` });
+        .json({
+          status: true,
+          message: `Product dengan id ${id} berhasil dihapus`,
+        });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }

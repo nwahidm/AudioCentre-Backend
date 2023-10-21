@@ -5,7 +5,12 @@ class Subcategory {
   static async createSubcategory(req, res) {
     const { subcategoryName, categoryId } = req.body;
     const subcategoryCover = req.files.images;
-    console.log("[Create Subcategory]", subcategoryName, categoryId, subcategoryCover);
+    console.log(
+      "[Create Subcategory]",
+      subcategoryName,
+      categoryId,
+      subcategoryCover
+    );
     try {
       await Subcategories.create({
         subcategoryName,
@@ -13,9 +18,11 @@ class Subcategory {
         subcategoryCover: subcategoryCover[0].path,
       });
 
-      res.status(201).json({ message: `Subcategory berhasil ditambahkan` });
+      res
+        .status(201)
+        .json({ status: true, message: `Subcategory berhasil ditambahkan` });
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error" });
+      res.status(500).json({ status: false, message: "Internal Server Error" });
     }
   }
 
@@ -37,17 +44,19 @@ class Subcategory {
 
       if (isEmpty(subcategories))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Subcategory tidak tersedia",
         };
 
-      res.status(200).json(subcategories);
+      res.status(200).json({ status: true, subcategories });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }
@@ -59,7 +68,7 @@ class Subcategory {
 
       if (isEmpty(data))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Category tidak tersedia",
         };
@@ -70,12 +79,14 @@ class Subcategory {
         subcategoryCover: data.subcategoryCover,
       };
 
-      res.status(200).json(subcategory);
+      res.status(200).json({ status: true, subcategory });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }
@@ -94,19 +105,23 @@ class Subcategory {
 
       if (isEmpty(targetSubcategory))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Subcategory tidak ditemukan",
         };
 
       await Subcategories.update(id, payload);
 
-      res.status(201).json({ message: `Subcategory berhasil diupdate` });
+      res
+        .status(201)
+        .json({ status: true, message: `Subcategory berhasil diupdate` });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }
@@ -118,7 +133,7 @@ class Subcategory {
 
       if (isEmpty(targetSubcategory))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Subcategory tidak ditemukan",
         };
@@ -127,12 +142,17 @@ class Subcategory {
 
       res
         .status(200)
-        .json({ message: `Subcategory dengan id ${id} berhasil dihapus` });
+        .json({
+          status: true,
+          message: `Subcategory dengan id ${id} berhasil dihapus`,
+        });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }

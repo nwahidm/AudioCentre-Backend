@@ -29,9 +29,10 @@ class Subcategories {
     if (!isEmpty(categoryId))
       assign(where, { categoryId: new ObjectId(categoryId) });
 
+      console.log(where);
+
     return await this.subcategoryModel()
       .find(where)
-      .sort(searchOrder)
       .toArray();
   }
 

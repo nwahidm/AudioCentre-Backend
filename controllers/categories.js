@@ -13,9 +13,11 @@ class Category {
         categoryCover: categoryCover[0].path,
       });
 
-      res.status(201).json({ message: `Category berhasil ditambahkan` });
+      res
+        .status(201)
+        .json({ status: true, message: `Category berhasil ditambahkan` });
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error" });
+      res.status(500).json({ status: false, message: "Internal Server Error" });
     }
   }
 
@@ -37,17 +39,24 @@ class Category {
 
       if (isEmpty(categories))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Category tidak tersedia",
         };
 
-      res.status(200).json(categories);
+      for (let i = 0; i < categories.length; i++) {
+        const payload = { categoryId: categories[i]._id.toString() };
+        categories[i].subcategories = await Subcategories.findAll(payload);
+      }
+
+      res.status(200).json({ status: true, categories });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }
@@ -59,7 +68,7 @@ class Category {
 
       if (isEmpty(data))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Category tidak tersedia",
         };
@@ -74,12 +83,14 @@ class Category {
         subcategories,
       };
 
-      res.status(200).json(category);
+      res.status(200).json({ status: true, category });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }
@@ -98,19 +109,23 @@ class Category {
 
       if (isEmpty(targetCategory))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Category tidak ditemukan",
         };
 
       await Categories.update(id, payload);
 
-      res.status(201).json({ message: `Category berhasil diupdate` });
+      res
+        .status(201)
+        .json({ status: true, message: `Category berhasil diupdate` });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }
@@ -122,21 +137,24 @@ class Category {
 
       if (isEmpty(targetCategory))
         throw {
-          status: 404,
+          status: false,
           error: "Bad Request",
           message: "Category tidak ditemukan",
         };
 
       await Categories.destroy(id);
 
-      res
-        .status(200)
-        .json({ message: `Category dengan id ${id} berhasil dihapus` });
+      res.status(200).json({
+        status: true,
+        message: `Category dengan id ${id} berhasil dihapus`,
+      });
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res.status(500).json({ message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ status: false, message: "Internal Server Error" });
       }
     }
   }
