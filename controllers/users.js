@@ -54,24 +54,20 @@ class User {
 
       await Users.update(id);
 
-      res
-        .status(201)
-        .json({
-          status: true,
-          message: `user with ${id} has been activated`,
-          result: "",
-        });
+      res.status(201).json({
+        status: true,
+        message: `user with ${id} has been activated`,
+        result: "",
+      });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
@@ -112,22 +108,23 @@ class User {
         expiresIn: "3d",
       });
 
+      delete user.password;
+      delete user.notification;
+
       res.status(200).json({
         status: true,
         message: "success",
-        access_token,
+        result: { access_token, user },
       });
     } catch (error) {
       if (error.status == false) {
         res.status(401).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
@@ -173,13 +170,11 @@ class User {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
@@ -226,13 +221,11 @@ class User {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
@@ -251,24 +244,20 @@ class User {
 
       await Users.destroy(id);
 
-      res
-        .status(200)
-        .json({
-          status: true,
-          message: `User with id ${id} deleted`,
-          result: "",
-        });
+      res.status(200).json({
+        status: true,
+        message: `User with id ${id} deleted`,
+        result: "",
+      });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
