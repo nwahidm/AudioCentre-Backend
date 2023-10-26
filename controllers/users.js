@@ -159,11 +159,8 @@ class User {
           result: "",
         };
 
-      const user = {
-        _id: data._id,
-        username: data.username,
-        email: data.email,
-      };
+      delete data.password;
+      delete data.notification;
 
       res.status(200).json({ status: true, message: "success", result: user });
     } catch (error) {
