@@ -162,7 +162,7 @@ class User {
       delete data.password;
       delete data.notification;
 
-      res.status(200).json({ status: true, message: "success", result: user });
+      res.status(200).json({ status: true, message: "success", result: data });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
