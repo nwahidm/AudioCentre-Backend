@@ -198,8 +198,8 @@ class User {
         assign(payload, { password: await hashPassword(password) });
       if (!isEmpty(phoneNumber)) assign(payload, { phoneNumber });
       if (!isEmpty(address)) assign(payload, { address });
-      if (!isEmpty(enabled)) assign(payload, { enabled });
-
+      if (enabled) assign(payload, { enabled });
+      
       //check if the user exist or not
       const targetUser = await Users.findByPk(id);
 
