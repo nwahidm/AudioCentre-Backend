@@ -1,5 +1,5 @@
 const Subcategories = require("../models/subcategories");
-const { isEmpty, assign } = require("lodash");
+const { isEmpty, assign, map } = require("lodash");
 
 class Subcategory {
   static async createSubcategory(req, res) {
@@ -18,13 +18,11 @@ class Subcategory {
         subcategoryCover: subcategoryCover[0].path,
       });
 
-      res
-        .status(201)
-        .json({
-          status: true,
-          message: `Subcategory berhasil ditambahkan`,
-          result: "",
-        });
+      res.status(201).json({
+        status: true,
+        message: `Subcategory berhasil ditambahkan`,
+        result: "",
+      });
     } catch (error) {
       res
         .status(500)
@@ -56,6 +54,10 @@ class Subcategory {
           result: "",
         };
 
+      map(subcategories, (o) => {
+        o.subcategoryCover = `http://202.157.188.101:3000/${o.subcategoryCover}`;
+      });
+
       res
         .status(200)
         .json({ status: true, message: "success", result: subcategories });
@@ -63,13 +65,11 @@ class Subcategory {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
@@ -90,7 +90,7 @@ class Subcategory {
       const subcategory = {
         _id: data._id,
         subcategoryName: data.subcategoryName,
-        subcategoryCover: data.subcategoryCover,
+        subcategoryCover: `http://202.157.188.101:3000/${data.subcategoryCover}`,
       };
 
       res
@@ -100,13 +100,11 @@ class Subcategory {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
@@ -133,24 +131,20 @@ class Subcategory {
 
       await Subcategories.update(id, payload);
 
-      res
-        .status(201)
-        .json({
-          status: true,
-          message: `Subcategory berhasil diupdate`,
-          result: "",
-        });
+      res.status(201).json({
+        status: true,
+        message: `Subcategory berhasil diupdate`,
+        result: "",
+      });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
@@ -179,13 +173,11 @@ class Subcategory {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }

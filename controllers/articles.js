@@ -1,5 +1,5 @@
 const Articles = require("../models/articles");
-const { isEmpty, assign } = require("lodash");
+const { isEmpty, assign, map } = require("lodash");
 
 class Article {
   static async createArticle(req, res) {
@@ -54,6 +54,10 @@ class Article {
           result: "",
         };
 
+      map(articles, (o) => {
+        o.articleImage = `http://202.157.188.101:3000/${o.articleImage}`;
+      });
+
       res
         .status(200)
         .json({ status: true, message: "success", result: articles });
@@ -82,6 +86,8 @@ class Article {
           message: "Article tidak tersedia",
           result: "",
         };
+
+      data.articleImage = `http://202.157.188.101:3000/${data.articleImage}`;
 
       res.status(200).json({ status: true, message: "success", result: data });
     } catch (error) {

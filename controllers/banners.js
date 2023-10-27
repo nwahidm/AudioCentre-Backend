@@ -1,5 +1,5 @@
 const Banners = require("../models/banners");
-const { isEmpty, assign } = require("lodash");
+const { isEmpty, assign, map } = require("lodash");
 
 class Banner {
   static async createBanner(req, res) {
@@ -50,6 +50,10 @@ class Banner {
           result: "",
         };
 
+      map(banners, (o) => {
+        o.bannerCover = `http://202.157.188.101:3000/${o.bannerCover}`;
+      });
+
       res
         .status(200)
         .json({ status: true, message: "success", result: banners });
@@ -85,6 +89,8 @@ class Banner {
         bannerCover: data.bannerCover,
         status: data.status,
       };
+
+      banner.bannerCover = `http://202.157.188.101:3000/${banner.bannerCover}`;
 
       res
         .status(200)

@@ -57,13 +57,11 @@ class Product {
         status,
       });
 
-      res
-        .status(201)
-        .json({
-          status: true,
-          message: `Produk berhasil ditambahkan`,
-          result: "",
-        });
+      res.status(201).json({
+        status: true,
+        message: `Produk berhasil ditambahkan`,
+        result: "",
+      });
     } catch (error) {
       res
         .status(500)
@@ -133,6 +131,11 @@ class Product {
           product.subcategoryId
         );
         product.priceAfterDiscount = product.price - product.discount;
+        for (let j = 0; j < product.images.length; j++) {
+          product.images[
+            j
+          ] = `http://202.157.188.101:3000/${product.images[j]}`;
+        }
       }
 
       res
@@ -142,13 +145,11 @@ class Product {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
@@ -169,6 +170,9 @@ class Product {
       const brand = await Brands.findByPk(data.brandId);
       const category = await Categories.findByPk(data.categoryId);
       const subcategory = await Subcategories.findByPk(data.subcategoryId);
+      for (let i = 0; i < data.images.length; i++) {
+        data.images[i] = `http://202.157.188.101:3000/${data.images[i]}`;
+      }
 
       const Product = {
         _id: data._id,
@@ -194,13 +198,11 @@ class Product {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
@@ -267,24 +269,20 @@ class Product {
 
       await Products.update(id, payload);
 
-      res
-        .status(201)
-        .json({
-          status: true,
-          message: `Produk berhasil diupdate`,
-          result: "",
-        });
+      res.status(201).json({
+        status: true,
+        message: `Produk berhasil diupdate`,
+        result: "",
+      });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
@@ -313,13 +311,11 @@ class Product {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }

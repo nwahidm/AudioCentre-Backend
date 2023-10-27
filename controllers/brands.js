@@ -1,5 +1,5 @@
 const Brands = require("../models/brands");
-const { isEmpty, assign } = require("lodash");
+const { isEmpty, assign, map } = require("lodash");
 
 class Brand {
   static async createBrand(req, res) {
@@ -20,13 +20,11 @@ class Brand {
         brandCover: brandCover[0].path,
       });
 
-      res
-        .status(201)
-        .json({
-          status: true,
-          message: `Brand berhasil ditambahkan`,
-          result: "",
-        });
+      res.status(201).json({
+        status: true,
+        message: `Brand berhasil ditambahkan`,
+        result: "",
+      });
     } catch (error) {
       res
         .status(500)
@@ -59,6 +57,10 @@ class Brand {
           result: "",
         };
 
+      map(brands, (o) => {
+        o.brandCover = `http://202.157.188.101:3000/${o.brandCover}`;
+      });
+
       res
         .status(200)
         .json({ status: true, message: "success", result: brands });
@@ -66,13 +68,11 @@ class Brand {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
@@ -90,26 +90,18 @@ class Brand {
           result: "",
         };
 
-      const brand = {
-        _id: data._id,
-        brandName: data.brandName,
-        brandDescription: data.brandDescription,
-        brandCover: data.brandCover,
-        brandStatus: data.brandStatus,
-      };
+      data.brandCover = `http://202.157.188.101:3000/${data.brandCover}`;
 
-      res.status(200).json({ status: true, message: "success", result: brand });
+      res.status(200).json({ status: true, message: "success", result: data });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
@@ -151,13 +143,11 @@ class Brand {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
@@ -186,13 +176,11 @@ class Brand {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }

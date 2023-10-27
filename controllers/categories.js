@@ -1,6 +1,6 @@
 const Categories = require("../models/categories");
 const Subcategories = require("../models/subcategories");
-const { isEmpty, assign } = require("lodash");
+const { isEmpty, assign, map } = require("lodash");
 
 class Category {
   static async createCategory(req, res) {
@@ -13,13 +13,11 @@ class Category {
         categoryCover: categoryCover[0].path,
       });
 
-      res
-        .status(201)
-        .json({
-          status: true,
-          message: `Category berhasil ditambahkan`,
-          result: "",
-        });
+      res.status(201).json({
+        status: true,
+        message: `Category berhasil ditambahkan`,
+        result: "",
+      });
     } catch (error) {
       res
         .status(500)
@@ -54,7 +52,14 @@ class Category {
       for (let i = 0; i < categories.length; i++) {
         const payload = { categoryId: categories[i]._id.toString() };
         categories[i].subcategories = await Subcategories.findAll(payload);
+        map(categories[i].subcategories, (o) => {
+          o.subcategoryCover = `http://202.157.188.101:3000/${o.subcategoryCover}`;
+        });
       }
+
+      map(categories, (o) => {
+        o.categoryCover = `http://202.157.188.101:3000/${o.categoryCover}`;
+      });
 
       res
         .status(200)
@@ -63,13 +68,11 @@ class Category {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
@@ -90,10 +93,14 @@ class Category {
       const payload = { categoryId: id };
       const subcategories = await Subcategories.findAll(payload);
 
+      map(subcategories, (o) => {
+        o.subcategoryCover = `http://202.157.188.101:3000/${o.subcategoryCover}`;
+      });
+
       const category = {
         _id: data._id,
         categoryName: data.categoryName,
-        categoryCover: data.categoryCover,
+        categoryCover: `http://202.157.188.101:3000/${data.categoryCover}`,
         subcategories,
       };
 
@@ -104,13 +111,11 @@ class Category {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
@@ -137,24 +142,20 @@ class Category {
 
       await Categories.update(id, payload);
 
-      res
-        .status(201)
-        .json({
-          status: true,
-          message: `Category berhasil diupdate`,
-          result: "",
-        });
+      res.status(201).json({
+        status: true,
+        message: `Category berhasil diupdate`,
+        result: "",
+      });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
@@ -183,13 +184,11 @@ class Category {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
