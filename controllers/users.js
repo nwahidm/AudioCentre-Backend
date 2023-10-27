@@ -178,7 +178,7 @@ class User {
 
   static async updateUser(req, res) {
     const { id } = req.params;
-    const { username, email, password, phoneNumber, address } = req.body;
+    const { username, email, password, phoneNumber, address, enabled } = req.body;
     console.log(
       "[Update User]",
       id,
@@ -186,7 +186,8 @@ class User {
       email,
       password,
       phoneNumber,
-      address
+      address,
+      enabled
     );
     try {
       //update data
@@ -197,6 +198,7 @@ class User {
         assign(payload, { password: await hashPassword(password) });
       if (!isEmpty(phoneNumber)) assign(payload, { phoneNumber });
       if (!isEmpty(address)) assign(payload, { address });
+      if (!isEmpty(enabled)) assign(payload, { enabled });
 
       //check if the user exist or not
       const targetUser = await Users.findByPk(id);

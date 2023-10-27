@@ -33,8 +33,8 @@ class Users {
   }
 
   static async update(id, payload) {
-    if (isEmpty(payload)) payload = {};
-    assign(payload, { enabled: true });
+    // if (isEmpty(payload)) payload = {};
+    // assign(payload, { enabled: true });
 
     return await this.userModel().updateOne(
       { _id: new ObjectId(id) },
