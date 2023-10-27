@@ -24,7 +24,7 @@ class User {
         address,
       });
 
-      send(email);
+      // send(email);
 
       res.status(201).json({
         status: true,
@@ -73,15 +73,15 @@ class User {
   }
 
   static async login(req, res) {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     try {
-      const user = await Users.findOne({ username });
+      const user = await Users.findOne({ email });
 
       if (isEmpty(user))
         throw {
           status: false,
           error: "Bad Request",
-          message: "Username atau password salah",
+          message: "Email atau password salah",
           result: "",
         };
 
@@ -91,7 +91,7 @@ class User {
         throw {
           status: false,
           error: "Bad Request",
-          message: "Username atau password salah",
+          message: "Email atau password salah",
           result: "",
         };
 

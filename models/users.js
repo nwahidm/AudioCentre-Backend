@@ -14,7 +14,7 @@ class Users {
       password,
       phoneNumber,
       address,
-      enabled: false,
+      enabled: true,
       notification: [],
     });
     return newUser;
@@ -24,8 +24,8 @@ class Users {
     return await this.userModel().find().toArray();
   }
 
-  static async findOne({ username }) {
-    return await this.userModel().findOne({ username });
+  static async findOne({ email }) {
+    return await this.userModel().findOne({ email });
   }
 
   static async findByPk(id) {
