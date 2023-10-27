@@ -123,11 +123,17 @@ class Category {
   static async updateCategory(req, res) {
     const { id } = req.params;
     const { categoryName } = req.body;
-    console.log("[Update Category]", id, categoryName);
+    let categoryCover;
+    if (req.files) {
+      categoryCover = req.files.images;
+    }
+    console.log("[Update Category]", id, categoryName, categoryCover);
     try {
       //update data
       const payload = {};
       if (!isEmpty(categoryName)) assign(payload, { categoryName });
+      if (!isEmpty(categoryCover))
+        assign(payload, { categoryCover: categoryCover[0].path });
 
       //check if the category exist or not
       const targetCategory = await Categories.findByPk(id);

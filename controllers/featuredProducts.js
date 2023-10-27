@@ -91,7 +91,7 @@ class FeaturedProduct {
         .status(200)
         .json({ status: true, message: "success", result: featuredProducts });
     } catch (error) {
-        console.log(error);
+      console.log(error);
       if (error.status == false) {
         res.status(404).json(error);
       } else {
@@ -136,12 +136,25 @@ class FeaturedProduct {
   static async updateFeaturedProduct(req, res) {
     const { id } = req.params;
     const { featuredProductStatus } = req.body;
-    console.log("[Update Featured Product]", id, featuredProductStatus);
+    let featuredProductBanner;
+    if (req.files) {
+      featuredProductBanner = req.files.images;
+    }
+    console.log(
+      "[Update Featured Product]",
+      id,
+      featuredProductStatus,
+      featuredProductBanner
+    );
     try {
       //update data
       const payload = {};
       if (!isEmpty(featuredProductStatus))
         assign(payload, { featuredProductStatus: +featuredProductStatus });
+      if (!isEmpty(featuredProductBanner))
+        assign(payload, {
+          featuredProductBanner: featuredProductBanner[0].path,
+        });
 
       //check if the featured product exist or not
       const targetFeaturedProduct = await FeaturedProducts.findByPk(id);

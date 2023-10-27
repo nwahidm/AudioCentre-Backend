@@ -109,12 +109,17 @@ class Brand {
   static async updateBrand(req, res) {
     const { id } = req.params;
     const { brandName, brandDescription, brandStatus } = req.body;
+    let brandCover;
+    if (req.files) {
+      brandCover = req.files.images;
+    }
     console.log(
       "[Update Product]",
       id,
       brandName,
       brandDescription,
-      brandStatus
+      brandStatus,
+      brandCover
     );
     try {
       //update data
@@ -122,6 +127,8 @@ class Brand {
       if (!isEmpty(brandName)) assign(payload, { brandName });
       if (!isEmpty(brandDescription)) assign(payload, { brandDescription });
       if (!isEmpty(brandStatus)) assign(payload, { brandStatus: +brandStatus });
+      if (!isEmpty(brandCover))
+        assign(payload, { brandCover: brandCover[0].path });
 
       //check if the brand exist or not
       const targetBrand = await Brands.findByPk(id);
@@ -140,6 +147,7 @@ class Brand {
         .status(201)
         .json({ status: true, message: `Brand berhasil diupdate`, result: "" });
     } catch (error) {
+      console.log(error);
       if (error.status == false) {
         res.status(404).json(error);
       } else {

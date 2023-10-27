@@ -106,12 +106,24 @@ class Article {
   static async updateArticle(req, res) {
     const { id } = req.params;
     const { articleTitle, articleDescription } = req.body;
-    console.log("[Update Article]", id, articleTitle, articleDescription);
+    let articleImage;
+    if (req.files) {
+      articleImage = req.files.images;
+    }
+    console.log(
+      "[Update Article]",
+      id,
+      articleTitle,
+      articleDescription,
+      articleImage
+    );
     try {
       //update data
       const payload = {};
       if (!isEmpty(articleTitle)) assign(payload, { articleTitle });
       if (!isEmpty(articleDescription)) assign(payload, { articleDescription });
+      if (!isEmpty(articleImage))
+        assign(payload, { articleImage: articleImage[0].path });
 
       //check if the article exist or not
       const targetArticle = await Articles.findByPk(id);

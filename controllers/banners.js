@@ -111,11 +111,17 @@ class Banner {
   static async updateBanner(req, res) {
     const { id } = req.params;
     const { bannerName } = req.body;
-    console.log("[Update Banner]", id, bannerName);
+    let bannerCover;
+    if (req.files) {
+      bannerCover = req.files.images;
+    }
+    console.log("[Update Banner]", id, bannerName, bannerCover);
     try {
       //update data
       const payload = {};
       if (!isEmpty(bannerName)) assign(payload, { bannerName });
+      if (!isEmpty(bannerCover))
+        assign(payload, { bannerCover: bannerCover[0].path });
 
       //check if the banner exist or not
       const targetBanner = await Banners.findByPk(id);

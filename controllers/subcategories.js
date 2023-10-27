@@ -112,11 +112,17 @@ class Subcategory {
   static async updateSubcategory(req, res) {
     const { id } = req.params;
     const { subcategoryName } = req.body;
-    console.log("[Update Subcategory]", id, subcategoryName);
+    let subcategoryCover;
+    if (req.files) {
+      subcategoryCover = req.files.images;
+    }
+    console.log("[Update Subcategory]", id, subcategoryName, subcategoryCover);
     try {
       //update data
       const payload = {};
       if (!isEmpty(subcategoryName)) assign(payload, { subcategoryName });
+      if (!isEmpty(subcategoryCover))
+        assign(payload, { subcategoryCover: subcategoryCover[0].path });
 
       //check if the subcategory exist or not
       const targetSubcategory = await Subcategories.findByPk(id);
