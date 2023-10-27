@@ -20,6 +20,7 @@ app.use("/product", require("./routes/products"));
 app.use("/notification", require("./routes/notifications"));
 app.use("/article", require("./routes/articles"));
 app.use("/invoice", require("./routes/invoices"));
+app.use("/featured_product", require("./routes/featuredProducts"));
 app.use("/uploads", express.static(__dirname + `/uploads`));
 
 connect().then(() => {

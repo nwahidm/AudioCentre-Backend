@@ -1,3 +1,4 @@
+const { isEmpty } = require("lodash");
 const Users = require("../models/users");
 
 class Notification {
@@ -25,13 +26,11 @@ class Notification {
       if (error.status == false) {
         res.status(404).json(error);
       } else {
-        res
-          .status(500)
-          .json({
-            status: false,
-            message: "Internal Server Error",
-            result: "",
-          });
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
       }
     }
   }
