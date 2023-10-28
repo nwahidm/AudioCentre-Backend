@@ -4,18 +4,20 @@ const { isEmpty, assign, map } = require("lodash");
 
 class Category {
   static async createCategory(req, res) {
-    const { categoryName, categoryStatus } = req.body;
+    const { categoryName, categorySerialNumber, categoryStatus } = req.body;
     const categoryCover = req.files.images;
     console.log(
       "[Create Category]",
       categoryName,
       categoryCover,
+      categorySerialNumber,
       categoryStatus
     );
     try {
       await Categories.create({
         categoryName,
         categoryCover: categoryCover[0].path,
+        categorySerialNumber,
         categoryStatus,
       });
 
@@ -38,12 +40,14 @@ class Category {
       //search query
       const payload = {};
       if (!isEmpty(categoryName)) assign(payload, { categoryName });
-      if (!isEmpty(categoryStatus)) assign(payload, {categoryStatus});
+      if (!isEmpty(categoryStatus)) assign(payload, { categoryStatus });
 
       //order list
       let searchOrder = {};
       if (!isEmpty(order)) {
-        searchOrder = { categoryName: order[0].dir };
+        if (order[0].column == 1) searchOrder = { categoryName: order[0].dir };
+        else if (order[0].column == 2)
+          searchOrder = { categorySerialNumber: order[0].dir };
       }
 
       const categories = await Categories.findAll(payload, searchOrder);
@@ -86,12 +90,17 @@ class Category {
 
   static async fetchCategoriesCMS(req, res) {
     const { categoryName, categoryStatus, order } = req.body;
-    console.log("[Fetch All Categories CMS]", categoryName, categoryStatus, order);
+    console.log(
+      "[Fetch All Categories CMS]",
+      categoryName,
+      categoryStatus,
+      order
+    );
     try {
       //search query
       const payload = {};
       if (!isEmpty(categoryName)) assign(payload, { categoryName });
-      if (!isEmpty(categoryStatus)) assign(payload, {categoryStatus});
+      if (!isEmpty(categoryStatus)) assign(payload, { categoryStatus });
 
       //order list
       let searchOrder = {};
@@ -153,6 +162,7 @@ class Category {
         _id: data._id,
         categoryName: data.categoryName,
         categoryCover: `http://202.157.188.101:3000/${data.categoryCover}`,
+        categorySerialNumber: data.categorySerialNumber,
         categoryStatus: data.categoryStatus,
         subcategories,
       };
@@ -175,7 +185,7 @@ class Category {
 
   static async updateCategory(req, res) {
     const { id } = req.params;
-    const { categoryName, categoryStatus } = req.body;
+    const { categoryName, categorySerialNumber, categoryStatus } = req.body;
     let categoryCover;
     if (req.files) {
       categoryCover = req.files.images;
@@ -184,6 +194,7 @@ class Category {
       "[Update Category]",
       id,
       categoryName,
+      categorySerialNumber,
       categoryCover,
       categoryStatus
     );
@@ -193,6 +204,8 @@ class Category {
       if (!isEmpty(categoryName)) assign(payload, { categoryName });
       if (!isEmpty(categoryCover))
         assign(payload, { categoryCover: categoryCover[0].path });
+      if (!isEmpty(categorySerialNumber))
+        assign(payload, { categorySerialNumber: +categorySerialNumber });
       if (!isEmpty(categoryStatus))
         assign(payload, { categoryStatus: +categoryStatus });
 

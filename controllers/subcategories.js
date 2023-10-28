@@ -4,21 +4,31 @@ const { isEmpty, assign, map, assignIn } = require("lodash");
 
 class Subcategory {
   static async createSubcategory(req, res) {
-    const { subcategoryName, categoryId, subcategoryStatus } = req.body;
+    const {
+      subcategoryName,
+      categoryId,
+      subcategorySerialNumber,
+      subcategoryStatus,
+      isBuild,
+    } = req.body;
     const subcategoryCover = req.files.images;
     console.log(
       "[Create Subcategory]",
       subcategoryName,
       categoryId,
+      subcategorySerialNumber,
       subcategoryCover,
-      subcategoryStatus
+      subcategoryStatus,
+      isBuild
     );
     try {
       await Subcategories.create({
         subcategoryName,
         categoryId,
+        subcategorySerialNumber,
         subcategoryCover: subcategoryCover[0].path,
         subcategoryStatus,
+        isBuild,
       });
 
       res.status(201).json({
@@ -34,11 +44,14 @@ class Subcategory {
   }
 
   static async fetchSubcategories(req, res) {
-    const { subcategoryName, subcategoryStatus, order } = req.body;
+    const { subcategoryName, subcategoryStatus, categoryId, isBuild, order } =
+      req.body;
     console.log(
       "[Fetch All Subcategories]",
       subcategoryName,
       subcategoryStatus,
+      categoryId,
+      isBuild,
       order
     );
     try {
@@ -46,11 +59,16 @@ class Subcategory {
       const payload = {};
       if (!isEmpty(subcategoryName)) assign(payload, { subcategoryName });
       if (!isEmpty(subcategoryStatus)) assign(payload, { subcategoryStatus });
+      if (!isEmpty(categoryId)) assign(payload, { categoryId });
+      if (!isEmpty(isBuild)) assign(payload, { isBuild });
 
       //order list
       let searchOrder = {};
       if (!isEmpty(order)) {
-        searchOrder = { subcategoryName: order[0].dir };
+        if (order[0].column == 1)
+          searchOrder = { subcategoryName: order[0].dir };
+        else if (order[0].column == 2)
+          searchOrder = { subcategorySerialNumber: order[0].dir };
       }
 
       const subcategories = await Subcategories.findAll(payload, searchOrder);
@@ -80,13 +98,11 @@ class Subcategory {
         })
       );
 
-      res
-        .status(200)
-        .json({
-          status: true,
-          message: "success",
-          result: updatedSubcategories,
-        });
+      res.status(200).json({
+        status: true,
+        message: "success",
+        result: updatedSubcategories,
+      });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
@@ -117,7 +133,9 @@ class Subcategory {
         _id: data._id,
         subcategoryName: data.subcategoryName,
         subcategoryCover: `http://202.157.188.101:3000/${data.subcategoryCover}`,
-        subcategoryStatus: data.subcategoriesStatus,
+        subcategoryStatus: data.subcategoryStatus,
+        subcategorySerialNumber: data.subcategorySerialNumber,
+        isBuild: data.isBuild,
         categoryId: data.categoryId,
         category: await Categories.findByPk(data.categoryId),
       };
@@ -140,7 +158,12 @@ class Subcategory {
 
   static async updateSubcategory(req, res) {
     const { id } = req.params;
-    const { subcategoryName, subcategoryStatus } = req.body;
+    const {
+      subcategoryName,
+      subcategorySerialNumber,
+      subcategoryStatus,
+      isBuild,
+    } = req.body;
     let subcategoryCover;
     if (req.files) {
       subcategoryCover = req.files.images;
@@ -149,17 +172,22 @@ class Subcategory {
       "[Update Subcategory]",
       id,
       subcategoryName,
+      subcategorySerialNumber,
       subcategoryCover,
-      subcategoryStatus
+      subcategoryStatus,
+      isBuild
     );
     try {
       //update data
       const payload = {};
       if (!isEmpty(subcategoryName)) assign(payload, { subcategoryName });
+      if (!isEmpty(subcategorySerialNumber))
+        assign(payload, { subcategorySerialNumber: +subcategorySerialNumber });
       if (!isEmpty(subcategoryCover))
         assign(payload, { subcategoryCover: subcategoryCover[0].path });
       if (!isEmpty(subcategoryStatus))
         assignIn(payload, { subcategoryStatus: +subcategoryStatus });
+      if (!isEmpty(isBuild)) assign(payload, { isBuild: +isBuild });
 
       //check if the subcategory exist or not
       const targetSubcategory = await Subcategories.findByPk(id);

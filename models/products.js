@@ -19,7 +19,7 @@ class Products {
     imagePath,
     weight,
     specification,
-    status
+    status,
   }) {
     const newProduct = await this.productModel().insertOne({
       name,
@@ -33,13 +33,22 @@ class Products {
       images: imagePath,
       weight,
       specification: JSON.parse(specification),
-      status: +status
+      status: +status,
     });
     return newProduct;
   }
 
   static async findAll(payload, searchOrder) {
-    const { name, brandId, categoryId, subcategoryId, minimumPrice, maximumPrice, limit, offset } = payload;
+    const {
+      name,
+      brandId,
+      categoryId,
+      subcategoryId,
+      minimumPrice,
+      maximumPrice,
+      limit,
+      offset,
+    } = payload;
     console.log(
       "[ Payload ]",
       name,
@@ -54,17 +63,35 @@ class Products {
     console.log("[ Order ]", searchOrder);
 
     const where = {};
-    if (!isEmpty(name)) assign(where, { name: { $regex: name, '$options' : 'i' } });
+    if (!isEmpty(name))
+      assign(where, { name: { $regex: name, $options: "i" } });
     if (!isEmpty(brandId)) assign(where, { brandId: new ObjectId(brandId) });
-    if (!isEmpty(categoryId)) assign(where, { categoryId: new ObjectId(categoryId) });
-    if (!isEmpty(subcategoryId)) assign(where, { subcategoryId: new ObjectId(subcategoryId) });
+    if (!isEmpty(categoryId))
+      assign(where, { categoryId: new ObjectId(categoryId) });
+    if (!isEmpty(subcategoryId))
+      assign(where, { subcategoryId: new ObjectId(subcategoryId) });
+    if (!isEmpty(minimumPrice) && isEmpty(maximumPrice)) {
+      assign(where, {
+        price: { $gt: Number(minimumPrice) },
+      });
+    }
+    if (isEmpty(minimumPrice) && !isEmpty(maximumPrice)) {
+      assign(where, {
+        price: { $lt: Number(maximumPrice) },
+      });
+    }
     if (!isEmpty(minimumPrice) && !isEmpty(maximumPrice)) {
       assign(where, {
-        discountPrice: { $gt: Number(minimumPrice), $lt: Number(maximumPrice) },
+        price: { $gt: Number(minimumPrice), $lt: Number(maximumPrice) },
       });
     }
 
-    return await this.productModel().find(where).sort(searchOrder).skip(+offset).limit(+limit).toArray();
+    return await this.productModel()
+      .find(where)
+      .sort(searchOrder)
+      .skip(+offset)
+      .limit(+limit)
+      .toArray();
   }
 
   static async findOne({ payload }) {
@@ -80,8 +107,8 @@ class Products {
   static async update(id, payload) {
     return await this.productModel().updateOne(
       { _id: new ObjectId(id) },
-      {$set: payload}
-    ); 
+      { $set: payload }
+    );
   }
 
   static async destroy(id) {

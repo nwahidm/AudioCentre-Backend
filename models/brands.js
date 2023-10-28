@@ -30,7 +30,7 @@ class Brands {
     const where = {};
     if (!isEmpty(brandName))
       assign(where, { brandName: { $regex: brandName, $options: "i" } });
-    if (!isEmpty(brandStatus)) assign(where, { brandStatus });
+    if (!isEmpty(brandStatus)) assign(where, { brandStatus: +brandStatus });
 
     return await this.brandModel().find(where).sort(searchOrder).toArray();
   }

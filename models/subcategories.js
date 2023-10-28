@@ -10,21 +10,25 @@ class Subcategories {
   static async create({
     subcategoryName,
     categoryId,
+    subcategorySerialNumber,
     subcategoryCover,
     subcategoryStatus,
+    isBuild,
   }) {
     const newSubcategory = await this.subcategoryModel().insertOne({
       subcategoryName,
       categoryId: new ObjectId(categoryId),
+      subcategorySerialNumber: +subcategorySerialNumber,
       subcategoryCover,
       subcategoryStatus: +subcategoryStatus,
+      isBuild: +isBuild,
     });
     return newSubcategory;
   }
 
   static async findAll(payload, searchOrder) {
-    const { subcategoryName, categoryId } = payload;
-    console.log("[ Payload ]", subcategoryName);
+    const { subcategoryName, subcategoryStatus, categoryId } = payload;
+    console.log("[ Payload ]", subcategoryName, subcategoryStatus, categoryId);
     console.log("[ Order ]", searchOrder);
 
     const where = {};
@@ -34,8 +38,8 @@ class Subcategories {
       });
     if (!isEmpty(categoryId))
       assign(where, { categoryId: new ObjectId(categoryId) });
-
-    console.log(where);
+    if (!isEmpty(subcategoryStatus))
+      assign(where, { subcategoryStatus: +subcategoryStatus });
 
     return await this.subcategoryModel().find(where).toArray();
   }

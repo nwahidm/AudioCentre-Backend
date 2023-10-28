@@ -7,23 +7,31 @@ class Categories {
     return getDB().collection("categories");
   }
 
-  static async create({ categoryName, categoryCover, categoryStatus }) {
+  static async create({
+    categoryName,
+    categoryCover,
+    categorySerialNumber,
+    categoryStatus,
+  }) {
     const newCategory = await this.categoryModel().insertOne({
       categoryName,
       categoryCover,
+      categorySerialNumber: +categorySerialNumber,
       categoryStatus: +categoryStatus,
     });
     return newCategory;
   }
 
   static async findAll(payload, searchOrder) {
-    const { categoryName } = payload;
-    console.log("[ Payload ]", categoryName);
+    const { categoryName, categoryStatus } = payload;
+    console.log("[ Payload ]", categoryName, categoryStatus);
     console.log("[ Order ]", searchOrder);
 
     const where = {};
     if (!isEmpty(categoryName))
       assign(where, { categoryName: { $regex: categoryName, $options: "i" } });
+    if (!isEmpty(categoryStatus))
+      assign(where, { categoryStatus: +categoryStatus });
 
     return await this.categoryModel().find(where).toArray();
   }
