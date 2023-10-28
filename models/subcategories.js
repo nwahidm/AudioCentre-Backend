@@ -7,11 +7,17 @@ class Subcategories {
     return getDB().collection("subcategories");
   }
 
-  static async create({ subcategoryName, categoryId, subcategoryCover }) {
+  static async create({
+    subcategoryName,
+    categoryId,
+    subcategoryCover,
+    subcategoryStatus,
+  }) {
     const newSubcategory = await this.subcategoryModel().insertOne({
       subcategoryName,
       categoryId: new ObjectId(categoryId),
       subcategoryCover,
+      subcategoryStatus: +subcategoryStatus,
     });
     return newSubcategory;
   }
@@ -29,11 +35,9 @@ class Subcategories {
     if (!isEmpty(categoryId))
       assign(where, { categoryId: new ObjectId(categoryId) });
 
-      console.log(where);
+    console.log(where);
 
-    return await this.subcategoryModel()
-      .find(where)
-      .toArray();
+    return await this.subcategoryModel().find(where).toArray();
   }
 
   static async findOne({ subcategoryName }) {

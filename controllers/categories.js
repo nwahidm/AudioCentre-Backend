@@ -4,13 +4,19 @@ const { isEmpty, assign, map } = require("lodash");
 
 class Category {
   static async createCategory(req, res) {
-    const { categoryName } = req.body;
+    const { categoryName, categoryStatus } = req.body;
     const categoryCover = req.files.images;
-    console.log("[Create Category]", categoryName, categoryCover);
+    console.log(
+      "[Create Category]",
+      categoryName,
+      categoryCover,
+      categoryStatus
+    );
     try {
       await Categories.create({
         categoryName,
         categoryCover: categoryCover[0].path,
+        categoryStatus,
       });
 
       res.status(201).json({
@@ -26,12 +32,13 @@ class Category {
   }
 
   static async fetchCategories(req, res) {
-    const { categoryName, order } = req.body;
-    console.log("[Fetch All Categories]", categoryName, order);
+    const { categoryName, categoryStatus, order } = req.body;
+    console.log("[Fetch All Categories]", categoryName, categoryStatus, order);
     try {
       //search query
       const payload = {};
       if (!isEmpty(categoryName)) assign(payload, { categoryName });
+      if (!isEmpty(categoryStatus)) assign(payload, {categoryStatus});
 
       //order list
       let searchOrder = {};
@@ -77,6 +84,51 @@ class Category {
     }
   }
 
+  static async fetchCategoriesCMS(req, res) {
+    const { categoryName, categoryStatus, order } = req.body;
+    console.log("[Fetch All Categories CMS]", categoryName, categoryStatus, order);
+    try {
+      //search query
+      const payload = {};
+      if (!isEmpty(categoryName)) assign(payload, { categoryName });
+      if (!isEmpty(categoryStatus)) assign(payload, {categoryStatus});
+
+      //order list
+      let searchOrder = {};
+      if (!isEmpty(order)) {
+        searchOrder = { categoryName: order[0].dir };
+      }
+
+      const categories = await Categories.findAll(payload, searchOrder);
+
+      if (isEmpty(categories))
+        throw {
+          status: false,
+          error: "Bad Request",
+          message: "Category tidak tersedia",
+          result: "",
+        };
+
+      map(categories, (o) => {
+        o.categoryCover = `http://202.157.188.101:3000/${o.categoryCover}`;
+      });
+
+      res
+        .status(200)
+        .json({ status: true, message: "success", result: categories });
+    } catch (error) {
+      if (error.status == false) {
+        res.status(404).json(error);
+      } else {
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
+      }
+    }
+  }
+
   static async findCategory(req, res) {
     const { id } = req.params;
     try {
@@ -101,6 +153,7 @@ class Category {
         _id: data._id,
         categoryName: data.categoryName,
         categoryCover: `http://202.157.188.101:3000/${data.categoryCover}`,
+        categoryStatus: data.categoryStatus,
         subcategories,
       };
 
@@ -122,18 +175,26 @@ class Category {
 
   static async updateCategory(req, res) {
     const { id } = req.params;
-    const { categoryName } = req.body;
+    const { categoryName, categoryStatus } = req.body;
     let categoryCover;
     if (req.files) {
       categoryCover = req.files.images;
     }
-    console.log("[Update Category]", id, categoryName, categoryCover);
+    console.log(
+      "[Update Category]",
+      id,
+      categoryName,
+      categoryCover,
+      categoryStatus
+    );
     try {
       //update data
       const payload = {};
       if (!isEmpty(categoryName)) assign(payload, { categoryName });
       if (!isEmpty(categoryCover))
         assign(payload, { categoryCover: categoryCover[0].path });
+      if (!isEmpty(categoryStatus))
+        assign(payload, { categoryStatus: +categoryStatus });
 
       //check if the category exist or not
       const targetCategory = await Categories.findByPk(id);

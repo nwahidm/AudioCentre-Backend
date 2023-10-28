@@ -7,10 +7,11 @@ class Categories {
     return getDB().collection("categories");
   }
 
-  static async create({ categoryName, categoryCover }) {
+  static async create({ categoryName, categoryCover, categoryStatus }) {
     const newCategory = await this.categoryModel().insertOne({
       categoryName,
       categoryCover,
+      categoryStatus: +categoryStatus,
     });
     return newCategory;
   }
