@@ -3,12 +3,13 @@ const { isEmpty, assign, map } = require("lodash");
 
 class Banner {
   static async createBanner(req, res) {
-    const { bannerName, status } = req.body;
+    const { bannerName, bannerUrl, status } = req.body;
     const bannerCover = req.files.images;
     console.log("[Create Banner]", bannerName, bannerCover, status);
     try {
       await Banners.create({
         bannerName,
+        bannerUrl,
         bannerCover: bannerCover[0].path,
         status,
       });
@@ -87,6 +88,7 @@ class Banner {
         _id: data._id,
         bannerName: data.bannerName,
         bannerCover: data.bannerCover,
+        bannerUrl: data.bannerUrl,
         status: data.status,
       };
 
@@ -110,18 +112,20 @@ class Banner {
 
   static async updateBanner(req, res) {
     const { id } = req.params;
-    const { bannerName } = req.body;
+    const { bannerName, bannerUrl, status } = req.body;
     let bannerCover;
     if (req.files) {
       bannerCover = req.files.images;
     }
-    console.log("[Update Banner]", id, bannerName, bannerCover);
+    console.log("[Update Banner]", id, bannerName, bannerUrl, status, bannerCover);
     try {
       //update data
       const payload = {};
       if (!isEmpty(bannerName)) assign(payload, { bannerName });
+      if (!isEmpty(bannerUrl)) assign(payload, { bannerUrl });
       if (!isEmpty(bannerCover))
         assign(payload, { bannerCover: bannerCover[0].path });
+      if (!isEmpty(status)) assign(payload, {status: +status})
 
       //check if the banner exist or not
       const targetBanner = await Banners.findByPk(id);

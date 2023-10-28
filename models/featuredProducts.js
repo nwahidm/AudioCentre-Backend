@@ -8,12 +8,16 @@ class FeaturedProducts {
   }
 
   static async create({
+    featuredProductName,
     featuredProductBanner,
     featuredProductStatus,
+    featuredProductUrl,
     productId,
   }) {
     const newFeaturedProduct = await this.featutedProductModel().insertOne({
+      featuredProductName,
       featuredProductBanner,
+      featuredProductUrl,
       featuredProductStatus: +featuredProductStatus,
       productId: new ObjectId(productId),
     });

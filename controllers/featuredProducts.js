@@ -5,11 +5,18 @@ const { isEmpty, assign, map } = require("lodash");
 
 class FeaturedProduct {
   static async create(req, res) {
-    const { productId, featuredProductStatus } = req.body;
+    const {
+      productId,
+      featuredProductName,
+      featuredProductUrl,
+      featuredProductStatus,
+    } = req.body;
     const featuredProductBanner = req.files.images;
     console.log(
       "[Create Featured Product]",
       productId,
+      featuredProductName,
+      featuredProductUrl,
       featuredProductBanner,
       featuredProductStatus
     );
@@ -27,6 +34,8 @@ class FeaturedProduct {
 
       await FeaturedProducts.create({
         productId,
+        featuredProductName,
+        featuredProductUrl,
         featuredProductBanner: featuredProductBanner[0].path,
         featuredProductStatus,
       });
@@ -135,7 +144,8 @@ class FeaturedProduct {
 
   static async updateFeaturedProduct(req, res) {
     const { id } = req.params;
-    const { featuredProductStatus } = req.body;
+    const { featuredProductName, featuredProductUrl, featuredProductStatus } =
+      req.body;
     let featuredProductBanner;
     if (req.files) {
       featuredProductBanner = req.files.images;
@@ -143,12 +153,17 @@ class FeaturedProduct {
     console.log(
       "[Update Featured Product]",
       id,
+      featuredProductName,
+      featuredProductUrl,
       featuredProductStatus,
       featuredProductBanner
     );
     try {
       //update data
       const payload = {};
+      if (!isEmpty(featuredProductName))
+        assign(payload, { featuredProductName });
+      if (!isEmpty(featuredProductUrl)) assign(payload, { featuredProductUrl });
       if (!isEmpty(featuredProductStatus))
         assign(payload, { featuredProductStatus: +featuredProductStatus });
       if (!isEmpty(featuredProductBanner))

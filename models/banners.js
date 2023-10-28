@@ -7,10 +7,11 @@ class Banners {
     return getDB().collection("banners");
   }
 
-  static async create({ bannerName, bannerCover, status }) {
+  static async create({ bannerName, bannerCover, bannerUrl, status }) {
     const newBanner = await this.bannerModel().insertOne({
       bannerName,
       bannerCover,
+      bannerUrl,
       status: +status,
     });
     return newBanner;
