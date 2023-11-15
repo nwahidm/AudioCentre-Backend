@@ -42,14 +42,14 @@ class Users {
     );
   }
 
-  static async pushNotification(invoiceId) {
+  static async pushNotification(orderId) {
     return await this.userModel().updateOne(
-      { _id: new ObjectId("650e3777fdd3046ccf000455") },
+      { _id: new ObjectId("653b330e8eb5866dda7cee25") },
       {
         $push: {
           notification: {
             message: "ada pesanan baru",
-            invoiceId,
+            orderId,
           },
         },
       }

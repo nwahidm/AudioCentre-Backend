@@ -7,30 +7,23 @@ class Invoices {
     return getDB().collection("invoices");
   }
 
-  static async create({ product, customerData }) {
-    const newInvoices = await this.invoiceModel().insertOne({
-      product,
-      customerData,
-      discount: 0,
+  static async create({ orderId }) {
+    const newInvoice = await this.invoiceModel().insertOne({
+      orderId: new ObjectId(orderId),
       isPaid: 0,
     });
-    return newInvoices;
+
+    return newInvoice;
   }
 
-  static async findAll(payload, searchOrder) {
-    const { name, isPaid } = payload;
-    console.log("[ Payload ]", name, isPaid);
-    console.log("[ Order ]", searchOrder);
+  static async findAll(payload) {
+    const { isPaid } = payload;
+    console.log("[ Payload ]", isPaid);
 
     const where = {};
-    if (!isEmpty(name)) assign(where, { "customerData.name": name });
     if (!isEmpty(isPaid)) assign(where, { isPaid });
 
-    return await this.invoiceModel().find(where).sort(searchOrder).toArray();
-  }
-
-  static async findOne({ name }) {
-    return await this.invoiceModel().findOne({ "customerData.name": name });
+    return await this.invoiceModel().find(where).toArray();
   }
 
   static async findByPk(id) {
