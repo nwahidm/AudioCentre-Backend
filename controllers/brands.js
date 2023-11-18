@@ -1,5 +1,6 @@
 const Brands = require("../models/brands");
 const { isEmpty, assign, map } = require("lodash");
+const url = 'https://audio-centre.nwahidm.site'
 
 class Brand {
   static async createBrand(req, res) {
@@ -58,7 +59,7 @@ class Brand {
         };
 
       map(brands, (o) => {
-        o.brandCover = `http://202.157.188.101:3000/${o.brandCover}`;
+        o.brandCover = `${url}/${o.brandCover}`;
       });
 
       res
@@ -90,7 +91,7 @@ class Brand {
           result: "",
         };
 
-      data.brandCover = `http://202.157.188.101:3000/${data.brandCover}`;
+      data.brandCover = `${url}/${data.brandCover}`;
 
       res.status(200).json({ status: true, message: "success", result: data });
     } catch (error) {

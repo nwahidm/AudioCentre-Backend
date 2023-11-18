@@ -2,6 +2,7 @@ const { ObjectId } = require("mongodb");
 const Products = require("../models/products");
 const FeaturedProducts = require("../models/featuredProducts");
 const { isEmpty, assign, map } = require("lodash");
+const url = 'https://audio-centre.nwahidm.site'
 
 class FeaturedProduct {
   static async create(req, res) {
@@ -93,7 +94,7 @@ class FeaturedProduct {
         };
 
       map(featuredProducts, (o) => {
-        o.featuredProductBanner = `http://202.157.188.101:3000/${o.featuredProductBanner}`;
+        o.featuredProductBanner = `${url}/${o.featuredProductBanner}`;
       });
 
       res
@@ -126,7 +127,7 @@ class FeaturedProduct {
           result: "",
         };
 
-      data.featuredProductBanner = `http://202.157.188.101:3000/${data.featuredProductBanner}`;
+      data.featuredProductBanner = `${url}/${data.featuredProductBanner}`;
 
       res.status(200).json({ status: true, message: "success", result: data });
     } catch (error) {

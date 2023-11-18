@@ -1,5 +1,6 @@
 const Articles = require("../models/articles");
 const { isEmpty, assign, map } = require("lodash");
+const url = 'https://audio-centre.nwahidm.site'
 
 class Article {
   static async createArticle(req, res) {
@@ -55,7 +56,7 @@ class Article {
         };
 
       map(articles, (o) => {
-        o.articleImage = `http://202.157.188.101:3000/${o.articleImage}`;
+        o.articleImage = `${url}/${o.articleImage}`;
       });
 
       res
@@ -87,7 +88,7 @@ class Article {
           result: "",
         };
 
-      data.articleImage = `http://202.157.188.101:3000/${data.articleImage}`;
+      data.articleImage = `${url}/${data.articleImage}`;
 
       res.status(200).json({ status: true, message: "success", result: data });
     } catch (error) {

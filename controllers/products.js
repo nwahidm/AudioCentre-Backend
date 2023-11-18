@@ -4,6 +4,7 @@ const Brands = require("../models/brands");
 const Categories = require("../models/categories");
 const Subcategories = require("../models/subcategories");
 const { isEmpty, assign, map } = require("lodash");
+const url = 'https://audio-centre.nwahidm.site'
 
 class Product {
   static async create(req, res) {
@@ -134,7 +135,7 @@ class Product {
         for (let j = 0; j < product.images.length; j++) {
           product.images[
             j
-          ] = `http://202.157.188.101:3000/${product.images[j]}`;
+          ] = `${url}/${product.images[j]}`;
         }
       }
 
@@ -171,7 +172,7 @@ class Product {
       const category = await Categories.findByPk(data.categoryId);
       const subcategory = await Subcategories.findByPk(data.subcategoryId);
       for (let i = 0; i < data.images.length; i++) {
-        data.images[i] = `http://202.157.188.101:3000/${data.images[i]}`;
+        data.images[i] = `${url}/${data.images[i]}`;
       }
 
       const Product = {

@@ -1,6 +1,7 @@
 const Categories = require("../models/categories");
 const Subcategories = require("../models/subcategories");
 const { isEmpty, assign, map } = require("lodash");
+const url = 'https://audio-centre.nwahidm.site'
 
 class Category {
   static async createCategory(req, res) {
@@ -64,12 +65,12 @@ class Category {
         const payload = { categoryId: categories[i]._id.toString() };
         categories[i].subcategories = await Subcategories.findAll(payload);
         map(categories[i].subcategories, (o) => {
-          o.subcategoryCover = `http://202.157.188.101:3000/${o.subcategoryCover}`;
+          o.subcategoryCover = `${url}/${o.subcategoryCover}`;
         });
       }
 
       map(categories, (o) => {
-        o.categoryCover = `http://202.157.188.101:3000/${o.categoryCover}`;
+        o.categoryCover = `${url}/${o.categoryCover}`;
       });
 
       res
@@ -119,7 +120,7 @@ class Category {
         };
 
       map(categories, (o) => {
-        o.categoryCover = `http://202.157.188.101:3000/${o.categoryCover}`;
+        o.categoryCover = `${url}/${o.categoryCover}`;
       });
 
       res
@@ -155,13 +156,13 @@ class Category {
       const subcategories = await Subcategories.findAll(payload);
 
       map(subcategories, (o) => {
-        o.subcategoryCover = `http://202.157.188.101:3000/${o.subcategoryCover}`;
+        o.subcategoryCover = `${url}/${o.subcategoryCover}`;
       });
 
       const category = {
         _id: data._id,
         categoryName: data.categoryName,
-        categoryCover: `http://202.157.188.101:3000/${data.categoryCover}`,
+        categoryCover: `${url}/${data.categoryCover}`,
         categorySerialNumber: data.categorySerialNumber,
         categoryStatus: data.categoryStatus,
         subcategories,

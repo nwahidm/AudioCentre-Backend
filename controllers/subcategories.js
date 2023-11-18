@@ -1,6 +1,7 @@
 const Subcategories = require("../models/subcategories");
 const Categories = require("../models/categories");
 const { isEmpty, assign, map, assignIn } = require("lodash");
+const url = 'https://audio-centre.nwahidm.site'
 
 class Subcategory {
   static async createSubcategory(req, res) {
@@ -82,17 +83,17 @@ class Subcategory {
         };
 
       // for (let i in subcategories) {
-      //   subcategories[i].subcategoryCover = `http://202.157.188.101:3000/${subcategories[i].subcategoryCover}`;
+      //   subcategories[i].subcategoryCover = `${url}/${subcategories[i].subcategoryCover}`;
       //   subcategories[i].categoryName = await Categories.findByPk(subcategories[i].categoryId)
       // }
       // map(subcategories, async (o) => {
-      //   o.subcategoryCover = `http://202.157.188.101:3000/${o.subcategoryCover}`;
+      //   o.subcategoryCover = `${url}/${o.subcategoryCover}`;
       //   o.categoryName = await Categories.findByPk(o.categoryId)
       // });
 
       const updatedSubcategories = await Promise.all(
         subcategories.map(async (o) => {
-          o.subcategoryCover = `http://202.157.188.101:3000/${o.subcategoryCover}`;
+          o.subcategoryCover = `${url}/${o.subcategoryCover}`;
           o.category = await Categories.findByPk(o.categoryId);
           return o;
         })
@@ -132,7 +133,7 @@ class Subcategory {
       const subcategory = {
         _id: data._id,
         subcategoryName: data.subcategoryName,
-        subcategoryCover: `http://202.157.188.101:3000/${data.subcategoryCover}`,
+        subcategoryCover: `${url}/${data.subcategoryCover}`,
         subcategoryStatus: data.subcategoryStatus,
         subcategorySerialNumber: data.subcategorySerialNumber,
         isBuild: data.isBuild,

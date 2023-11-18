@@ -1,5 +1,6 @@
 const Banners = require("../models/banners");
 const { isEmpty, assign, map } = require("lodash");
+const url = 'https://audio-centre.nwahidm.site'
 
 class Banner {
   static async createBanner(req, res) {
@@ -52,7 +53,7 @@ class Banner {
         };
 
       map(banners, (o) => {
-        o.bannerCover = `http://202.157.188.101:3000/${o.bannerCover}`;
+        o.bannerCover = `${url}/${o.bannerCover}`;
       });
 
       res
@@ -92,7 +93,7 @@ class Banner {
         status: data.status,
       };
 
-      banner.bannerCover = `http://202.157.188.101:3000/${banner.bannerCover}`;
+      banner.bannerCover = `${url}/${banner.bannerCover}`;
 
       res
         .status(200)
