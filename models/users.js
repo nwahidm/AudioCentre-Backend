@@ -1,6 +1,7 @@
 const { assign, isEmpty } = require("lodash");
 const { getDB } = require("../config");
 const { ObjectId } = require("mongodb");
+const moment = require("moment");
 
 class Users {
   static userModel() {
@@ -50,6 +51,7 @@ class Users {
           notification: {
             message: "ada pesanan baru",
             orderId,
+            createdAt: moment().format().slice(0, 10)
           },
         },
       }

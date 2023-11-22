@@ -57,8 +57,10 @@ class Invoice {
           totalPrice = totalPrice + o.subtotalPrice;
         }
         invoice.orderDetail.totalPrice = totalPrice;
-        invoice.orderDetail.totalPriceAfterDiscount =
-          totalPrice - invoice.orderDetail.discount;
+        invoice.orderDetail.fixPrice =
+          totalPrice +
+          invoice.orderDetail.shipping -
+          invoice.orderDetail.discount;
       }
 
       res
@@ -104,9 +106,11 @@ class Invoice {
         totalPrice = totalPrice + o.subtotalPrice;
       }
       invoice.orderDetail.totalPrice = totalPrice;
-      invoice.orderDetail.totalPriceAfterDiscount =
-        totalPrice - invoice.orderDetail.discount;
 
+      invoice.orderDetail.fixPrice =
+        totalPrice +
+        invoice.orderDetail.shipping -
+        invoice.orderDetail.discount;
       res
         .status(200)
         .json({ status: true, message: "success", result: invoice });

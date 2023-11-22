@@ -1,6 +1,7 @@
 const { assign, isEmpty } = require("lodash");
 const { getDB } = require("../config");
 const { ObjectId } = require("mongodb");
+const moment = require("moment");
 
 class Orders {
   static orderModel() {
@@ -12,7 +13,9 @@ class Orders {
       product,
       customerData,
       discount: 0,
+      shipping: 0,
       status: 0,
+      createdAt: moment().format().slice(0, 10)
     });
 
     return newOrder;

@@ -73,7 +73,7 @@ class Order {
           totalPrice = totalPrice + o.subtotalPrice;
         }
         order.totalPrice = totalPrice;
-        order.totalPriceAfterDiscount = totalPrice - order.discount;
+        order.fixPrice = totalPrice + order.shipping - order.discount;
       }
 
       res
@@ -115,7 +115,7 @@ class Order {
         totalPrice = totalPrice + o.subtotalPrice;
       }
       order.totalPrice = totalPrice;
-      order.totalPriceAfterDiscount = totalPrice - order.discount;
+      order.fixPrice = totalPrice - order.discount;
 
       res.status(200).json({ status: true, message: "success", result: order });
     } catch (error) {
@@ -133,8 +133,16 @@ class Order {
 
   static async updateOrder(req, res) {
     const { id } = req.params;
-    const { product, customerData, discount, status } = req.body;
-    console.log("[Update Order]", id, product, customerData, discount, status);
+    const { product, customerData, shipping, discount, status } = req.body;
+    console.log(
+      "[Update Order]",
+      id,
+      product,
+      customerData,
+      shipping,
+      discount,
+      status
+    );
     try {
       let productDetail = {};
       for (let i in product) {
@@ -147,6 +155,7 @@ class Order {
       const payload = {};
       if (!isEmpty(product)) assign(payload, { product });
       if (!isEmpty(customerData)) assign(payload, { customerData });
+      if (!isEmpty(shipping)) assign(payload, { shipping: +shipping });
       if (!isEmpty(discount)) assign(payload, { discount: +discount });
       if (!isEmpty(status)) assign(payload, { status: +status });
 
