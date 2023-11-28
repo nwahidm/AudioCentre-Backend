@@ -21,6 +21,7 @@ class Product {
       specification,
       status,
       isPromo,
+      box,
     } = req.body;
 
     variant = JSON.parse(variant);
@@ -53,7 +54,8 @@ class Product {
       weight,
       specification,
       status,
-      isPromo
+      isPromo,
+      box
     );
     try {
       let imagePath = [];
@@ -98,6 +100,7 @@ class Product {
         imagePath,
         weight,
         specification,
+        box,
         status,
         isPromo,
       });
@@ -108,6 +111,7 @@ class Product {
         result: "",
       });
     } catch (error) {
+      console.log(error);
       res
         .status(500)
         .json({ status: false, message: "Internal Server Error", result: "" });
@@ -247,6 +251,7 @@ class Product {
         images: data.images,
         weight: data.weight,
         specification: data.specification,
+        box: data.box,
         status: data.status,
         isPromo: data.isPromo,
       };
@@ -280,6 +285,7 @@ class Product {
       variant,
       weight,
       specification,
+      box,
       isPromo,
       status,
     } = req.body;
@@ -311,6 +317,7 @@ class Product {
       variant,
       weight,
       specification,
+      box,
       isPromo,
       status
     );
@@ -355,6 +362,7 @@ class Product {
       if (!isEmpty(weight)) assign(payload, { weight });
       if (!isEmpty(specification))
         assign(payload, { specification: JSON.parse(specification) });
+      if (!isEmpty(box)) assign(payload, { box: JSON.parse(box) });
       if (!isEmpty(isPromo)) assign(payload, { isPromo: +isPromo });
       if (!isEmpty(status)) assign(payload, { status: +status });
 

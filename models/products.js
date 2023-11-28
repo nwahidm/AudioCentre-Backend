@@ -19,6 +19,7 @@ class Products {
     imagePath,
     weight,
     specification,
+    box,
     status,
     isPromo,
   }) {
@@ -34,6 +35,7 @@ class Products {
       images: imagePath,
       weight,
       specification: JSON.parse(specification),
+      box: JSON.parse(box),
       status: +status,
       isPromo: +isPromo,
     });
