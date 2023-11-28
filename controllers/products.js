@@ -4,11 +4,11 @@ const Brands = require("../models/brands");
 const Categories = require("../models/categories");
 const Subcategories = require("../models/subcategories");
 const { isEmpty, assign, map } = require("lodash");
-const url = 'https://audio-centre.nwahidm.site'
+const url = "https://audio-centre.nwahidm.site";
 
 class Product {
   static async create(req, res) {
-    const {
+    let {
       name,
       description,
       brandId,
@@ -20,8 +20,25 @@ class Product {
       weight,
       specification,
       status,
+      isPromo,
     } = req.body;
+
+    variant = JSON.parse(variant);
     const images = req.files.images;
+    let variantImages1, variantImages2, variantImages3;
+
+    if (req.files.variantImages1) {
+      variantImages1 = req.files.variantImages1;
+    }
+
+    if (req.files.variantImages2) {
+      variantImages2 = req.files.variantImages2;
+    }
+
+    if (req.files.variantImages3) {
+      variantImages3 = req.files.variantImages3;
+    }
+
     console.log(
       "[Create Product]",
       name,
@@ -35,12 +52,38 @@ class Product {
       images,
       weight,
       specification,
-      status
+      status,
+      isPromo
     );
     try {
       let imagePath = [];
       for (let image of images) {
         imagePath.push(image.path);
+      }
+
+      let variantImagesPath1 = [];
+      let variantImagesPath2 = [];
+      let variantImagesPath3 = [];
+
+      if (!isEmpty(variantImages1)) {
+        for (let i of variantImages1) {
+          variantImagesPath1.push(i.path);
+        }
+        assign(variant[0], { images: variantImagesPath1 });
+      }
+
+      if (!isEmpty(variantImages2)) {
+        for (let i of variantImages2) {
+          variantImagesPath2.push(i.path);
+        }
+        assign(variant[1], { images: variantImagesPath2 });
+      }
+
+      if (!isEmpty(variantImages3)) {
+        for (let i of variantImages3) {
+          variantImagesPath3.push(i.path);
+        }
+        assign(variant[2], { images: variantImagesPath3 });
       }
 
       await Products.create({
@@ -56,6 +99,7 @@ class Product {
         weight,
         specification,
         status,
+        isPromo,
       });
 
       res.status(201).json({
@@ -78,6 +122,7 @@ class Product {
       subcategoryId,
       minimumPrice,
       maximumPrice,
+      isPromo,
       order,
       limit,
       offset,
@@ -103,6 +148,7 @@ class Product {
       if (!isEmpty(subcategoryId)) assign(payload, { subcategoryId });
       if (!isEmpty(minimumPrice)) assign(payload, { minimumPrice });
       if (!isEmpty(maximumPrice)) assign(payload, { maximumPrice });
+      if (!isEmpty(isPromo)) assign(payload, { isPromo });
       if (!isEmpty(limit)) assign(payload, { limit });
       if (!isEmpty(offset)) assign(payload, { offset });
 
@@ -133,9 +179,15 @@ class Product {
         );
         product.priceAfterDiscount = product.price - product.discount;
         for (let j = 0; j < product.images.length; j++) {
-          product.images[
-            j
-          ] = `${url}/${product.images[j]}`;
+          product.images[j] = `${url}/${product.images[j]}`;
+        }
+
+        for (let x in product.variant) {
+          for (let y in product.variant[x].images) {
+            product.variant[x].images[
+              y
+            ] = `${url}/${product.variant[x].images[y]}`;
+          }
         }
       }
 
@@ -143,6 +195,7 @@ class Product {
         .status(200)
         .json({ status: true, message: "success", result: products });
     } catch (error) {
+      console.log(error);
       if (error.status == false) {
         res.status(404).json(error);
       } else {
@@ -174,6 +227,11 @@ class Product {
       for (let i = 0; i < data.images.length; i++) {
         data.images[i] = `${url}/${data.images[i]}`;
       }
+      for (let o in data.variant) {
+        for (let x in data.variant[o].images) {
+          data.variant[o].images[x] = `${url}/${data.variant[o].images[x]}`;
+        }
+      }
 
       const Product = {
         _id: data._id,
@@ -190,6 +248,7 @@ class Product {
         weight: data.weight,
         specification: data.specification,
         status: data.status,
+        isPromo: data.isPromo,
       };
 
       res
@@ -210,7 +269,7 @@ class Product {
 
   static async updateProduct(req, res) {
     const { id } = req.params;
-    const {
+    let {
       name,
       description,
       brandId,
@@ -221,8 +280,24 @@ class Product {
       variant,
       weight,
       specification,
+      isPromo,
       status,
     } = req.body;
+
+    variant = JSON.parse(variant);
+    let variantImages1, variantImages2, variantImages3;
+
+    if (req.files.variantImages1) {
+      variantImages1 = req.files.variantImages1;
+    }
+
+    if (req.files.variantImages2) {
+      variantImages2 = req.files.variantImages2;
+    }
+
+    if (req.files.variantImages3) {
+      variantImages3 = req.files.variantImages3;
+    }
     console.log(
       "[Update Product]",
       id,
@@ -236,9 +311,34 @@ class Product {
       variant,
       weight,
       specification,
+      isPromo,
       status
     );
     try {
+      let variantImagesPath1 = [];
+      let variantImagesPath2 = [];
+      let variantImagesPath3 = [];
+
+      if (!isEmpty(variantImages1)) {
+        for (let i of variantImages1) {
+          variantImagesPath1.push(i.path);
+        }
+        assign(variant[0], { images: variantImagesPath1 });
+      }
+
+      if (!isEmpty(variantImages2)) {
+        for (let i of variantImages2) {
+          variantImagesPath2.push(i.path);
+        }
+        assign(variant[1], { images: variantImagesPath2 });
+      }
+      if (!isEmpty(variantImages3)) {
+        for (let i of variantImages3) {
+          variantImagesPath3.push(i.path);
+        }
+        assign(variant[2], { images: variantImagesPath3 });
+      }
+
       //update data
       const payload = {};
       if (!isEmpty(name)) assign(payload, { name });
@@ -251,10 +351,11 @@ class Product {
         assign(payload, { subcategoryId: new ObjectId(subcategoryId) });
       if (!isEmpty(price)) assign(payload, { price: +price });
       if (!isEmpty(discount)) assign(payload, { discount: +discount });
-      if (!isEmpty(variant)) assign(payload, { variant: JSON.parse(variant) });
+      if (!isEmpty(variant)) assign(payload, { variant });
       if (!isEmpty(weight)) assign(payload, { weight });
       if (!isEmpty(specification))
         assign(payload, { specification: JSON.parse(specification) });
+      if (!isEmpty(isPromo)) assign(payload, { isPromo: +isPromo });
       if (!isEmpty(status)) assign(payload, { status: +status });
 
       //check if the product exist or not

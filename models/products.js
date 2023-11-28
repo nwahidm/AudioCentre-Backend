@@ -20,6 +20,7 @@ class Products {
     weight,
     specification,
     status,
+    isPromo,
   }) {
     const newProduct = await this.productModel().insertOne({
       name,
@@ -29,11 +30,12 @@ class Products {
       subcategoryId: new ObjectId(subcategoryId),
       price: +price,
       discount: +discount,
-      variant: JSON.parse(variant),
+      variant,
       images: imagePath,
       weight,
       specification: JSON.parse(specification),
       status: +status,
+      isPromo: +isPromo,
     });
     return newProduct;
   }
@@ -46,6 +48,7 @@ class Products {
       subcategoryId,
       minimumPrice,
       maximumPrice,
+      isPromo,
       limit,
       offset,
     } = payload;
@@ -57,6 +60,7 @@ class Products {
       subcategoryId,
       minimumPrice,
       maximumPrice,
+      isPromo,
       limit,
       offset
     );
@@ -70,6 +74,7 @@ class Products {
       assign(where, { categoryId: new ObjectId(categoryId) });
     if (!isEmpty(subcategoryId))
       assign(where, { subcategoryId: new ObjectId(subcategoryId) });
+    if (!isEmpty(isPromo)) assign(where, { isPromo });
     if (!isEmpty(minimumPrice) && isEmpty(maximumPrice)) {
       assign(where, {
         price: { $gt: Number(minimumPrice) },

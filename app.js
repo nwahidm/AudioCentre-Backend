@@ -5,7 +5,14 @@ const port = process.env.PORT || 4001;
 const { connect } = require("./config");
 const multerMiddleware = require("./config/multerConfig");
 
-app.use(multerMiddleware.fields([{ name: "images", maxCount: 10 }]));
+app.use(
+  multerMiddleware.fields([
+    { name: "images", maxCount: 10 },
+    { name: "variantImages1", maxCount: 5 },
+    { name: "variantImages2", maxCount: 5 },
+    { name: "variantImages3", maxCount: 5 },
+  ])
+);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
