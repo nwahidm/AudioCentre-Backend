@@ -1,6 +1,6 @@
 const Banners = require("../models/banners");
 const { isEmpty, assign, map } = require("lodash");
-const url = 'https://audio-centre.nwahidm.site'
+const url = 'http://nwahidm.site'
 
 class Banner {
   static async createBanner(req, res) {

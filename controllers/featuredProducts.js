@@ -2,7 +2,7 @@ const { ObjectId } = require("mongodb");
 const Products = require("../models/products");
 const FeaturedProducts = require("../models/featuredProducts");
 const { isEmpty, assign, map } = require("lodash");
-const url = 'https://audio-centre.nwahidm.site'
+const url = 'http://nwahidm.site'
 
 class FeaturedProduct {
   static async create(req, res) {

@@ -4,7 +4,7 @@ const Brands = require("../models/brands");
 const Categories = require("../models/categories");
 const Subcategories = require("../models/subcategories");
 const { isEmpty, assign, map } = require("lodash");
-const url = "https://audio-centre.nwahidm.site";
+const url = "http://nwahidm.site";
 
 class Product {
   static async create(req, res) {
