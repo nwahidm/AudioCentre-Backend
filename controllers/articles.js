@@ -1,6 +1,6 @@
 const Articles = require("../models/articles");
 const { isEmpty, assign, map } = require("lodash");
-const url = 'http://nwahidm.site'
+const url = 'https://nwahidm.site'
 
 class Article {
   static async createArticle(req, res) {

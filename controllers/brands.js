@@ -1,6 +1,6 @@
 const Brands = require("../models/brands");
 const { isEmpty, assign, map } = require("lodash");
-const url = 'http://nwahidm.site'
+const url = 'https://nwahidm.site'
 
 class Brand {
   static async createBrand(req, res) {

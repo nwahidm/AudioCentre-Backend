@@ -1,7 +1,7 @@
 const Subcategories = require("../models/subcategories");
 const Categories = require("../models/categories");
 const { isEmpty, assign, map, assignIn } = require("lodash");
-const url = 'http://nwahidm.site'
+const url = 'https://nwahidm.site'
 
 class Subcategory {
   static async createSubcategory(req, res) {
