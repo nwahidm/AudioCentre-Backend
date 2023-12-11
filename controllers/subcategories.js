@@ -1,7 +1,8 @@
 const Subcategories = require("../models/subcategories");
 const Categories = require("../models/categories");
 const { isEmpty, assign, map, assignIn } = require("lodash");
-const url = 'https://nwahidm.site'
+const { ObjectId } = require("mongodb");
+const url = "https://nwahidm.site";
 
 class Subcategory {
   static async createSubcategory(req, res) {
@@ -164,6 +165,7 @@ class Subcategory {
       subcategorySerialNumber,
       subcategoryStatus,
       isBuild,
+      categoryId,
     } = req.body;
     let subcategoryCover;
     if (req.files) {
@@ -176,7 +178,8 @@ class Subcategory {
       subcategorySerialNumber,
       subcategoryCover,
       subcategoryStatus,
-      isBuild
+      isBuild,
+      categoryId
     );
     try {
       //update data
@@ -189,6 +192,8 @@ class Subcategory {
       if (!isEmpty(subcategoryStatus))
         assignIn(payload, { subcategoryStatus: +subcategoryStatus });
       if (!isEmpty(isBuild)) assign(payload, { isBuild: +isBuild });
+      if (!isEmpty(categoryId))
+        assign(payload, { categoryId: new ObjectId(categoryId) });
 
       //check if the subcategory exist or not
       const targetSubcategory = await Subcategories.findByPk(id);
