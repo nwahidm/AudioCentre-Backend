@@ -1,6 +1,7 @@
 const Banners = require("../models/banners");
 const { isEmpty, assign, map } = require("lodash");
-const url = 'https://nwahidm.site'
+const fs = require("fs");
+const url = "https://nwahidm.site";
 
 class Banner {
   static async createBanner(req, res) {
@@ -118,7 +119,14 @@ class Banner {
     if (req.files) {
       bannerCover = req.files.images;
     }
-    console.log("[Update Banner]", id, bannerName, bannerUrl, status, bannerCover);
+    console.log(
+      "[Update Banner]",
+      id,
+      bannerName,
+      bannerUrl,
+      status,
+      bannerCover
+    );
     try {
       //update data
       const payload = {};
@@ -126,7 +134,7 @@ class Banner {
       if (!isEmpty(bannerUrl)) assign(payload, { bannerUrl });
       if (!isEmpty(bannerCover))
         assign(payload, { bannerCover: bannerCover[0].path });
-      if (!isEmpty(status)) assign(payload, {status: +status})
+      if (!isEmpty(status)) assign(payload, { status: +status });
 
       //check if the banner exist or not
       const targetBanner = await Banners.findByPk(id);
@@ -171,6 +179,8 @@ class Banner {
           message: "Banner tidak ditemukan",
           result: "",
         };
+
+      fs.unlinkSync(`./${targetBanner.bannerCover}`);
 
       await Banners.destroy(id);
 

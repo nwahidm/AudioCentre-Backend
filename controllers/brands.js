@@ -1,6 +1,7 @@
 const Brands = require("../models/brands");
 const { isEmpty, assign, map } = require("lodash");
-const url = 'https://nwahidm.site'
+const fs = require("fs");
+const url = "https://nwahidm.site";
 
 class Brand {
   static async createBrand(req, res) {
@@ -173,6 +174,8 @@ class Brand {
           message: "Brand tidak ditemukan",
           result: "",
         };
+
+      fs.unlinkSync(`./${targetBrand.brandCover}`);
 
       await Brands.destroy(id);
 

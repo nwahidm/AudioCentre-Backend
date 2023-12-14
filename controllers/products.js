@@ -4,6 +4,7 @@ const Brands = require("../models/brands");
 const Categories = require("../models/categories");
 const Subcategories = require("../models/subcategories");
 const { isEmpty, assign, map } = require("lodash");
+const fs = require("fs");
 const url = "https://nwahidm.site";
 
 class Product {
@@ -409,6 +410,16 @@ class Product {
           message: "Produk tidak ditemukan",
           result: "",
         };
+
+      for (let i in targetProduct.images) {
+        fs.unlinkSync(`./${targetProduct.images[i]}`);
+      }
+
+      for (let o in targetProduct.variant) {
+        for (let x in targetProduct.variant[o].images) {
+          fs.unlinkSync(`./${targetProduct.variant[o].images[x]}`);
+        }
+      }
 
       await Products.destroy(id);
 

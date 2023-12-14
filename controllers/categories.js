@@ -1,7 +1,8 @@
 const Categories = require("../models/categories");
 const Subcategories = require("../models/subcategories");
 const { isEmpty, assign, map } = require("lodash");
-const url = 'https://nwahidm.site'
+const fs = require("fs");
+const url = "https://nwahidm.site";
 
 class Category {
   static async createCategory(req, res) {
@@ -253,6 +254,8 @@ class Category {
           message: "Category tidak ditemukan",
           result: "",
         };
+
+      fs.unlinkSync(`./${targetCategory.categoryCover}`);
 
       await Categories.destroy(id);
 

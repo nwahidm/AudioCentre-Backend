@@ -29,7 +29,7 @@ app.use("/article", require("./routes/articles"));
 app.use("/invoice", require("./routes/invoices"));
 app.use("/order", require("./routes/orders"));
 app.use("/featured_product", require("./routes/featuredProducts"));
-app.use("/spesification", require("./routes/spesifications"));
+app.use("/specification", require("./routes/specifications"));
 app.use("/uploads", express.static(__dirname + `/uploads`));
 
 connect().then(() => {

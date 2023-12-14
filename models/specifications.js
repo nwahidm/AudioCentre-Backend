@@ -2,55 +2,55 @@ const { assign, isEmpty } = require("lodash");
 const { getDB } = require("../config");
 const { ObjectId } = require("mongodb");
 
-class Spesifications {
-  static spesificationModel() {
-    return getDB().collection("spesifications");
+class Specifications {
+  static specificationModel() {
+    return getDB().collection("specifications");
   }
 
-  static async create({ spesificationName, spesificationStatus }) {
-    const newSpesificationn = await this.spesificationModel().insertOne({
-      spesificationName,
-      spesificationStatus: +spesificationStatus,
+  static async create({ specificationName, specificationStatus }) {
+    const newSpecificationn = await this.specificationModel().insertOne({
+      specificationName,
+      specificationStatus: +specificationStatus,
     });
-    return newSpesificationn;
+    return newSpecificationn;
   }
 
   static async findAll(payload, searchOrder) {
-    const { spesificationName, spesificationStatus } = payload;
-    console.log("[ Payload ]", spesificationName, spesificationStatus);
+    const { specificationName, specificationStatus } = payload;
+    console.log("[ Payload ]", specificationName, specificationStatus);
     console.log("[ Order ]", searchOrder);
 
     const where = {};
-    if (!isEmpty(spesificationName))
+    if (!isEmpty(specificationName))
       assign(where, {
-        spesificationName: { $regex: spesificationName, $options: "i" },
+        specificationName: { $regex: specificationName, $options: "i" },
       });
-    if (!isEmpty(spesificationStatus))
-      assign(where, { spesificationStatus: +spesificationStatus });
+    if (!isEmpty(specificationStatus))
+      assign(where, { specificationStatus: +specificationStatus });
 
-    return await this.spesificationModel().find(where).toArray();
+    return await this.specificationModel().find(where).toArray();
   }
 
-  static async findOne({ spesificationName }) {
-    return await this.spesificationModel().findOne({ spesificationName });
+  static async findOne({ specificationName }) {
+    return await this.specificationModel().findOne({ specificationName });
   }
 
   static async findByPk(id) {
-    return await this.spesificationModel().findOne({
+    return await this.specificationModel().findOne({
       _id: new ObjectId(`${id}`),
     });
   }
 
   static async update(id, payload) {
-    return await this.spesificationModel().updateOne(
+    return await this.specificationModel().updateOne(
       { _id: new ObjectId(id) },
       { $set: payload }
     );
   }
 
   static async destroy(id) {
-    return await this.spesificationModel().deleteOne({ _id: new ObjectId(id) });
+    return await this.specificationModel().deleteOne({ _id: new ObjectId(id) });
   }
 }
 
-module.exports = Spesifications;
+module.exports = Specifications;

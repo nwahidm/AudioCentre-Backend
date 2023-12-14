@@ -1,23 +1,23 @@
-const Spesifications = require("../models/specifications");
+const Specifications = require("../models/specifications");
 const { isEmpty, assign, map } = require("lodash");
 
-class Spesification {
-  static async createSpesification(req, res) {
-    const { spesificationName, spesificationStatus } = req.body;
+class Specification {
+  static async createspecification(req, res) {
+    const { specificationName, specificationStatus } = req.body;
     console.log(
-      "[Create Spesification]",
-      spesificationName,
-      spesificationStatus
+      "[Create specification]",
+      specificationName,
+      specificationStatus
     );
     try {
-      await Spesifications.create({
-        spesificationName,
-        spesificationStatus,
+      await Specifications.create({
+        specificationName,
+        specificationStatus,
       });
 
       res.status(201).json({
         status: true,
-        message: `Spesification berhasil ditambahkan`,
+        message: `specification berhasil ditambahkan`,
         result: "",
       });
     } catch (error) {
@@ -27,41 +27,41 @@ class Spesification {
     }
   }
 
-  static async fetchSpesifications(req, res) {
-    const { spesificationName, spesificationStatus, order } = req.body;
+  static async fetchspecifications(req, res) {
+    const { specificationName, specificationStatus, order } = req.body;
     console.log(
-      "[Fetch All Spesification]",
-      spesificationName,
-      spesificationStatus,
+      "[Fetch All specification]",
+      specificationName,
+      specificationStatus,
       order
     );
     try {
       //search query
       const payload = {};
-      if (!isEmpty(spesificationName)) assign(payload, { spesificationName });
-      if (!isEmpty(spesificationStatus))
-        assign(payload, { spesificationStatus });
+      if (!isEmpty(specificationName)) assign(payload, { specificationName });
+      if (!isEmpty(specificationStatus))
+        assign(payload, { specificationStatus });
 
       //order list
       let searchOrder = {};
       if (!isEmpty(order)) {
         if (order[0].column == 1)
-          searchOrder = { spesificationName: order[0].dir };
+          searchOrder = { specificationName: order[0].dir };
       }
 
-      const spesifications = await Spesifications.findAll(payload, searchOrder);
+      const specifications = await Specifications.findAll(payload, searchOrder);
 
-      if (isEmpty(spesifications))
+      if (isEmpty(specifications))
         throw {
           status: false,
           error: "Bad Request",
-          message: "Spesification tidak tersedia",
+          message: "specification tidak tersedia",
           result: "",
         };
 
       res
         .status(200)
-        .json({ status: true, message: "success", result: spesifications });
+        .json({ status: true, message: "success", result: specifications });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
@@ -75,28 +75,28 @@ class Spesification {
     }
   }
 
-  static async findSpesification(req, res) {
+  static async findspecification(req, res) {
     const { id } = req.params;
     try {
-      const data = await Spesifications.findByPk(id);
+      const data = await Specifications.findByPk(id);
 
       if (isEmpty(data))
         throw {
           status: false,
           error: "Bad Request",
-          message: "Spesification tidak tersedia",
+          message: "specification tidak tersedia",
           result: "",
         };
 
-      const spesification = {
+      const specification = {
         _id: data._id,
-        spesificationName: data.spesificationName,
-        spesificationStatus: data.spesificationStatus,
+        specificationName: data.specificationName,
+        specificationStatus: data.specificationStatus,
       };
 
       res
         .status(200)
-        .json({ status: true, message: "success", result: spesification });
+        .json({ status: true, message: "success", result: specification });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
@@ -110,38 +110,38 @@ class Spesification {
     }
   }
 
-  static async updateSpesification(req, res) {
+  static async updatespecification(req, res) {
     const { id } = req.params;
-    const { spesificationName, spesificationStatus } = req.body;
+    const { specificationName, specificationStatus } = req.body;
     console.log(
-      "[Update Spesification]",
+      "[Update specification]",
       id,
-      spesificationName,
-      spesificationStatus
+      specificationName,
+      specificationStatus
     );
     try {
       //update data
       const payload = {};
-      if (!isEmpty(spesificationName)) assign(payload, { spesificationName });
-      if (!isEmpty(spesificationStatus))
-        assign(payload, { spesificationStatus: +spesificationStatus });
+      if (!isEmpty(specificationName)) assign(payload, { specificationName });
+      if (!isEmpty(specificationStatus))
+        assign(payload, { specificationStatus: +specificationStatus });
 
       //check if the category exist or not
-      const targetSpesification = await Spesifications.findByPk(id);
+      const targetspecification = await specifications.findByPk(id);
 
-      if (isEmpty(targetSpesification))
+      if (isEmpty(targetspecification))
         throw {
           status: false,
           error: "Bad Request",
-          message: "Spesification tidak ditemukan",
+          message: "specification tidak ditemukan",
           result: "",
         };
 
-      await Spesifications.update(id, payload);
+      await Specifications.update(id, payload);
 
       res.status(201).json({
         status: true,
-        message: `Spesification berhasil diupdate`,
+        message: `specification berhasil diupdate`,
         result: "",
       });
     } catch (error) {
@@ -157,24 +157,24 @@ class Spesification {
     }
   }
 
-  static async deleteSpesification(req, res) {
+  static async deletespecification(req, res) {
     const { id } = req.params;
     try {
-      const targetSpesification = await Spesifications.findByPk(id);
+      const targetspecification = await Specifications.findByPk(id);
 
-      if (isEmpty(targetSpesification))
+      if (isEmpty(targetspecification))
         throw {
           status: false,
           error: "Bad Request",
-          message: "Spesification tidak ditemukan",
+          message: "specification tidak ditemukan",
           result: "",
         };
 
-      await Spesifications.destroy(id);
+      await Specifications.destroy(id);
 
       res.status(200).json({
         status: true,
-        message: `Spesification dengan id ${id} berhasil dihapus`,
+        message: `specification dengan id ${id} berhasil dihapus`,
         result: "",
       });
     } catch (error) {
@@ -191,4 +191,4 @@ class Spesification {
   }
 }
 
-module.exports = Spesification;
+module.exports = Specification;

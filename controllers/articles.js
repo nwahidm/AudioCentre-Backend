@@ -1,6 +1,7 @@
 const Articles = require("../models/articles");
 const { isEmpty, assign, map } = require("lodash");
-const url = 'https://nwahidm.site'
+const fs = require("fs");
+const url = "https://nwahidm.site";
 
 class Article {
   static async createArticle(req, res) {
@@ -169,6 +170,8 @@ class Article {
           message: "Article tidak ditemukan",
           result: "",
         };
+
+      fs.unlinkSync(`./${targetArticle.articleImage}`);
 
       await Articles.destroy(id);
 

@@ -2,7 +2,8 @@ const { ObjectId } = require("mongodb");
 const Products = require("../models/products");
 const FeaturedProducts = require("../models/featuredProducts");
 const { isEmpty, assign, map } = require("lodash");
-const url = 'https://nwahidm.site'
+const fs = require("fs");
+const url = "https://nwahidm.site";
 
 class FeaturedProduct {
   static async create(req, res) {
@@ -215,6 +216,8 @@ class FeaturedProduct {
           message: "Featured Product tidak ditemukan",
           result: "",
         };
+
+      fs.unlinkSync(`./${targetFeaturedProduct.featuredProductBanner}`);
 
       await FeaturedProducts.destroy(id);
 
