@@ -2,7 +2,7 @@ const Specifications = require("../models/specifications");
 const { isEmpty, assign, map } = require("lodash");
 
 class Specification {
-  static async createspecification(req, res) {
+  static async createSpecification(req, res) {
     const { specificationName, specificationStatus } = req.body;
     console.log(
       "[Create specification]",
@@ -27,7 +27,7 @@ class Specification {
     }
   }
 
-  static async fetchspecifications(req, res) {
+  static async fetchSpecifications(req, res) {
     const { specificationName, specificationStatus, order } = req.body;
     console.log(
       "[Fetch All specification]",
@@ -75,7 +75,7 @@ class Specification {
     }
   }
 
-  static async findspecification(req, res) {
+  static async findSpecification(req, res) {
     const { id } = req.params;
     try {
       const data = await Specifications.findByPk(id);
@@ -110,7 +110,7 @@ class Specification {
     }
   }
 
-  static async updatespecification(req, res) {
+  static async updateSpecification(req, res) {
     const { id } = req.params;
     const { specificationName, specificationStatus } = req.body;
     console.log(
@@ -127,7 +127,7 @@ class Specification {
         assign(payload, { specificationStatus: +specificationStatus });
 
       //check if the category exist or not
-      const targetspecification = await specifications.findByPk(id);
+      const targetspecification = await Specifications.findByPk(id);
 
       if (isEmpty(targetspecification))
         throw {
@@ -157,7 +157,7 @@ class Specification {
     }
   }
 
-  static async deletespecification(req, res) {
+  static async deleteSpecification(req, res) {
     const { id } = req.params;
     try {
       const targetspecification = await Specifications.findByPk(id);
