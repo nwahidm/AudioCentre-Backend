@@ -23,16 +23,18 @@ class FeaturedProduct {
       featuredProductStatus
     );
     try {
-      const id = productId;
-      const targetProduct = await Products.findByPk(id);
+      if (!isEmpty(productId)) {
+        const id = productId;
+        const targetProduct = await Products.findByPk(id);
 
-      if (isEmpty(targetProduct))
-        throw {
-          status: false,
-          error: "Bad Request",
-          message: "Product tidak tersedia",
-          result: "",
-        };
+        if (isEmpty(targetProduct))
+          throw {
+            status: false,
+            error: "Bad Request",
+            message: "Product tidak tersedia",
+            result: "",
+          };
+      }
 
       await FeaturedProducts.create({
         productId,

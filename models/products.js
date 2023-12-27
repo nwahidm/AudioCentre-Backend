@@ -121,6 +121,26 @@ class Products {
   static async destroy(id) {
     return await this.productModel().deleteOne({ _id: new ObjectId(id) });
   }
+
+  static async remove(id, payload) {
+    return await this.productModel().updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $pullAll: {
+          images: payload,
+        },
+      }
+    );
+  }
+
+  static async removeVariant(id, index, payload) {
+    return await this.productModel().updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $pullAll: { [`variant.${index}.images`]: payload },
+      }
+    );
+  }
 }
 
 module.exports = Products;

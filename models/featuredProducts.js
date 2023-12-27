@@ -19,7 +19,7 @@ class FeaturedProducts {
       featuredProductBanner,
       featuredProductUrl,
       featuredProductStatus: +featuredProductStatus,
-      productId: new ObjectId(productId),
+      productId: productId ? new ObjectId(productId) : null,
     });
     return newFeaturedProduct;
   }

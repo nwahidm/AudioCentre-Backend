@@ -469,7 +469,27 @@ class Product {
       box,
       isPromo,
       status,
+      deletedImages,
+      deletedImagesVariant1,
+      deletedImagesVariant2,
+      deletedImagesVariant3,
     } = req.body;
+
+    if (!isEmpty(deletedImages)) {
+      deletedImages = JSON.parse(deletedImages);
+    }
+
+    if (!isEmpty(deletedImagesVariant1)) {
+      deletedImagesVariant1 = JSON.parse(deletedImagesVariant1);
+    }
+
+    if (!isEmpty(deletedImagesVariant2)) {
+      deletedImagesVariant2 = JSON.parse(deletedImagesVariant2);
+    }
+
+    if (!isEmpty(deletedImagesVariant3)) {
+      deletedImagesVariant3 = JSON.parse(deletedImagesVariant3);
+    }
 
     if (!isEmpty(variant)) {
       variant = JSON.parse(variant);
@@ -604,7 +624,10 @@ class Product {
       box,
       isPromo,
       status,
-      productImages0
+      deletedImages,
+      deletedImagesVariant1,
+      deletedImagesVariant2,
+      deletedImagesVariant3
     );
     try {
       let variantImagesPath1 = [];
@@ -670,7 +693,7 @@ class Product {
         assign(payload, { "images.8": productImages8[0].path });
       if (!isEmpty(productImages9))
         assign(payload, { "images.9": productImages9[0].path });
-        if (!isEmpty(productImages10))
+      if (!isEmpty(productImages10))
         assign(payload, { "images.10": productImages10[0].path });
       if (!isEmpty(productImages11))
         assign(payload, { "images.11": productImages11[0].path });
@@ -704,12 +727,50 @@ class Product {
 
       await Products.update(id, payload);
 
+      let targetImages = [];
+      if (!isEmpty(deletedImages)) {
+        for (let e of deletedImages) {
+          fs.unlinkSync(`./${targetProduct.images[e]}`);
+          targetImages.push(targetProduct.images[e]);
+        }
+        await Products.remove(id, targetImages);
+      }
+
+      let targetImagesVariant1 = [];
+      let targetImagesVariant2 = [];
+      let targetImagesVariant3 = [];
+
+      if (!isEmpty(deletedImagesVariant1)) {
+        for (let e of deletedImagesVariant1) {
+          fs.unlinkSync(`./${targetProduct.variant[0].images[e]}`);
+          targetImagesVariant1.push(targetProduct.variant[0].images[e]);
+        }
+        await Products.removeVariant(id, 0, targetImagesVariant1);
+      }
+
+      if (!isEmpty(deletedImagesVariant2)) {
+        for (let e of deletedImagesVariant2) {
+          fs.unlinkSync(`./${targetProduct.variant[1].images[e]}`);
+          targetImagesVariant2.push(targetProduct.variant[1].images[e]);
+        }
+        await Products.removeVariant(id, 1, targetImagesVariant2);
+      }
+
+      if (!isEmpty(deletedImagesVariant3)) {
+        for (let e of deletedImagesVariant3) {
+          fs.unlinkSync(`./${targetProduct.variant[2].images[e]}`);
+          targetImagesVariant3.push(targetProduct.variant[2].images[e]);
+        }
+        await Products.removeVariant(id, 2, targetImagesVariant3);
+      }
+
       res.status(201).json({
         status: true,
         message: `Produk berhasil diupdate`,
         result: "",
       });
     } catch (error) {
+      console.log(error);
       if (error.status == false) {
         res.status(404).json(error);
       } else {
