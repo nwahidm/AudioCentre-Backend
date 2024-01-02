@@ -4,6 +4,7 @@ const router = require("express").Router();
 
 router.post("/", authMiddleware, Order.fetchOrders);
 router.post("/create", Order.createOrder);
+router.post("/create/admin", authMiddleware, Order.createOrderBasedOnExistingOrder);
 router.get("/:id", authMiddleware, Order.findOrder);
 router.patch("/:id", authMiddleware, Order.updateOrder);
 router.delete("/:id", authMiddleware, Order.deleteOrder);

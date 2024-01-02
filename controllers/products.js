@@ -292,7 +292,6 @@ class Product {
         result: "",
       });
     } catch (error) {
-      console.log(error);
       res
         .status(500)
         .json({ status: false, message: "Internal Server Error", result: "" });
@@ -380,7 +379,6 @@ class Product {
         .status(200)
         .json({ status: true, message: "success", result: products });
     } catch (error) {
-      console.log(error);
       if (error.status == false) {
         res.status(404).json(error);
       } else {
@@ -770,7 +768,6 @@ class Product {
         result: "",
       });
     } catch (error) {
-      console.log(error);
       if (error.status == false) {
         res.status(404).json(error);
       } else {

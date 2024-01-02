@@ -48,7 +48,7 @@ class Users {
           notification: {
             message: "ada pesanan baru",
             orderId,
-            createdAt: moment().format().slice(0, 10)
+            createdAt: moment().format()
           },
         },
       }

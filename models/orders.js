@@ -8,14 +8,23 @@ class Orders {
     return getDB().collection("orders");
   }
 
-  static async create({ product, customerData }) {
+  static async create({
+    product,
+    customerData,
+    referenceId,
+    discount,
+    shipping,
+    comment
+  }) {
     const newOrder = await this.orderModel().insertOne({
       product,
       customerData,
-      discount: 0,
-      shipping: 0,
+      discount: discount ? +discount : 0,
+      shipping: shipping ? +shipping : 0,
       status: 0,
-      createdAt: moment().format().slice(0, 10)
+      referenceId: referenceId ? new ObjectId(referenceId) : null,
+      comment: comment? comment : null,
+      createdAt: moment().format(),
     });
 
     return newOrder;

@@ -6,7 +6,7 @@ const Invoices = require("../models/invoices");
 
 class Order {
   static async createOrder(req, res) {
-    const { product, customerData } = req.body;
+    const { product, customerData, comment } = req.body;
     console.log("[Create Order]", product, customerData);
     try {
       let productDetail = {};
@@ -20,6 +20,7 @@ class Order {
       const createdOrder = await Orders.create({
         product,
         customerData,
+        comment
       });
 
       const orderId = createdOrder.insertedId;
@@ -31,6 +32,43 @@ class Order {
         result: "",
       });
     } catch (error) {
+      res
+        .status(500)
+        .json({ status: false, message: "Internal Server Error", result: "" });
+    }
+  }
+
+  static async createOrderBasedOnExistingOrder(req, res) {
+    const { product, customerData, referenceId, discount, shipping, comment } = req.body;
+    console.log("[Create Order]", product, customerData);
+    try {
+      let productDetail = {};
+      for (let i in product) {
+        productDetail = await Products.findByPk(product[i].productId);
+
+        product[i].name = productDetail.name;
+        product[i].price = productDetail.price - productDetail.discount;
+      }
+
+      const createdOrder = await Orders.create({
+        product,
+        customerData,
+        referenceId,
+        discount,
+        shipping,
+        comment
+      });
+
+      const orderId = createdOrder.insertedId;
+      await Users.pushNotification(orderId);
+
+      res.status(201).json({
+        status: true,
+        message: `Order berhasil ditambahkan`,
+        result: "",
+      });
+    } catch (error) {
+      console.log(error);
       res
         .status(500)
         .json({ status: false, message: "Internal Server Error", result: "" });
