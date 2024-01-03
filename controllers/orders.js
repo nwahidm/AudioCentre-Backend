@@ -171,7 +171,7 @@ class Order {
 
   static async updateOrder(req, res) {
     const { id } = req.params;
-    const { product, customerData, shipping, discount, status } = req.body;
+    const { product, customerData, shipping, discount, comment, status } = req.body;
     console.log(
       "[Update Order]",
       id,
@@ -179,6 +179,7 @@ class Order {
       customerData,
       shipping,
       discount,
+      comment,
       status
     );
     try {
@@ -194,6 +195,7 @@ class Order {
       if (!isEmpty(product)) assign(payload, { product });
       if (!isEmpty(customerData)) assign(payload, { customerData });
       if (!isEmpty(shipping)) assign(payload, { shipping: +shipping });
+      if (!isEmpty(comment)) assign(payload, { comment });
       if (!isEmpty(discount)) assign(payload, { discount: +discount });
       if (!isEmpty(status)) assign(payload, { status: +status });
 
