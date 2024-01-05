@@ -361,7 +361,12 @@ class Product {
         product.subcategory = await Subcategories.findByPk(
           product.subcategoryId
         );
-        product.priceAfterDiscount = product.price - product.discount;
+        if (product.discount < 100) {
+          let discountValue = (product.price * product.discount) / 100;
+          product.priceAfterDiscount = product.price - discountValue;
+        } else {
+          product.priceAfterDiscount = product.price - product.discount;
+        }
         for (let j = 0; j < product.images.length; j++) {
           product.images[j] = `${url}/${product.images[j]}`;
         }
@@ -416,6 +421,13 @@ class Product {
         }
       }
 
+      if (data.discount < 100) {
+        let discountValue = (data.price * data.discount) / 100;
+        data.priceAfterDiscount = data.price - discountValue;
+      } else {
+        data.priceAfterDiscount = data.price - data.discount;
+      }
+
       const Product = {
         _id: data._id,
         name: data.name,
@@ -425,7 +437,7 @@ class Product {
         subcategory,
         price: data.price,
         discount: data.discount,
-        priceAfterDiscount: data.price - data.discount,
+        priceAfterDiscount: data.priceAfterDiscount,
         variant: data.variant,
         images: data.images,
         weight: data.weight,
