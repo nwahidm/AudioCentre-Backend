@@ -269,7 +269,7 @@ class Product {
         assign(variant[2], { images: variantImagesPath3 });
       }
 
-      await Products.create({
+      const createdProduct = await Products.create({
         name,
         description,
         brandId,
@@ -286,10 +286,13 @@ class Product {
         isPromo,
       });
 
+      const insertedId = createdProduct.insertedId.toString()
+
       res.status(201).json({
         status: true,
         message: `Produk berhasil ditambahkan`,
         result: "",
+        insertedId
       });
     } catch (error) {
       res
@@ -339,7 +342,7 @@ class Product {
       //order list
       let searchOrder = {};
       if (!isEmpty(order)) {
-        if (order[0].column == 1) searchOrder = { nama: order[0].dir };
+        if (order[0].column == 1) searchOrder = { name: order[0].dir };
         else if (order[0].column == 2) searchOrder = { price: order[0].dir };
       }
 
