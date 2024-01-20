@@ -11,6 +11,7 @@ class Product {
   static async create(req, res) {
     let {
       name,
+      title,
       description,
       brandId,
       categoryId,
@@ -144,6 +145,7 @@ class Product {
     console.log(
       "[Create Product]",
       name,
+      title,
       description,
       brandId,
       categoryId,
@@ -271,6 +273,7 @@ class Product {
 
       const createdProduct = await Products.create({
         name,
+        title,
         description,
         brandId,
         categoryId,
@@ -304,6 +307,7 @@ class Product {
   static async fetchProducts(req, res) {
     const {
       name,
+      title,
       brandId,
       categoryId,
       subcategoryId,
@@ -317,6 +321,7 @@ class Product {
     console.log(
       "[Fetch All Products]",
       name,
+      title,
       brandId,
       categoryId,
       subcategoryId,
@@ -330,6 +335,7 @@ class Product {
       //search query
       const payload = {};
       if (!isEmpty(name)) assign(payload, { name });
+      if (!isEmpty(title)) assign(payload, { title });
       if (!isEmpty(brandId)) assign(payload, { brandId });
       if (!isEmpty(categoryId)) assign(payload, { categoryId });
       if (!isEmpty(subcategoryId)) assign(payload, { subcategoryId });
@@ -434,6 +440,7 @@ class Product {
       const Product = {
         _id: data._id,
         name: data.name,
+        title: data.title? data.title : null,
         description: data.description,
         brand,
         category,
@@ -470,6 +477,7 @@ class Product {
     const { id } = req.params;
     let {
       name,
+      title,
       description,
       brandId,
       categoryId,
@@ -625,6 +633,7 @@ class Product {
       "[Update Product]",
       id,
       name,
+      title,
       description,
       brandId,
       categoryId,
@@ -670,6 +679,7 @@ class Product {
       //update data
       const payload = {};
       if (!isEmpty(name)) assign(payload, { name });
+      if (!isEmpty(title)) assign(payload, { title });
       if (!isEmpty(description)) assign(payload, { description });
       if (!isEmpty(brandId))
         assign(payload, { brandId: new ObjectId(brandId) });

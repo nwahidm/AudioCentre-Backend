@@ -9,6 +9,7 @@ class Products {
 
   static async create({
     name,
+    title,
     description,
     brandId,
     categoryId,
@@ -25,6 +26,7 @@ class Products {
   }) {
     const newProduct = await this.productModel().insertOne({
       name,
+      title,
       description,
       brandId: new ObjectId(brandId),
       categoryId: new ObjectId(categoryId),
@@ -45,6 +47,7 @@ class Products {
   static async findAll(payload, searchOrder) {
     const {
       name,
+      title,
       brandId,
       categoryId,
       subcategoryId,
@@ -57,6 +60,7 @@ class Products {
     console.log(
       "[ Payload ]",
       name,
+      title,
       brandId,
       categoryId,
       subcategoryId,
@@ -71,6 +75,8 @@ class Products {
     const where = {};
     if (!isEmpty(name))
       assign(where, { name: { $regex: name, $options: "i" } });
+    if (!isEmpty(title))
+      assign(where, { title: { $regex: title, $options: "i" } });
     if (!isEmpty(brandId)) assign(where, { brandId: new ObjectId(brandId) });
     if (!isEmpty(categoryId))
       assign(where, { categoryId: new ObjectId(categoryId) });
