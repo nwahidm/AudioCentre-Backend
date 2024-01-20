@@ -3,7 +3,7 @@ const Categories = require("../models/categories");
 const { isEmpty, assign, map, assignIn } = require("lodash");
 const { ObjectId } = require("mongodb");
 const fs = require("fs");
-const url = "https://nwahidm.site";
+const url = "https://backend.audiocentre.co.id";
 
 class Subcategory {
   static async createSubcategory(req, res) {

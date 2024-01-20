@@ -2,7 +2,7 @@ const Categories = require("../models/categories");
 const Subcategories = require("../models/subcategories");
 const { isEmpty, assign, map } = require("lodash");
 const fs = require("fs");
-const url = "https://nwahidm.site";
+const url = "https://backend.audiocentre.co.id";
 
 class Category {
   static async createCategory(req, res) {

@@ -1,7 +1,7 @@
 const Articles = require("../models/articles");
 const { isEmpty, assign, map } = require("lodash");
 const fs = require("fs");
-const url = "https://nwahidm.site";
+const url = "https://backend.audiocentre.co.id";
 
 class Article {
   static async createArticle(req, res) {
