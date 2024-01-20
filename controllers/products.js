@@ -289,13 +289,13 @@ class Product {
         isPromo,
       });
 
-      const insertedId = createdProduct.insertedId.toString()
+      const insertedId = createdProduct.insertedId.toString();
 
       res.status(201).json({
         status: true,
         message: `Produk berhasil ditambahkan`,
         result: "",
-        insertedId
+        insertedId,
       });
     } catch (error) {
       res
@@ -365,6 +365,7 @@ class Product {
       for (let i = 0; i < products.length; i++) {
         const product = products[i];
 
+        product.title = product.title ? product.title : "";
         product.brand = await Brands.findByPk(product.brandId);
         product.category = await Categories.findByPk(product.categoryId);
         product.subcategory = await Subcategories.findByPk(
@@ -440,7 +441,7 @@ class Product {
       const Product = {
         _id: data._id,
         name: data.name,
-        title: data.title? data.title : null,
+        title: data.title ? data.title : "",
         description: data.description,
         brand,
         category,
