@@ -31,6 +31,11 @@ app.use(
     { name: "variantImages1", maxCount: 5 },
     { name: "variantImages2", maxCount: 5 },
     { name: "variantImages3", maxCount: 5 },
+    { name: "logo1", maxCount: 1 },
+    { name: "logo2", maxCount: 1 },
+    { name: "logo3", maxCount: 1 },
+    { name: "logo4", maxCount: 1 },
+    { name: "logo5", maxCount: 1 },
   ])
 );
 
@@ -50,6 +55,7 @@ app.use("/invoice", require("./routes/invoices"));
 app.use("/order", require("./routes/orders"));
 app.use("/featured_product", require("./routes/featuredProducts"));
 app.use("/specification", require("./routes/specifications"));
+app.use("/footer", require("./routes/footers"));
 app.use("/uploads", express.static(__dirname + `/uploads`));
 
 connect().then(() => {

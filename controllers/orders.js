@@ -18,12 +18,12 @@ class Order {
         product[i].price = productDetail.price - productDetail.discount;
       }
 
-      const noOrder = `Ord${moment().format("YYYYMMDD")}`;
+      const noOrder = `ORD${moment().format("YYYYMMDD")}`;
 
       const payload = { noOrder };
       const total = await Orders.findAll(payload);
 
-      const fixNoOrder = `Ord${moment().format("YYYYMMDD")}0${total.length + 1}`
+      const fixNoOrder = `ORD${moment().format("YYYYMMDD")}0${total.length + 1}`
 
       const createdOrder = await Orders.create({
         fixNoOrder,
@@ -60,12 +60,12 @@ class Order {
         product[i].price = productDetail.price - productDetail.discount;
       }
 
-      const noOrder = `Ord${moment().format("YYYYMMDD")}`;
+      const noOrder = `ORD${moment().format("YYYYMMDD")}`;
 
       const payload = { noOrder };
       const total = await Orders.findAll(payload);
 
-      const fixNoOrder = `Ord${moment().format("YYYYMMDD")}0${total.length + 1}`
+      const fixNoOrder = `ORD${moment().format("YYYYMMDD")}0${total.length + 1}`
 
       const createdOrder = await Orders.create({
         fixNoOrder,
