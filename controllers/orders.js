@@ -23,7 +23,13 @@ class Order {
       const payload = { noOrder };
       const total = await Orders.findAll(payload);
 
-      const fixNoOrder = `ORD${moment().format("YYYYMMDD")}0${total.length + 1}`
+      let fixNoOrder;
+
+      if (total.length < 10) {
+        fixNoOrder = `ORD${moment().format("YYYYMMDD")}00${total.length + 1}`;
+      } else {
+        fixNoOrder = `ORD${moment().format("YYYYMMDD")}0${total.length + 1}`;
+      }
 
       const createdOrder = await Orders.create({
         fixNoOrder,
@@ -65,7 +71,13 @@ class Order {
       const payload = { noOrder };
       const total = await Orders.findAll(payload);
 
-      const fixNoOrder = `ORD${moment().format("YYYYMMDD")}0${total.length + 1}`
+      let fixNoOrder;
+
+      if (total.length < 10) {
+        fixNoOrder = `ORD${moment().format("YYYYMMDD")}00${total.length + 1}`;
+      } else {
+        fixNoOrder = `ORD${moment().format("YYYYMMDD")}0${total.length + 1}`;
+      }
 
       const createdOrder = await Orders.create({
         fixNoOrder,
