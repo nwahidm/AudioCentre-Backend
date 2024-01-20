@@ -9,6 +9,7 @@ class Orders {
   }
 
   static async create({
+    fixNoOrder,
     product,
     customerData,
     referenceId,
@@ -17,6 +18,7 @@ class Orders {
     comment
   }) {
     const newOrder = await this.orderModel().insertOne({
+      noOrder: fixNoOrder,
       product,
       customerData,
       discount: discount ? +discount : 0,
@@ -31,11 +33,12 @@ class Orders {
   }
 
   static async findAll(payload, searchOrder) {
-    const { name, status } = payload;
-    console.log("[ Payload ]", name, status);
+    const { noOrder, name, status } = payload;
+    console.log("[ Payload ]", noOrder, name, status);
     console.log("[ Order ]", searchOrder);
 
     const where = {};
+    if (!isEmpty(noOrder)) assign(where, { noOrder: { $regex: noOrder, $options: "i" } })
     if (!isEmpty(name)) assign(where, { "customerData.name": name });
     if (!isEmpty(status)) assign(where, { status });
 

@@ -2,6 +2,7 @@ const Orders = require("../models/orders");
 const Users = require("../models/users");
 const Products = require("../models/products");
 const { isEmpty, assign, map } = require("lodash");
+const moment = require("moment");
 const Invoices = require("../models/invoices");
 
 class Order {
@@ -17,10 +18,18 @@ class Order {
         product[i].price = productDetail.price - productDetail.discount;
       }
 
+      const noOrder = `Ord${moment().format("YYYYMMDD")}`;
+
+      const payload = { noOrder };
+      const total = await Orders.findAll(payload);
+
+      const fixNoOrder = `Ord${moment().format("YYYYMMDD")}0${total.length + 1}`
+
       const createdOrder = await Orders.create({
+        fixNoOrder,
         product,
         customerData,
-        comment
+        comment,
       });
 
       const orderId = createdOrder.insertedId;
@@ -39,7 +48,8 @@ class Order {
   }
 
   static async createOrderBasedOnExistingOrder(req, res) {
-    const { product, customerData, referenceId, discount, shipping, comment } = req.body;
+    const { product, customerData, referenceId, discount, shipping, comment } =
+      req.body;
     console.log("[Create Order]", product, customerData);
     try {
       let productDetail = {};
@@ -50,13 +60,21 @@ class Order {
         product[i].price = productDetail.price - productDetail.discount;
       }
 
+      const noOrder = `Ord${moment().format("YYYYMMDD")}`;
+
+      const payload = { noOrder };
+      const total = await Orders.findAll(payload);
+
+      const fixNoOrder = `Ord${moment().format("YYYYMMDD")}0${total.length + 1}`
+
       const createdOrder = await Orders.create({
+        fixNoOrder,
         product,
         customerData,
         referenceId,
         discount,
         shipping,
-        comment
+        comment,
       });
 
       const orderId = createdOrder.insertedId;
@@ -171,7 +189,8 @@ class Order {
 
   static async updateOrder(req, res) {
     const { id } = req.params;
-    const { product, customerData, shipping, discount, comment, status } = req.body;
+    const { product, customerData, shipping, discount, comment, status } =
+      req.body;
     console.log(
       "[Update Order]",
       id,
@@ -214,7 +233,8 @@ class Order {
 
       if (status == 2) {
         const orderId = targetOrder._id;
-        await Invoices.create({ orderId });
+        const user_id = req.user._id;
+        await Invoices.create({ orderId, user_id });
       }
 
       res.status(201).json({

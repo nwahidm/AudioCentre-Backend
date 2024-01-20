@@ -1,14 +1,17 @@
 const Invoices = require("../models/invoices");
 const { isEmpty, assign, map } = require("lodash");
 const Orders = require("../models/orders");
+const Users = require("../models/users");
 
 class Invoice {
   static async createInvoice(req, res) {
     const { orderId } = req.body;
+    const user_id = req.user._id;
     console.log("[Create Invoice]", orderId);
     try {
       await Invoices.create({
         orderId,
+        user_id,
       });
 
       res.status(201).json({
@@ -51,6 +54,11 @@ class Invoice {
         let totalPrice = 0;
 
         for (let j = 0; j < invoice.orderDetail.product.length; j++) {
+          invoice.salesman = await Users.findByPk(invoice.user_id);
+          delete invoice.salesman.notification;
+          delete invoice.salesman.password;
+          delete invoice.salesman.address;
+
           const o = invoice.orderDetail.product[j];
 
           o.subtotalPrice = o.total * o.price;
@@ -94,6 +102,11 @@ class Invoice {
           result: "",
         };
 
+      invoice.salesman = await Users.findByPk(invoice.user_id);
+      delete invoice.salesman.notification;
+      delete invoice.salesman.password;
+      delete invoice.salesman.address;
+      
       const orderDetail = await Orders.findByPk(invoice.orderId);
       invoice.orderDetail = orderDetail;
 

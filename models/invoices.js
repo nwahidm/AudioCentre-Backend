@@ -7,9 +7,10 @@ class Invoices {
     return getDB().collection("invoices");
   }
 
-  static async create({ orderId }) {
+  static async create({ orderId, user_id }) {
     const newInvoice = await this.invoiceModel().insertOne({
       orderId: new ObjectId(orderId),
+      user_id: new ObjectId(user_id),
       isPaid: 0,
     });
 
