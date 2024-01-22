@@ -59,6 +59,7 @@ app.use(async (req, res, next) => {
 });
 
 app.use("/", require("./routes/index"));
+app.use("/kewenangan", require("./routes/kewenangans"));
 app.use("/user", require("./routes/users"));
 app.use("/banner", require("./routes/banners"));
 app.use("/brand", require("./routes/brands"));

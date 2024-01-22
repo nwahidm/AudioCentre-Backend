@@ -7,7 +7,7 @@ class Users {
     return getDB().collection("users");
   }
 
-  static async create({ username, email, password, phoneNumber, address }) {
+  static async create({ username, email, password, phoneNumber, address, kewenangan_id }) {
     const newUser = await this.userModel().insertOne({
       username,
       email,
@@ -15,6 +15,7 @@ class Users {
       phoneNumber,
       address,
       enabled: true,
+      kewenangan_id: new ObjectId(kewenangan_id),
       notification: [],
     });
     return newUser;

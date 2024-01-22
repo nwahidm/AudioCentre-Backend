@@ -3,17 +3,20 @@ const { createToken } = require("../helpers/jwt");
 const { isEmpty, assign, map } = require("lodash");
 const { hashPassword, verifyPassword } = require("../helpers/bcrypt");
 const send = require("../helpers/nodemailer");
+const Kewenangans = require("../models/kewenangan");
+const { ObjectId } = require("mongodb");
 
 class User {
   static async register(req, res) {
-    const { username, email, password, phoneNumber, address } = req.body;
+    const { username, email, password, phoneNumber, address, kewenangan_id } = req.body;
     console.log(
       "[Register User]",
       username,
       email,
       password,
       phoneNumber,
-      address
+      address,
+      kewenangan_id
     );
     try {
       await Users.create({
@@ -22,6 +25,7 @@ class User {
         password: await hashPassword(password),
         phoneNumber,
         address,
+        kewenangan_id
       });
 
       // send(email);
@@ -133,9 +137,14 @@ class User {
     try {
       const users = await Users.findAll();
 
-      map(users, (o) => {
+      for (let o of users) {
+        if (o.kewenangan_id) {
+          o.kewenangan = await Kewenangans.findByPk(o.kewenangan_id)
+          console.log(o.kewenangan);
+        }
         delete o.notification;
-      });
+        delete o.password
+      }
 
       res.status(200).json({ status: true, message: "success", result: users });
     } catch (error) {
@@ -162,6 +171,10 @@ class User {
       delete data.password;
       delete data.notification;
 
+      if (data.kewenangan_id) {
+        data.kewenangan = await Kewenangans.findByPk(data.kewenangan_id)
+      }
+
       res.status(200).json({ status: true, message: "success", result: data });
     } catch (error) {
       if (error.status == false) {
@@ -178,7 +191,7 @@ class User {
 
   static async updateUser(req, res) {
     const { id } = req.params;
-    const { username, email, password, phoneNumber, address, enabled } = req.body;
+    const { username, email, password, phoneNumber, address, enabled, kewenangan_id } = req.body;
     console.log(
       "[Update User]",
       id,
@@ -187,7 +200,8 @@ class User {
       password,
       phoneNumber,
       address,
-      enabled
+      enabled,
+      kewenangan_id
     );
     try {
       //update data
@@ -199,6 +213,7 @@ class User {
       if (!isEmpty(phoneNumber)) assign(payload, { phoneNumber });
       if (!isEmpty(address)) assign(payload, { address });
       if (enabled) assign(payload, { enabled });
+      if (kewenangan_id) assign(payload, { kewenangan_id: new ObjectId(kewenangan_id) });
       
       //check if the user exist or not
       const targetUser = await Users.findByPk(id);
