@@ -153,10 +153,12 @@ class Order {
         const order = orders[i];
         let totalPrice = 0;
 
-        order.salesman = await Users.findByPk(order.user_id);
-        delete order.salesman.notification;
-        delete order.salesman.password;
-        delete order.salesman.address;
+        if (order.user_id) {
+          order.salesman = await Users.findByPk(order.user_id);
+          delete order.salesman.notification;
+          delete order.salesman.password;
+          delete order.salesman.address;
+        }
 
         for (let j = 0; j < order.product.length; j++) {
           const o = order.product[j];
@@ -172,6 +174,7 @@ class Order {
         .status(200)
         .json({ status: true, message: "success", result: orders });
     } catch (error) {
+      console.log(error);
       if (error.status == false) {
         res.status(404).json(error);
       } else {
