@@ -28,7 +28,7 @@ class Specifications {
     if (!isEmpty(specificationStatus))
       assign(where, { specificationStatus: +specificationStatus });
 
-    return await this.specificationModel().find(where).toArray();
+    return await this.specificationModel().find(where).sort(searchOrder).toArray();
   }
 
   static async findOne({ specificationName }) {

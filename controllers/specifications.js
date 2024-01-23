@@ -45,7 +45,6 @@ class Specification {
       //order list
       let searchOrder = {};
       if (!isEmpty(order)) {
-        if (order[0].column == 1)
           searchOrder = { specificationName: order[0].dir };
       }
 

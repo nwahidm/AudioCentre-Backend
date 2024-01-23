@@ -18,11 +18,12 @@ class Invoices {
   }
 
   static async findAll(payload) {
-    const { isPaid } = payload;
-    console.log("[ Payload ]", isPaid);
+    const { user_id, isPaid } = payload;
+    console.log("[ Payload ]", user_id, isPaid);
 
     const where = {};
     if (!isEmpty(isPaid)) assign(where, { isPaid });
+    if (!isEmpty(user_id)) assign(where, { user_id: new ObjectId(user_id) });
 
     return await this.invoiceModel().find(where).toArray();
   }

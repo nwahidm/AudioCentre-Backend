@@ -4,6 +4,7 @@ const Products = require("../models/products");
 const { isEmpty, assign, map } = require("lodash");
 const moment = require("moment");
 const Invoices = require("../models/invoices");
+const { ObjectId } = require("mongodb");
 
 class Order {
   static async createOrder(req, res) {
@@ -54,9 +55,25 @@ class Order {
   }
 
   static async createOrderBasedOnExistingOrder(req, res) {
-    const { product, customerData, referenceId, discount, shipping, comment } =
-      req.body;
-    console.log("[Create Order]", product, customerData);
+    const {
+      product,
+      customerData,
+      referenceId,
+      discount,
+      shipping,
+      comment,
+      user_id,
+    } = req.body;
+    console.log(
+      "[Create Order]",
+      product,
+      customerData,
+      referenceId,
+      discount,
+      shipping,
+      comment,
+      user_id
+    );
     try {
       let productDetail = {};
       for (let i in product) {
@@ -87,6 +104,7 @@ class Order {
         discount,
         shipping,
         comment,
+        user_id,
       });
 
       const orderId = createdOrder.insertedId;
@@ -106,13 +124,14 @@ class Order {
   }
 
   static async fetchOrders(req, res) {
-    const { name, status, order } = req.body;
-    console.log("[Fetch All Orders]", name, status, order);
+    const { noOrder, status, user_id, order } = req.body;
+    console.log("[Fetch All Orders]", noOrder, status, user_id, order);
     try {
       //search query
       const payload = {};
-      if (!isEmpty(name)) assign(payload, { name });
+      if (!isEmpty(noOrder)) assign(payload, { noOrder });
       if (!isEmpty(status)) assign(payload, { status });
+      if (!isEmpty(user_id)) assign(payload, { user_id });
 
       //order list
       let searchOrder = {};
@@ -133,6 +152,11 @@ class Order {
       for (let i = 0; i < orders.length; i++) {
         const order = orders[i];
         let totalPrice = 0;
+
+        order.salesman = await Users.findByPk(order.user_id);
+        delete order.salesman.notification;
+        delete order.salesman.password;
+        delete order.salesman.address;
 
         for (let j = 0; j < order.product.length; j++) {
           const o = order.product[j];
@@ -174,6 +198,11 @@ class Order {
           result: "",
         };
 
+      order.salesman = await Users.findByPk(order.user_id);
+      delete order.salesman.notification;
+      delete order.salesman.password;
+      delete order.salesman.address;
+
       let totalPrice = 0;
 
       for (let j = 0; j < order.product.length; j++) {
@@ -201,8 +230,15 @@ class Order {
 
   static async updateOrder(req, res) {
     const { id } = req.params;
-    const { product, customerData, shipping, discount, comment, status } =
-      req.body;
+    const {
+      product,
+      customerData,
+      shipping,
+      discount,
+      comment,
+      status,
+      user_id,
+    } = req.body;
     console.log(
       "[Update Order]",
       id,
@@ -211,24 +247,30 @@ class Order {
       shipping,
       discount,
       comment,
-      status
+      status,
+      user_id
     );
     try {
       let productDetail = {};
-      for (let i in product) {
-        productDetail = await Products.findByPk(product[i].productId);
 
-        product[i].name = productDetail.name;
-        product[i].price = productDetail.price - productDetail.discount;
-      }
       //update data
       const payload = {};
-      if (!isEmpty(product)) assign(payload, { product });
+      if (!isEmpty(product)) {
+        for (let i in product) {
+          productDetail = await Products.findByPk(product[i].productId);
+
+          product[i].name = productDetail.name;
+          product[i].price = productDetail.price - productDetail.discount;
+        }
+        assign(payload, { product });
+      }
       if (!isEmpty(customerData)) assign(payload, { customerData });
       if (!isEmpty(shipping)) assign(payload, { shipping: +shipping });
       if (!isEmpty(comment)) assign(payload, { comment });
       if (!isEmpty(discount)) assign(payload, { discount: +discount });
       if (!isEmpty(status)) assign(payload, { status: +status });
+      if (!isEmpty(user_id))
+        assign(payload, { user_id: new ObjectId(user_id) });
 
       //check if the order exist or not
       const targetOrder = await Orders.findByPk(id);
@@ -245,7 +287,7 @@ class Order {
 
       if (status == 2) {
         const orderId = targetOrder._id;
-        const user_id = req.user._id;
+        const user_id = targetOrder.user_id;
         await Invoices.create({ orderId, user_id });
       }
 

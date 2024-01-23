@@ -371,12 +371,24 @@ class Product {
         product.subcategory = await Subcategories.findByPk(
           product.subcategoryId
         );
+
+        if (product.specification) {
+          product.specification.sort((a, b) => {
+            if (a.title !== b.title) {
+              return a.title.localeCompare(b.title); // Sort by "title" in ascending order
+            } else {
+              return a.value.localeCompare(b.value); // For items with the same "title," sort by "value"
+            }
+          });
+        }
+
         if (product.discount < 100) {
           let discountValue = (product.price * product.discount) / 100;
           product.priceAfterDiscount = product.price - discountValue;
         } else {
           product.priceAfterDiscount = product.price - product.discount;
         }
+
         for (let j = 0; j < product.images.length; j++) {
           product.images[j] = `${url}/${product.images[j]}`;
         }
@@ -429,6 +441,16 @@ class Product {
         for (let x in data.variant[o].images) {
           data.variant[o].images[x] = `${url}/${data.variant[o].images[x]}`;
         }
+      }
+
+      if (data.specification) {
+        data.specification.sort((a, b) => {
+          if (a.title !== b.title) {
+            return a.title.localeCompare(b.title); // Sort by "title" in ascending order
+          } else {
+            return a.value.localeCompare(b.value); // For items with the same "title," sort by "value"
+          }
+        });
       }
 
       if (data.discount < 100) {

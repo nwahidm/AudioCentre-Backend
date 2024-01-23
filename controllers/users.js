@@ -8,7 +8,8 @@ const { ObjectId } = require("mongodb");
 
 class User {
   static async register(req, res) {
-    const { username, email, password, phoneNumber, address, kewenangan_id } = req.body;
+    const { username, email, password, phoneNumber, address, kewenangan } =
+      req.body;
     console.log(
       "[Register User]",
       username,
@@ -16,7 +17,7 @@ class User {
       password,
       phoneNumber,
       address,
-      kewenangan_id
+      kewenangan
     );
     try {
       await Users.create({
@@ -25,7 +26,7 @@ class User {
         password: await hashPassword(password),
         phoneNumber,
         address,
-        kewenangan_id
+        kewenangan,
       });
 
       // send(email);
@@ -138,12 +139,8 @@ class User {
       const users = await Users.findAll();
 
       for (let o of users) {
-        if (o.kewenangan_id) {
-          o.kewenangan = await Kewenangans.findByPk(o.kewenangan_id)
-          console.log(o.kewenangan);
-        }
         delete o.notification;
-        delete o.password
+        delete o.password;
       }
 
       res.status(200).json({ status: true, message: "success", result: users });
@@ -171,10 +168,6 @@ class User {
       delete data.password;
       delete data.notification;
 
-      if (data.kewenangan_id) {
-        data.kewenangan = await Kewenangans.findByPk(data.kewenangan_id)
-      }
-
       res.status(200).json({ status: true, message: "success", result: data });
     } catch (error) {
       if (error.status == false) {
@@ -191,7 +184,15 @@ class User {
 
   static async updateUser(req, res) {
     const { id } = req.params;
-    const { username, email, password, phoneNumber, address, enabled, kewenangan_id } = req.body;
+    const {
+      username,
+      email,
+      password,
+      phoneNumber,
+      address,
+      enabled,
+      kewenangan,
+    } = req.body;
     console.log(
       "[Update User]",
       id,
@@ -201,7 +202,7 @@ class User {
       phoneNumber,
       address,
       enabled,
-      kewenangan_id
+      kewenangan
     );
     try {
       //update data
@@ -213,8 +214,8 @@ class User {
       if (!isEmpty(phoneNumber)) assign(payload, { phoneNumber });
       if (!isEmpty(address)) assign(payload, { address });
       if (enabled) assign(payload, { enabled });
-      if (kewenangan_id) assign(payload, { kewenangan_id: new ObjectId(kewenangan_id) });
-      
+      if (kewenangan) assign(payload, { kewenangan: +kewenangan });
+
       //check if the user exist or not
       const targetUser = await Users.findByPk(id);
 

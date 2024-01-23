@@ -15,7 +15,8 @@ class Orders {
     referenceId,
     discount,
     shipping,
-    comment
+    comment,
+    user_id
   }) {
     const newOrder = await this.orderModel().insertOne({
       noOrder: fixNoOrder,
@@ -26,6 +27,7 @@ class Orders {
       status: 0,
       referenceId: referenceId ? new ObjectId(referenceId) : null,
       comment: comment? comment : null,
+      user_id: user_id? new ObjectId(user_id) : null,
       createdAt: moment().format(),
     });
 
@@ -33,14 +35,15 @@ class Orders {
   }
 
   static async findAll(payload, searchOrder) {
-    const { noOrder, name, status } = payload;
-    console.log("[ Payload ]", noOrder, name, status);
+    const { noOrder, name, status, user_id } = payload;
+    console.log("[ Payload ]", noOrder, name, status, user_id);
     console.log("[ Order ]", searchOrder);
 
     const where = {};
     if (!isEmpty(noOrder)) assign(where, { noOrder: { $regex: noOrder, $options: "i" } })
     if (!isEmpty(name)) assign(where, { "customerData.name": name });
-    if (!isEmpty(status)) assign(where, { status });
+    if (!isEmpty(status)) assign(where, { status: +status });
+    if (!isEmpty(user_id)) assign(where, { user_id: new ObjectId(user_id) });
 
     return await this.orderModel().find(where).sort(searchOrder).toArray();
   }
