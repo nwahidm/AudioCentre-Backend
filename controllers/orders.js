@@ -201,10 +201,12 @@ class Order {
           result: "",
         };
 
-      order.salesman = await Users.findByPk(order.user_id);
-      delete order.salesman.notification;
-      delete order.salesman.password;
-      delete order.salesman.address;
+      if (order.user_id) {
+        order.salesman = await Users.findByPk(order.user_id);
+        delete order.salesman.notification;
+        delete order.salesman.password;
+        delete order.salesman.address;
+      }
 
       let totalPrice = 0;
 
