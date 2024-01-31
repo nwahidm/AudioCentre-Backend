@@ -73,6 +73,8 @@ app.use("/order", require("./routes/orders"));
 app.use("/featured_product", require("./routes/featuredProducts"));
 app.use("/specification", require("./routes/specifications"));
 app.use("/footer", require("./routes/footers"));
+app.use("/dashboard", require("./routes/dashboard"));
+app.use("/traffic", require("./routes/traffics"));
 app.use("/uploads", express.static(__dirname + `/uploads`));
 
 connect().then(() => {

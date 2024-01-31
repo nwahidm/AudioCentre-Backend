@@ -3,6 +3,7 @@ const Products = require("../models/products");
 const Brands = require("../models/brands");
 const Categories = require("../models/categories");
 const Subcategories = require("../models/subcategories");
+const Traffics = require("../models/traffics");
 const { isEmpty, assign, map } = require("lodash");
 const fs = require("fs");
 const url = "https://backend.audiocentre.co.id";
@@ -479,6 +480,11 @@ class Product {
         status: data.status,
         isPromo: data.isPromo,
       };
+
+      await Traffics.create({
+        activity: `${data.name} diakses`,
+        product_id: id,
+      });
 
       res
         .status(200)

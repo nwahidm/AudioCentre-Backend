@@ -22,7 +22,7 @@ class Invoices {
     console.log("[ Payload ]", user_id, isPaid);
 
     const where = {};
-    if (!isEmpty(isPaid)) assign(where, { isPaid });
+    if (!isEmpty(isPaid)) assign(where, { isPaid: +isPaid });
     if (!isEmpty(user_id)) assign(where, { user_id: new ObjectId(user_id) });
 
     return await this.invoiceModel().find(where).toArray();

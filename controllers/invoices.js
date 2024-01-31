@@ -76,7 +76,6 @@ class Invoice {
         .status(200)
         .json({ status: true, message: "success", result: invoices });
     } catch (error) {
-      console.log(error);
       if (error.status == false) {
         res.status(404).json(error);
       } else {
@@ -129,7 +128,6 @@ class Invoice {
         .status(200)
         .json({ status: true, message: "success", result: invoice });
     } catch (error) {
-      console.log(error);
       if (error.status == false) {
         res.status(404).json(error);
       } else {

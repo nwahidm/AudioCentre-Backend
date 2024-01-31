@@ -109,6 +109,8 @@ class User {
           result: "",
         };
 
+      delete user.password, user.notification, user.phoneNumber, user.address
+
       const access_token = await createToken(user, process.env.SECRET, {
         expiresIn: "3d",
       });

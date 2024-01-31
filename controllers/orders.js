@@ -11,6 +11,24 @@ class Order {
     const { product, customerData, comment } = req.body;
     console.log("[Create Order]", product, customerData);
     try {
+      if (!product) {
+        throw {
+          status: false,
+          error: "Bad Request",
+          message: "Product is required",
+          result: "",
+        };
+      }
+
+      if (!customerData) {
+        throw {
+          status: false,
+          error: "Bad Request",
+          message: "Customer is required",
+          result: "",
+        };
+      }
+
       let productDetail = {};
       for (let i in product) {
         productDetail = await Products.findByPk(product[i].productId);
@@ -48,9 +66,15 @@ class Order {
         result: "",
       });
     } catch (error) {
-      res
-        .status(500)
-        .json({ status: false, message: "Internal Server Error", result: "" });
+      if (error.status == false) {
+        res.status(400).json(error);
+      } else {
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
+      }
     }
   }
 
@@ -75,6 +99,24 @@ class Order {
       user_id
     );
     try {
+      if (!product) {
+        throw {
+          status: false,
+          error: "Bad Request",
+          message: "Product is required",
+          result: "",
+        };
+      }
+
+      if (!customerData) {
+        throw {
+          status: false,
+          error: "Bad Request",
+          message: "Customer is required",
+          result: "",
+        };
+      }
+
       let productDetail = {};
       for (let i in product) {
         productDetail = await Products.findByPk(product[i].productId);
@@ -116,10 +158,15 @@ class Order {
         result: "",
       });
     } catch (error) {
-      console.log(error);
-      res
-        .status(500)
-        .json({ status: false, message: "Internal Server Error", result: "" });
+      if (error.status == false) {
+        res.status(400).json(error);
+      } else {
+        res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          result: "",
+        });
+      }
     }
   }
 
@@ -174,7 +221,6 @@ class Order {
         .status(200)
         .json({ status: true, message: "success", result: orders });
     } catch (error) {
-      console.log(error);
       if (error.status == false) {
         res.status(404).json(error);
       } else {

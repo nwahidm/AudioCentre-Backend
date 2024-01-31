@@ -149,7 +149,6 @@ class Brand {
         .status(201)
         .json({ status: true, message: `Brand berhasil diupdate`, result: "" });
     } catch (error) {
-      console.log(error);
       if (error.status == false) {
         res.status(404).json(error);
       } else {

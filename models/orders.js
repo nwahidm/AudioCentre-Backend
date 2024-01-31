@@ -35,7 +35,7 @@ class Orders {
   }
 
   static async findAll(payload, searchOrder) {
-    const { noOrder, name, status, user_id } = payload;
+    const { noOrder, name, status, user_id, limit } = payload;
     console.log("[ Payload ]", noOrder, name, status, user_id);
     console.log("[ Order ]", searchOrder);
 
@@ -45,7 +45,7 @@ class Orders {
     if (!isEmpty(status)) assign(where, { status: +status });
     if (!isEmpty(user_id)) assign(where, { user_id: new ObjectId(user_id) });
 
-    return await this.orderModel().find(where).sort(searchOrder).toArray();
+    return await this.orderModel().find(where).sort(searchOrder).limit(+limit).toArray();
   }
 
   static async findOne({ name }) {
