@@ -16,7 +16,7 @@ class Orders {
     discount,
     shipping,
     comment,
-    user_id
+    user_id,
   }) {
     const newOrder = await this.orderModel().insertOne({
       noOrder: fixNoOrder,
@@ -26,8 +26,8 @@ class Orders {
       shipping: shipping ? +shipping : 0,
       status: 0,
       referenceId: referenceId ? new ObjectId(referenceId) : null,
-      comment: comment? comment : null,
-      user_id: user_id? new ObjectId(user_id) : null,
+      comment: comment ? comment : null,
+      user_id: user_id ? new ObjectId(user_id) : null,
       createdAt: moment().format(),
     });
 
@@ -35,17 +35,31 @@ class Orders {
   }
 
   static async findAll(payload, searchOrder) {
-    const { noOrder, name, status, user_id, limit } = payload;
-    console.log("[ Payload ]", noOrder, name, status, user_id);
+    const { noOrder, name, status, user_id, referenceId, limit } = payload;
+    console.log("[ Payload ]", noOrder, name, status, user_id, referenceId);
     console.log("[ Order ]", searchOrder);
 
     const where = {};
-    if (!isEmpty(noOrder)) assign(where, { noOrder: { $regex: noOrder, $options: "i" } })
+    if (!isEmpty(noOrder))
+      assign(where, { noOrder: { $regex: noOrder, $options: "i" } });
     if (!isEmpty(name)) assign(where, { "customerData.name": name });
     if (!isEmpty(status)) assign(where, { status: +status });
-    if (!isEmpty(user_id)) assign(where, { user_id: new ObjectId(user_id) });
+    if (!isEmpty(user_id) && user_id !== "null") {
+      assign(where, { user_id: new ObjectId(user_id) });
+    } else if (user_id == "null") {
+      assign(where, { user_id: null });
+    }
+    if (!isEmpty(referenceId) && referenceId !== "null") {
+      assign(where, { referenceId: new ObjectId(referenceId) });
+    } else if (referenceId == "null") {
+      assign(where, { referenceId: null });
+    }
 
-    return await this.orderModel().find(where).sort(searchOrder).limit(+limit).toArray();
+    return await this.orderModel()
+      .find(where)
+      .sort(searchOrder)
+      .limit(+limit)
+      .toArray();
   }
 
   static async findOne({ name }) {

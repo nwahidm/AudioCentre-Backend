@@ -171,14 +171,15 @@ class Order {
   }
 
   static async fetchOrders(req, res) {
-    const { noOrder, status, user_id, order } = req.body;
-    console.log("[Fetch All Orders]", noOrder, status, user_id, order);
+    const { noOrder, status, user_id, referenceId, order } = req.body;
+    console.log("[Fetch All Orders]", noOrder, status, user_id, referenceId, order);
     try {
       //search query
       const payload = {};
       if (!isEmpty(noOrder)) assign(payload, { noOrder });
       if (!isEmpty(status)) assign(payload, { status });
       if (!isEmpty(user_id)) assign(payload, { user_id });
+      if (!isEmpty(referenceId)) assign(payload, { referenceId });
 
       //order list
       let searchOrder = {};
