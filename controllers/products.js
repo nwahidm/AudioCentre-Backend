@@ -333,6 +333,28 @@ class Product {
       offset
     );
     try {
+      //order list
+      let searchOrder = {};
+      if (!isEmpty(order)) {
+        if (order[0].column == 1) searchOrder = { name: order[0].dir };
+        else if (order[0].column == 2) searchOrder = { price: order[0].dir };
+      }
+
+      let totalPayload = {};
+      const totalProduct = await Products.count(totalPayload);
+
+      const filterPayload = {};
+      if (!isEmpty(name)) assign(filterPayload, { name });
+      if (!isEmpty(title)) assign(filterPayload, { title });
+      if (!isEmpty(brandId)) assign(filterPayload, { brandId });
+      if (!isEmpty(categoryId)) assign(filterPayload, { categoryId });
+      if (!isEmpty(subcategoryId)) assign(filterPayload, { subcategoryId });
+      if (!isEmpty(minimumPrice)) assign(filterPayload, { minimumPrice });
+      if (!isEmpty(maximumPrice)) assign(filterPayload, { maximumPrice });
+      if (!isEmpty(isPromo)) assign(filterPayload, { isPromo });
+
+      const totalFilteredProduct = await Products.count(filterPayload);
+
       //search query
       const payload = {};
       if (!isEmpty(name)) assign(payload, { name });
@@ -345,13 +367,6 @@ class Product {
       if (!isEmpty(isPromo)) assign(payload, { isPromo });
       if (!isEmpty(limit)) assign(payload, { limit });
       if (!isEmpty(offset)) assign(payload, { offset });
-
-      //order list
-      let searchOrder = {};
-      if (!isEmpty(order)) {
-        if (order[0].column == 1) searchOrder = { name: order[0].dir };
-        else if (order[0].column == 2) searchOrder = { price: order[0].dir };
-      }
 
       const products = await Products.findAll(payload, searchOrder);
 
@@ -367,11 +382,6 @@ class Product {
         const product = products[i];
 
         product.title = product.title ? product.title : "";
-        product.brand = await Brands.findByPk(product.brandId);
-        product.category = await Categories.findByPk(product.categoryId);
-        product.subcategory = await Subcategories.findByPk(
-          product.subcategoryId
-        );
 
         if (product.specification) {
           product.specification.sort((a, b) => {
@@ -403,10 +413,19 @@ class Product {
         }
       }
 
-      res
-        .status(200)
-        .json({ status: true, message: "success", result: products });
+      res.status(200).json({
+        status: true,
+        message: "success",
+        result: {
+          totalProduct,
+          totalFilteredProduct,
+          limit: +limit,
+          offset: +offset,
+          products,
+        },
+      });
     } catch (error) {
+      console.log(error);
       if (error.status == false) {
         res.status(404).json(error);
       } else {

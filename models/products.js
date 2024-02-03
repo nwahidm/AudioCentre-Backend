@@ -100,11 +100,105 @@ class Products {
     }
 
     return await this.productModel()
-      .find(where)
+      .aggregate([
+        {
+          $match: where,
+        },
+        {
+          $lookup: {
+            from: "brands",
+            localField: "brandId",
+            foreignField: "_id",
+            as: "brand",
+          },
+        },
+        {
+          $unwind: '$brand'
+        },
+        {
+          $lookup: {
+            from: "categories",
+            localField: "categoryId",
+            foreignField: "_id",
+            as: "category",
+          },
+        },
+        {
+          $unwind: '$category'
+        },
+        {
+          $lookup: {
+            from: "subcategories",
+            localField: "subcategoryId",
+            foreignField: "_id",
+            as: "subcategory",
+          },
+        },
+        {
+          $unwind: '$subcategory'
+        },
+      ])
       .sort(searchOrder)
       .skip(+offset)
       .limit(+limit)
       .toArray();
+  }
+
+  static async count(payload) {
+    const {
+      name,
+      title,
+      brandId,
+      categoryId,
+      subcategoryId,
+      minimumPrice,
+      maximumPrice,
+      isPromo,
+      limit,
+      offset,
+    } = payload;
+    console.log(
+      "[ Payload ]",
+      name,
+      title,
+      brandId,
+      categoryId,
+      subcategoryId,
+      minimumPrice,
+      maximumPrice,
+      isPromo,
+      limit,
+      offset
+    );
+
+    const where = {};
+    if (!isEmpty(name))
+      assign(where, { name: { $regex: name, $options: "i" } });
+    if (!isEmpty(title))
+      assign(where, { title: { $regex: title, $options: "i" } });
+    if (!isEmpty(brandId)) assign(where, { brandId: new ObjectId(brandId) });
+    if (!isEmpty(categoryId))
+      assign(where, { categoryId: new ObjectId(categoryId) });
+    if (!isEmpty(subcategoryId))
+      assign(where, { subcategoryId: new ObjectId(subcategoryId) });
+    if (!isEmpty(isPromo)) assign(where, { isPromo });
+    if (!isEmpty(minimumPrice) && isEmpty(maximumPrice)) {
+      assign(where, {
+        price: { $gt: Number(minimumPrice) },
+      });
+    }
+    if (isEmpty(minimumPrice) && !isEmpty(maximumPrice)) {
+      assign(where, {
+        price: { $lt: Number(maximumPrice) },
+      });
+    }
+    if (!isEmpty(minimumPrice) && !isEmpty(maximumPrice)) {
+      assign(where, {
+        price: { $gt: Number(minimumPrice), $lt: Number(maximumPrice) },
+      });
+    }
+
+    return await this.productModel().countDocuments(where);
   }
 
   static async findOne({ payload }) {
