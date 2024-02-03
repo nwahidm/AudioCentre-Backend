@@ -1,19 +1,25 @@
 const { assign, isEmpty } = require("lodash");
 const { getDB } = require("../config");
 const { ObjectId } = require("mongodb");
-const moment = require("moment")
+const moment = require("moment");
 
 class Articles {
   static articleModel() {
     return getDB().collection("articles");
   }
 
-  static async create({ articleTitle, articleDescription, articleImage,  }) {
+  static async create({
+    articleTitle,
+    articleCaption,
+    articleDescription,
+    articleImage,
+  }) {
     const newArticle = await this.articleModel().insertOne({
       articleTitle,
+      articleCaption,
       articleDescription,
       articleImage,
-      createdAt: moment().format('MMMM Do YYYY, h:mm:ss a')
+      createdAt: moment().format("MMMM Do YYYY, h:mm:ss a"),
     });
     return newArticle;
   }

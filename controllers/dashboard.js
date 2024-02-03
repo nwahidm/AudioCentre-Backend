@@ -2,7 +2,6 @@ const Invoices = require("../models/invoices");
 const Orders = require("../models/orders");
 const Traffics = require("../models/traffics");
 const Users = require("../models/users");
-const { isEmpty, assign, map } = require("lodash");
 
 class Dashboard {
   static async fetchRecapitulation(req, res) {
@@ -90,13 +89,33 @@ class Dashboard {
       };
       const orders = await Orders.findAll(payloadOrders, searchOrders);
 
+      for (let i = 0; i < orders.length; i++) {
+        const order = orders[i];
+        let totalPrice = 0;
+
+        if (order.user_id) {
+          order.salesman = await Users.findByPk(order.user_id);
+          delete order.salesman.notification;
+          delete order.salesman.password;
+          delete order.salesman.address;
+        }
+
+        for (let j = 0; j < order.product.length; j++) {
+          const o = order.product[j];
+
+          o.subtotalPrice = o.total * o.price;
+          totalPrice = totalPrice + o.subtotalPrice;
+        }
+        order.totalPrice = totalPrice;
+        order.fixPrice = totalPrice + order.shipping - order.discount;
+      }
+
       res.status(200).json({
         status: true,
         message: "success",
         result: orders
       });
     } catch (error) {
-      console.log(error);
       res.status(500).json({
         status: false,
         message: "Internal Server Error",

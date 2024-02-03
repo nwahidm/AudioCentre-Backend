@@ -5,17 +5,19 @@ const url = "https://backend.audiocentre.co.id";
 
 class Article {
   static async createArticle(req, res) {
-    const { articleTitle, articleDescription } = req.body;
+    const { articleTitle, articleCaption, articleDescription } = req.body;
     const articleImage = req.files.images;
     console.log(
       "[Create Article]",
       articleTitle,
+      articleCaption,
       articleDescription,
       articleImage
     );
     try {
       await Articles.create({
         articleTitle,
+        articleCaption,
         articleDescription,
         articleImage: articleImage[0].path,
       });
@@ -107,7 +109,7 @@ class Article {
 
   static async updateArticle(req, res) {
     const { id } = req.params;
-    const { articleTitle, articleDescription } = req.body;
+    const { articleTitle, articleCaption, articleDescription } = req.body;
     let articleImage;
     if (req.files) {
       articleImage = req.files.images;
@@ -116,6 +118,7 @@ class Article {
       "[Update Article]",
       id,
       articleTitle,
+      articleCaption,
       articleDescription,
       articleImage
     );
@@ -123,6 +126,7 @@ class Article {
       //update data
       const payload = {};
       if (!isEmpty(articleTitle)) assign(payload, { articleTitle });
+      if (!isEmpty(articleCaption)) assign(payload, { articleCaption });
       if (!isEmpty(articleDescription)) assign(payload, { articleDescription });
       if (!isEmpty(articleImage))
         assign(payload, { articleImage: articleImage[0].path });
