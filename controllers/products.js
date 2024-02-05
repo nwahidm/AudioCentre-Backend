@@ -338,6 +338,7 @@ class Product {
       if (!isEmpty(order)) {
         if (order[0].column == 1) searchOrder = { name: order[0].dir };
         else if (order[0].column == 2) searchOrder = { price: order[0].dir };
+        else searchOrder = {};
       }
 
       let totalPayload = {};
@@ -354,6 +355,13 @@ class Product {
       if (!isEmpty(isPromo)) assign(filterPayload, { isPromo });
 
       const totalFilteredProduct = await Products.count(filterPayload);
+      const brandIds = await Products.distinct(filterPayload)
+
+      let allBrand = []
+      for (let i of brandIds) {
+        const targetBrand = await Brands.findByPk(i)
+        allBrand.push(targetBrand)
+      }
 
       //search query
       const payload = {};
@@ -421,11 +429,11 @@ class Product {
           totalFilteredProduct,
           limit: +limit,
           offset: +offset,
-          products,
+          brand: allBrand,
+          products
         },
       });
     } catch (error) {
-      console.log(error);
       if (error.status == false) {
         res.status(404).json(error);
       } else {

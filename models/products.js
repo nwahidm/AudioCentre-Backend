@@ -45,7 +45,7 @@ class Products {
   }
 
   static async findAll(payload, searchOrder) {
-    const {
+    let {
       name,
       title,
       brandId,
@@ -98,6 +98,53 @@ class Products {
         price: { $gt: Number(minimumPrice), $lt: Number(maximumPrice) },
       });
     }
+    if (isEmpty(limit)) limit = 10000;
+    if (isEmpty(offset)) offset = 0;
+    if (!isEmpty(searchOrder)) {
+      return await this.productModel()
+        .aggregate([
+          {
+            $match: where,
+          },
+          {
+            $lookup: {
+              from: "brands",
+              localField: "brandId",
+              foreignField: "_id",
+              as: "brand",
+            },
+          },
+          {
+            $unwind: "$brand",
+          },
+          {
+            $lookup: {
+              from: "categories",
+              localField: "categoryId",
+              foreignField: "_id",
+              as: "category",
+            },
+          },
+          {
+            $unwind: "$category",
+          },
+          {
+            $lookup: {
+              from: "subcategories",
+              localField: "subcategoryId",
+              foreignField: "_id",
+              as: "subcategory",
+            },
+          },
+          {
+            $unwind: "$subcategory",
+          },
+        ])
+        .sort(searchOrder)
+        .skip(+offset)
+        .limit(+limit)
+        .toArray();
+    }
 
     return await this.productModel()
       .aggregate([
@@ -113,7 +160,7 @@ class Products {
           },
         },
         {
-          $unwind: '$brand'
+          $unwind: "$brand",
         },
         {
           $lookup: {
@@ -124,7 +171,7 @@ class Products {
           },
         },
         {
-          $unwind: '$category'
+          $unwind: "$category",
         },
         {
           $lookup: {
@@ -135,13 +182,66 @@ class Products {
           },
         },
         {
-          $unwind: '$subcategory'
+          $unwind: "$subcategory",
         },
       ])
-      .sort(searchOrder)
       .skip(+offset)
       .limit(+limit)
       .toArray();
+  }
+
+  static async distinct(payload) {
+    const {
+      name,
+      title,
+      categoryId,
+      subcategoryId,
+      minimumPrice,
+      maximumPrice,
+      isPromo,
+      limit,
+      offset,
+    } = payload;
+    console.log(
+      "[ Payload ]",
+      name,
+      title,
+      categoryId,
+      subcategoryId,
+      minimumPrice,
+      maximumPrice,
+      isPromo,
+      limit,
+      offset
+    );
+
+    const where = {};
+    if (!isEmpty(name))
+      assign(where, { name: { $regex: name, $options: "i" } });
+    if (!isEmpty(title))
+      assign(where, { title: { $regex: title, $options: "i" } });
+    if (!isEmpty(categoryId))
+      assign(where, { categoryId: new ObjectId(categoryId) });
+    if (!isEmpty(subcategoryId))
+      assign(where, { subcategoryId: new ObjectId(subcategoryId) });
+    if (!isEmpty(isPromo)) assign(where, { isPromo });
+    if (!isEmpty(minimumPrice) && isEmpty(maximumPrice)) {
+      assign(where, {
+        price: { $gt: Number(minimumPrice) },
+      });
+    }
+    if (isEmpty(minimumPrice) && !isEmpty(maximumPrice)) {
+      assign(where, {
+        price: { $lt: Number(maximumPrice) },
+      });
+    }
+    if (!isEmpty(minimumPrice) && !isEmpty(maximumPrice)) {
+      assign(where, {
+        price: { $gt: Number(minimumPrice), $lt: Number(maximumPrice) },
+      });
+    }
+
+    return await this.productModel().distinct("brandId", where);
   }
 
   static async count(payload) {
