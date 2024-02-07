@@ -6,6 +6,7 @@ const Subcategories = require("../models/subcategories");
 const Traffics = require("../models/traffics");
 const { isEmpty, assign, map } = require("lodash");
 const fs = require("fs");
+const Comments = require("../models/comments");
 const url = "https://backend.audiocentre.co.id";
 
 class Product {
@@ -355,12 +356,12 @@ class Product {
       if (!isEmpty(isPromo)) assign(filterPayload, { isPromo });
 
       const totalFilteredProduct = await Products.count(filterPayload);
-      const brandIds = await Products.distinct(filterPayload)
+      const brandIds = await Products.distinct(filterPayload);
 
-      let allBrand = []
+      let allBrand = [];
       for (let i of brandIds) {
-        const targetBrand = await Brands.findByPk(i)
-        allBrand.push(targetBrand)
+        const targetBrand = await Brands.findByPk(i);
+        allBrand.push(targetBrand);
       }
 
       //search query
@@ -430,7 +431,7 @@ class Product {
           limit: +limit,
           offset: +offset,
           brand: allBrand,
-          products
+          products,
         },
       });
     } catch (error) {
@@ -459,9 +460,13 @@ class Product {
           result: "",
         };
 
+      const commentsPayload = {
+        productId: id,
+      };
       const brand = await Brands.findByPk(data.brandId);
       const category = await Categories.findByPk(data.categoryId);
       const subcategory = await Subcategories.findByPk(data.subcategoryId);
+      const comments = await Comments.findAll(commentsPayload);
       for (let i = 0; i < data.images.length; i++) {
         data.images[i] = `${url}/${data.images[i]}`;
       }
@@ -505,6 +510,7 @@ class Product {
         specification: data.specification,
         box: data.box,
         status: data.status,
+        comments,
         isPromo: data.isPromo,
       };
 

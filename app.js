@@ -75,6 +75,7 @@ app.use("/specification", require("./routes/specifications"));
 app.use("/footer", require("./routes/footers"));
 app.use("/dashboard", require("./routes/dashboard"));
 app.use("/traffic", require("./routes/traffics"));
+app.use("/comment", require("./routes/comments"));
 app.use("/uploads", express.static(__dirname + `/uploads`));
 
 connect().then(() => {

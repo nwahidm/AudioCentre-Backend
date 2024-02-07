@@ -101,11 +101,14 @@ class Products {
     if (isEmpty(limit)) limit = 10000;
     if (isEmpty(offset)) offset = 0;
     if (!isEmpty(searchOrder)) {
+      let newOrder = searchOrder;
+      newOrder.status = -1;
       return await this.productModel()
         .aggregate([
           {
             $match: where,
           },
+          { $project: { comments: 0 } },
           {
             $lookup: {
               from: "brands",
@@ -140,7 +143,7 @@ class Products {
             $unwind: "$subcategory",
           },
         ])
-        .sort(searchOrder)
+        .sort(newOrder)
         .skip(+offset)
         .limit(+limit)
         .toArray();
@@ -151,6 +154,7 @@ class Products {
         {
           $match: where,
         },
+        { $project: { comments: 0 } },
         {
           $lookup: {
             from: "brands",
