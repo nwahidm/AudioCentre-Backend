@@ -76,6 +76,9 @@ app.use("/footer", require("./routes/footers"));
 app.use("/dashboard", require("./routes/dashboard"));
 app.use("/traffic", require("./routes/traffics"));
 app.use("/comment", require("./routes/comments"));
+app.use("/pengembalian", require("./routes/pengembalians"));
+app.use("/layanan", require("./routes/layanans"));
+app.use("/faq", require("./routes/faqs"));
 app.use("/uploads", express.static(__dirname + `/uploads`));
 
 connect().then(() => {

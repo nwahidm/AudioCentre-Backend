@@ -116,7 +116,7 @@ class Brand {
       brandCover = req.files.images;
     }
     console.log(
-      "[Update Product]",
+      "[Update Brand]",
       id,
       brandName,
       brandDescription,
