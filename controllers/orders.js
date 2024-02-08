@@ -58,7 +58,7 @@ class Order {
       });
 
       const orderId = createdOrder.insertedId;
-      await Users.pushNotification(orderId);
+      await Users.pushNotificationOrder(orderId);
 
       res.status(201).json({
         status: true,
@@ -150,7 +150,7 @@ class Order {
       });
 
       const orderId = createdOrder.insertedId;
-      await Users.pushNotification(orderId);
+      await Users.pushNotificationOrder(orderId);
 
       res.status(201).json({
         status: true,

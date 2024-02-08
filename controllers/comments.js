@@ -1,6 +1,7 @@
 const Comments = require("../models/comments");
 const Products = require("../models/products");
 const { isEmpty, assign, map } = require("lodash");
+const Users = require("../models/users");
 
 class Comment {
   static async createComment(req, res) {
@@ -17,11 +18,14 @@ class Comment {
           result: "",
         };
 
-      await Comments.create({
+      const createdComment = await Comments.create({
         productId,
         comment,
         customerName,
       });
+
+      const commentId = createdComment.insertedId;
+      await Users.pushNotificationComment(commentId);
 
       res.status(201).json({
         status: true,
@@ -126,7 +130,11 @@ class Comment {
 
       res
         .status(201)
-        .json({ status: true, message: `Comment berhasil diupdate`, result: "" });
+        .json({
+          status: true,
+          message: `Comment berhasil diupdate`,
+          result: "",
+        });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);

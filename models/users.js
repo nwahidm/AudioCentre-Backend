@@ -40,7 +40,7 @@ class Users {
     );
   }
 
-  static async pushNotification(orderId) {
+  static async pushNotificationOrder(orderId) {
     return await this.userModel().updateOne(
       { _id: new ObjectId("653b330e8eb5866dda7cee25") },
       {
@@ -48,6 +48,21 @@ class Users {
           notification: {
             message: "ada pesanan baru",
             orderId,
+            createdAt: moment().format()
+          },
+        },
+      }
+    );
+  }
+
+  static async pushNotificationComment(commentId) {
+    return await this.userModel().updateOne(
+      { _id: new ObjectId("653b330e8eb5866dda7cee25") },
+      {
+        $push: {
+          notification: {
+            message: "ada komentar baru",
+            commentId,
             createdAt: moment().format()
           },
         },
