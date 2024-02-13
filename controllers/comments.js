@@ -92,6 +92,8 @@ class Comment {
           result: "",
         };
 
+      data.product = await Products.findByPk(data.productId)
+
       res.status(200).json({ status: true, message: "success", result: data });
     } catch (error) {
       if (error.status == false) {

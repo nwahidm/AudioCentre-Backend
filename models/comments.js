@@ -14,7 +14,7 @@ class Comments {
       comment,
       customerName,
       replies: "",
-      createdAt: moment().format()
+      createdAt: moment().format(),
     });
     return newComment;
   }
@@ -24,9 +24,29 @@ class Comments {
     console.log("[ Payload ]", productId);
 
     const where = {};
-    if (!isEmpty(productId)) assign(where, { productId: new ObjectId(productId) });
+    if (!isEmpty(productId))
+      assign(where, { productId: new ObjectId(productId) });
 
-    return await this.commentModel().find(where).sort({createdAt: 1}).toArray();
+    // return await this.commentModel().find(where).sort({createdAt: 1}).toArray();
+    return await this.commentModel()
+      .aggregate([
+        {
+          $match: where,
+        },
+        {
+          $lookup: {
+            from: "products",
+            localField: "productId",
+            foreignField: "_id",
+            as: "product",
+          },
+        },
+        {
+          $unwind: "$product",
+        },
+      ])
+      .sort({ createdAt: 1 })
+      .toArray();
   }
 
   static async findByPk(id) {
