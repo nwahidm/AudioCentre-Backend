@@ -364,6 +364,8 @@ class Product {
         allBrand.push(targetBrand);
       }
 
+      allBrand.sort((a, b) => a.brandName.localeCompare(b.brandName));
+      
       //search query
       const payload = {};
       if (!isEmpty(name)) assign(payload, { name });
