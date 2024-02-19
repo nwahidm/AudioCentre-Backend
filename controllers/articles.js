@@ -35,12 +35,22 @@ class Article {
   }
 
   static async fetchArticles(req, res) {
-    const { articleTitle, order } = req.body;
-    console.log("[Fetch All Articles]", articleTitle, order);
+    const { articleTitle, articleDate, order, limit, offset } = req.body;
+    console.log(
+      "[Fetch All Articles]",
+      articleTitle,
+      articleDate,
+      order,
+      limit,
+      offset
+    );
     try {
       //search query
       const payload = {};
       if (!isEmpty(articleTitle)) assign(payload, { articleTitle });
+      if (!isEmpty(articleDate)) assign(payload, { articleDate });
+      if (!isEmpty(limit)) assign(payload, { limit });
+      if (!isEmpty(offset)) assign(payload, { offset });
 
       //order list
       let searchOrder = {};

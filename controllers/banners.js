@@ -29,13 +29,22 @@ class Banner {
   }
 
   static async fetchBanners(req, res) {
-    const { bannerName, status, order } = req.body;
-    console.log("[Fetch All Banners]", bannerName, status, order);
+    const { bannerName, status, order, limit, offset } = req.body;
+    console.log(
+      "[Fetch All Banners]",
+      bannerName,
+      status,
+      order,
+      limit,
+      offset
+    );
     try {
       //search query
       const payload = {};
       if (!isEmpty(bannerName)) assign(payload, { bannerName });
       if (!isEmpty(status)) assign(payload, { status });
+      if (!isEmpty(limit)) assign(payload, { limit });
+      if (!isEmpty(offset)) assign(payload, { offset });
 
       //order list
       let searchOrder = {};

@@ -47,15 +47,24 @@ class Subcategory {
   }
 
   static async fetchSubcategories(req, res) {
-    const { subcategoryName, subcategoryStatus, categoryId, isBuild, order } =
-      req.body;
+    const {
+      subcategoryName,
+      subcategoryStatus,
+      categoryId,
+      isBuild,
+      order,
+      limit,
+      offset,
+    } = req.body;
     console.log(
       "[Fetch All Subcategories]",
       subcategoryName,
       subcategoryStatus,
       categoryId,
       isBuild,
-      order
+      order,
+      limit,
+      offset
     );
     try {
       //search query
@@ -64,6 +73,8 @@ class Subcategory {
       if (!isEmpty(subcategoryStatus)) assign(payload, { subcategoryStatus });
       if (!isEmpty(categoryId)) assign(payload, { categoryId });
       if (!isEmpty(isBuild)) assign(payload, { isBuild });
+      if (!isEmpty(limit)) assign(payload, { limit });
+      if (!isEmpty(offset)) assign(payload, { offset });
 
       //order list
       let searchOrder = {};

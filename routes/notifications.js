@@ -2,6 +2,6 @@ const Notification = require("../controllers/notifications");
 const { authMiddleware } = require("../middlewares/middlewares");
 const router = require("express").Router();
 
-router.get("/", authMiddleware, Notification.fetchNotifications);
+router.post("/", authMiddleware, Notification.fetchNotifications);
 
 module.exports = router;

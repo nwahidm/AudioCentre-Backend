@@ -46,12 +46,23 @@ class Comment {
   }
 
   static async fetchComments(req, res) {
-    const { productId } = req.body;
-    console.log("[Fetch All Comments]", productId);
+    const { productId, comment, customerName, limit, offset } = req.body;
+    console.log(
+      "[Fetch All Comments]",
+      productId,
+      comment,
+      customerName,
+      limit,
+      offset
+    );
     try {
       //search query
       const payload = {};
       if (!isEmpty(productId)) assign(payload, { productId });
+      if (!isEmpty(comment)) assign(payload, { comment });
+      if (!isEmpty(customerName)) assign(payload, { customerName });
+      if (!isEmpty(limit)) assign(payload, { limit });
+      if (!isEmpty(offset)) assign(payload, { offset });
 
       const comments = await Comments.findAll(payload);
 
@@ -67,6 +78,7 @@ class Comment {
         .status(200)
         .json({ status: true, message: "success", result: comments });
     } catch (error) {
+      console.log(error);
       if (error.status == false) {
         res.status(404).json(error);
       } else {
@@ -92,7 +104,7 @@ class Comment {
           result: "",
         };
 
-      data.product = await Products.findByPk(data.productId)
+      data.product = await Products.findByPk(data.productId);
 
       res.status(200).json({ status: true, message: "success", result: data });
     } catch (error) {
@@ -130,13 +142,11 @@ class Comment {
 
       await Comments.update(id, payload);
 
-      res
-        .status(201)
-        .json({
-          status: true,
-          message: `Comment berhasil diupdate`,
-          result: "",
-        });
+      res.status(201).json({
+        status: true,
+        message: `Comment berhasil diupdate`,
+        result: "",
+      });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);

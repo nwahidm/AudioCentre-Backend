@@ -27,8 +27,16 @@ class Subcategories {
   }
 
   static async findAll(payload, searchOrder) {
-    const { subcategoryName, subcategoryStatus, categoryId } = payload;
-    console.log("[ Payload ]", subcategoryName, subcategoryStatus, categoryId);
+    const { subcategoryName, subcategoryStatus, categoryId, limit, offset } =
+      payload;
+    console.log(
+      "[ Payload ]",
+      subcategoryName,
+      subcategoryStatus,
+      categoryId,
+      limit,
+      offset
+    );
     console.log("[ Order ]", searchOrder);
 
     const where = {};
@@ -41,7 +49,11 @@ class Subcategories {
     if (!isEmpty(subcategoryStatus))
       assign(where, { subcategoryStatus: +subcategoryStatus });
 
-    return await this.subcategoryModel().find(where).toArray();
+    return await this.subcategoryModel()
+      .find(where)
+      .skip(+offset)
+      .limit(+limit)
+      .toArray();
   }
 
   static async findOne({ subcategoryName }) {

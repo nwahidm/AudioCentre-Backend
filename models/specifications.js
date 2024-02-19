@@ -16,8 +16,14 @@ class Specifications {
   }
 
   static async findAll(payload, searchOrder) {
-    const { specificationName, specificationStatus } = payload;
-    console.log("[ Payload ]", specificationName, specificationStatus);
+    const { specificationName, specificationStatus, limit, offset } = payload;
+    console.log(
+      "[ Payload ]",
+      specificationName,
+      specificationStatus,
+      limit,
+      offset
+    );
     console.log("[ Order ]", searchOrder);
 
     const where = {};
@@ -28,7 +34,12 @@ class Specifications {
     if (!isEmpty(specificationStatus))
       assign(where, { specificationStatus: +specificationStatus });
 
-    return await this.specificationModel().find(where).sort(searchOrder).toArray();
+    return await this.specificationModel()
+      .find(where)
+      .sort(searchOrder)
+      .skip(+offset)
+      .limit(+limit)
+      .toArray();
   }
 
   static async findOne({ specificationName }) {

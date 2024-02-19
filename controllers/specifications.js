@@ -28,12 +28,15 @@ class Specification {
   }
 
   static async fetchSpecifications(req, res) {
-    const { specificationName, specificationStatus, order } = req.body;
+    const { specificationName, specificationStatus, order, limit, offset } =
+      req.body;
     console.log(
       "[Fetch All specification]",
       specificationName,
       specificationStatus,
-      order
+      order,
+      limit,
+      offset
     );
     try {
       //search query
@@ -41,11 +44,13 @@ class Specification {
       if (!isEmpty(specificationName)) assign(payload, { specificationName });
       if (!isEmpty(specificationStatus))
         assign(payload, { specificationStatus });
+      if (!isEmpty(limit)) assign(payload, { limit });
+      if (!isEmpty(offset)) assign(payload, { offset });
 
       //order list
       let searchOrder = {};
       if (!isEmpty(order)) {
-          searchOrder = { specificationName: order[0].dir };
+        searchOrder = { specificationName: order[0].dir };
       }
 
       const specifications = await Specifications.findAll(payload, searchOrder);

@@ -140,8 +140,15 @@ class User {
   }
 
   static async fetchUsers(req, res) {
+    const { username, limit, offset } = req.body;
+    console.log("Fetch All Users", username, limit, offset);
     try {
-      const users = await Users.findAll();
+      const payload = {};
+      if (!isEmpty(username)) assign(payload, { username });
+      if (!isEmpty(limit)) assign(payload, { limit });
+      if (!isEmpty(offset)) assign(payload, { offset });
+
+      const users = await Users.findAll(payload);
 
       for (let o of users) {
         delete o.notification;

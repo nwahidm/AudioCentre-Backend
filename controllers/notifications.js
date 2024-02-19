@@ -3,14 +3,15 @@ const Users = require("../models/users");
 
 class Notification {
   static async fetchNotifications(req, res) {
+    const { createdAt } = req.body;
     const { _id } = req.user;
     const id = _id;
     try {
       const targetUser = await Users.findByPk(id);
 
-      const notification = targetUser.notification;
+      const data = targetUser.notification;
 
-      if (isEmpty(notification))
+      if (isEmpty(data))
         throw {
           status: false,
           error: "Bad Request",
@@ -18,6 +19,8 @@ class Notification {
           result: "",
         };
 
+      let notification = data.filter((o) => o.createdAt == createdAt);
+      
       res
         .status(200)
         .json({ status: true, message: "success", result: notification });

@@ -23,8 +23,8 @@ class Brands {
   }
 
   static async findAll(payload, searchOrder) {
-    const { brandName, brandStatus } = payload;
-    console.log("[ Payload ]", brandName, brandStatus);
+    const { brandName, brandStatus, limit, offset } = payload;
+    console.log("[ Payload ]", brandName, brandStatus, limit, offset);
     console.log("[ Order ]", searchOrder);
 
     const where = {};
@@ -32,7 +32,12 @@ class Brands {
       assign(where, { brandName: { $regex: brandName, $options: "i" } });
     if (!isEmpty(brandStatus)) assign(where, { brandStatus: +brandStatus });
 
-    return await this.brandModel().find(where).sort(searchOrder).toArray();
+    return await this.brandModel()
+      .find(where)
+      .sort(searchOrder)
+      .skip(+offset)
+      .limit(+limit)
+      .toArray();
   }
 
   static async findOne({ brandName }) {

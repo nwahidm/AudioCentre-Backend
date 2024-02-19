@@ -23,8 +23,8 @@ class Categories {
   }
 
   static async findAll(payload, searchOrder) {
-    const { categoryName, categoryStatus } = payload;
-    console.log("[ Payload ]", categoryName, categoryStatus);
+    const { categoryName, categoryStatus, limit, offset } = payload;
+    console.log("[ Payload ]", categoryName, categoryStatus, limit, offset);
     console.log("[ Order ]", searchOrder);
 
     const where = {};
@@ -33,7 +33,11 @@ class Categories {
     if (!isEmpty(categoryStatus))
       assign(where, { categoryStatus: +categoryStatus });
 
-    return await this.categoryModel().find(where).toArray();
+    return await this.categoryModel()
+      .find(where)
+      .skip(+offset)
+      .limit(+limit)
+      .toArray();
   }
 
   static async findOne({ categoryName }) {

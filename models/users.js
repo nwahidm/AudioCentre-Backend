@@ -1,13 +1,21 @@
 const { getDB } = require("../config");
 const { ObjectId } = require("mongodb");
 const moment = require("moment");
+const { isEmpty, assign } = require("lodash");
 
 class Users {
   static userModel() {
     return getDB().collection("users");
   }
 
-  static async create({ username, email, password, phoneNumber, address, kewenangan }) {
+  static async create({
+    username,
+    email,
+    password,
+    phoneNumber,
+    address,
+    kewenangan,
+  }) {
     const newUser = await this.userModel().insertOne({
       username,
       email,
@@ -21,8 +29,18 @@ class Users {
     return newUser;
   }
 
-  static async findAll() {
-    return await this.userModel().find().toArray();
+  static async findAll(payload) {
+    const { username, limit, offset } = payload;
+    console.log("[Payload]", username, limit, offset);
+
+    const where = {};
+    if (!isEmpty(username))
+      assign(where, { username: { $regex: username, $options: "i" } });
+    return await this.userModel()
+      .find(where)
+      .skip(+offset)
+      .limit(+limit)
+      .toArray();
   }
 
   static async findOne({ email }) {
@@ -48,7 +66,7 @@ class Users {
           notification: {
             message: "ada pesanan baru",
             orderId,
-            createdAt: moment().format()
+            createdAt: moment().format(),
           },
         },
       }
@@ -63,7 +81,7 @@ class Users {
           notification: {
             message: "ada komentar baru",
             commentId,
-            createdAt: moment().format()
+            createdAt: moment().format(),
           },
         },
       }

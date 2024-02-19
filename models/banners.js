@@ -18,8 +18,8 @@ class Banners {
   }
 
   static async findAll(payload, searchOrder) {
-    const { bannerName, status } = payload;
-    console.log("[ Payload ]", bannerName, status);
+    const { bannerName, status, limit, offset } = payload;
+    console.log("[ Payload ]", bannerName, status, limit, offset);
     console.log("[ Order ]", searchOrder);
 
     const where = {};
@@ -27,7 +27,12 @@ class Banners {
       assign(where, { bannerName: { $regex: bannerName, $options: "i" } });
     if (!isEmpty(status)) assign(where, { status });
 
-    return await this.bannerModel().find(where).sort(searchOrder).toArray();
+    return await this.bannerModel()
+      .find(where)
+      .sort(searchOrder)
+      .skip(+offset)
+      .limit(+limit)
+      .toArray();
   }
 
   static async findOne({ bannerName }) {

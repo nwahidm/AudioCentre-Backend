@@ -35,13 +35,22 @@ class Brand {
   }
 
   static async fetchBrands(req, res) {
-    const { brandName, brandStatus, order } = req.body;
-    console.log("[Fetch All Brands]", brandName, brandStatus, order);
+    const { brandName, brandStatus, order, limit, offset } = req.body;
+    console.log(
+      "[Fetch All Brands]",
+      brandName,
+      brandStatus,
+      order,
+      limit,
+      offset
+    );
     try {
       //search query
       const payload = {};
       if (!isEmpty(brandName)) assign(payload, { brandName });
       if (!isEmpty(brandStatus)) assign(payload, { brandStatus });
+      if (!isEmpty(limit)) assign(payload, { limit });
+      if (!isEmpty(offset)) assign(payload, { offset });
 
       //order list
       let searchOrder = {};

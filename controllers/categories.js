@@ -36,13 +36,22 @@ class Category {
   }
 
   static async fetchCategories(req, res) {
-    const { categoryName, categoryStatus, order } = req.body;
-    console.log("[Fetch All Categories]", categoryName, categoryStatus, order);
+    const { categoryName, categoryStatus, order, limit, offset } = req.body;
+    console.log(
+      "[Fetch All Categories]",
+      categoryName,
+      categoryStatus,
+      order,
+      limit,
+      offset
+    );
     try {
       //search query
       const payload = {};
       if (!isEmpty(categoryName)) assign(payload, { categoryName });
       if (!isEmpty(categoryStatus)) assign(payload, { categoryStatus });
+      if (!isEmpty(limit)) assign(payload, { limit });
+      if (!isEmpty(offset)) assign(payload, { offset });
 
       //order list
       let searchOrder = {};

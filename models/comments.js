@@ -20,10 +20,18 @@ class Comments {
   }
 
   static async findAll(payload) {
-    const { productId } = payload;
-    console.log("[ Payload ]", productId);
+    const { productId, customerName, comment, limit, offset } = payload;
+    console.log("[ Payload ]", productId, customerName, comment, limit, offset);
 
     const where = {};
+    if (!isEmpty(customerName))
+      assign(where, {
+        customerName: { $regex: customerName, $options: "i" },
+      });
+    if (!isEmpty(comment))
+      assign(where, {
+        comment: { $regex: comment, $options: "i" },
+      });
     if (!isEmpty(productId))
       assign(where, { productId: new ObjectId(productId) });
 
@@ -46,6 +54,8 @@ class Comments {
         },
       ])
       .sort({ createdAt: 1 })
+      .skip(offset ? +offset : 0)
+      .limit(limit ? +limit : 10000)
       .toArray();
   }
 
