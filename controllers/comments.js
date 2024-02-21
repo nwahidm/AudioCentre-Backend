@@ -1,6 +1,7 @@
 const Comments = require("../models/comments");
 const Products = require("../models/products");
 const { isEmpty, assign, map } = require("lodash");
+const moment = require("moment");
 const Users = require("../models/users");
 
 class Comment {
@@ -46,14 +47,24 @@ class Comment {
   }
 
   static async fetchComments(req, res) {
-    const { productId, comment, customerName, limit, offset } = req.body;
+    const {
+      productId,
+      comment,
+      customerName,
+      limit,
+      offset,
+      startDate,
+      endDate,
+    } = req.body;
     console.log(
       "[Fetch All Comments]",
       productId,
       comment,
       customerName,
       limit,
-      offset
+      offset,
+      startDate,
+      endDate
     );
     try {
       //search query
@@ -64,9 +75,9 @@ class Comment {
       if (!isEmpty(limit)) assign(payload, { limit });
       if (!isEmpty(offset)) assign(payload, { offset });
 
-      const comments = await Comments.findAll(payload);
+      const data = await Comments.findAll(payload);
 
-      if (isEmpty(comments))
+      if (isEmpty(data))
         throw {
           status: false,
           error: "Bad Request",
@@ -74,6 +85,17 @@ class Comment {
           result: "",
         };
 
+      let comments;
+      if (!isEmpty(startDate && endDate)) {
+        const newStartDate = moment(startDate).format();
+        const newEndDate = moment(endDate).format();
+
+        comments = data.filter((o) => {
+          return o.createdAt >= newStartDate && o.createdAt < newEndDate;
+        });
+      } else {
+        comments = data;
+      }
       res
         .status(200)
         .json({ status: true, message: "success", result: comments });

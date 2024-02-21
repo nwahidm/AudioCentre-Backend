@@ -1,5 +1,6 @@
 const Articles = require("../models/articles");
 const { isEmpty, assign, map } = require("lodash");
+const moment = require("moment");
 const fs = require("fs");
 const url = "https://backend.audiocentre.co.id";
 
@@ -35,11 +36,12 @@ class Article {
   }
 
   static async fetchArticles(req, res) {
-    const { articleTitle, articleDate, order, limit, offset } = req.body;
+    const { articleTitle, startDate, endDate, order, limit, offset } = req.body;
     console.log(
       "[Fetch All Articles]",
       articleTitle,
-      articleDate,
+      startDate,
+      endDate,
       order,
       limit,
       offset
@@ -48,7 +50,6 @@ class Article {
       //search query
       const payload = {};
       if (!isEmpty(articleTitle)) assign(payload, { articleTitle });
-      if (!isEmpty(articleDate)) assign(payload, { articleDate });
       if (!isEmpty(limit)) assign(payload, { limit });
       if (!isEmpty(offset)) assign(payload, { offset });
 
@@ -58,9 +59,9 @@ class Article {
         searchOrder = { articleTitle: order[0].dir };
       }
 
-      const articles = await Articles.findAll(payload, searchOrder);
+      const data = await Articles.findAll(payload, searchOrder);
 
-      if (isEmpty(articles))
+      if (isEmpty(data))
         throw {
           status: false,
           error: "Bad Request",
@@ -68,9 +69,25 @@ class Article {
           result: "",
         };
 
-      map(articles, (o) => {
+      map(data, (o) => {
         o.articleImage = `${url}/${o.articleImage}`;
       });
+
+      let articles;
+      if (!isEmpty(startDate && endDate)) {
+        const newStartDate = moment(startDate).format();
+        const newEndDate = moment(endDate).format();
+
+        articles = data.filter((o) => {
+          const newCreatedAt = moment(
+            o.createdAt,
+            "MMMM Do YYYY, h:mm:ss a"
+          ).format("YYYY-MM-DDTHH:mm:ssZ");
+          return newCreatedAt >= newStartDate && newCreatedAt < newEndDate;
+        });
+      } else {
+        articles = data;
+      }
 
       res
         .status(200)

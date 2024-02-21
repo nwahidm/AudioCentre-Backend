@@ -25,20 +25,13 @@ class Articles {
   }
 
   static async findAll(payload, searchOrder) {
-    const { articleTitle, articleDate, limit, offset } = payload;
-    console.log("[ Payload ]", articleTitle, articleDate, limit, offset);
+    const { articleTitle, limit, offset } = payload;
+    console.log("[ Payload ]", articleTitle, limit, offset);
     console.log("[ Order ]", searchOrder);
 
     const where = {};
     if (!isEmpty(articleTitle))
       assign(where, { articleTitle: { $regex: articleTitle, $options: "i" } });
-    if (!isEmpty(articleDate))
-      assign(where, {
-        createdAt: {
-          $regex: moment(articleDate).format("MMMM Do YYYY"),
-          $options: "i",
-        },
-      });
 
     return await this.articleModel()
       .find(where)
