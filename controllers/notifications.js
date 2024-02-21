@@ -9,7 +9,7 @@ class Notification {
     try {
       const targetUser = await Users.findByPk(id);
 
-      const data = targetUser.notification;
+      let data = targetUser.notification;
 
       if (isEmpty(data))
         throw {
@@ -19,8 +19,13 @@ class Notification {
           result: "",
         };
 
-      let notification = data.filter((o) => o.createdAt == createdAt);
-      
+      let notification;
+      if (!isEmpty(createdAt)) {
+        notification = data.filter((o) => o.createdAt.split("T")[0] == createdAt);
+      } else {
+        notification = data;
+      }
+
       res
         .status(200)
         .json({ status: true, message: "success", result: notification });
