@@ -5,6 +5,7 @@ const { isEmpty, assign, map } = require("lodash");
 const moment = require("moment");
 const Invoices = require("../models/invoices");
 const { ObjectId } = require("mongodb");
+const send = require("../helpers/nodemailer");
 
 class Order {
   static async createOrder(req, res) {
@@ -29,12 +30,14 @@ class Order {
         };
       }
 
+      let productName = [];
       let productDetail = {};
       for (let i in product) {
         productDetail = await Products.findByPk(product[i].productId);
 
         product[i].name = productDetail.name;
         product[i].price = productDetail.price - productDetail.discount;
+        productName.push(productDetail.name);
       }
 
       const noOrder = `ORD${moment().format("YYYYMMDD")}`;
@@ -59,6 +62,16 @@ class Order {
 
       const orderId = createdOrder.insertedId;
       await Users.pushNotificationOrder(orderId);
+
+      const customerEmail = customerData[0].email;
+      const nodeMailerPayload = {
+        noOrder: fixNoOrder,
+        productName,
+        customerName: customerData[0].name,
+        customerAddress: customerData[0].address,
+      };
+
+      send(customerEmail, nodeMailerPayload);
 
       res.status(201).json({
         status: true,
@@ -172,7 +185,14 @@ class Order {
 
   static async fetchOrders(req, res) {
     const { noOrder, status, user_id, referenceId, order } = req.body;
-    console.log("[Fetch All Orders]", noOrder, status, user_id, referenceId, order);
+    console.log(
+      "[Fetch All Orders]",
+      noOrder,
+      status,
+      user_id,
+      referenceId,
+      order
+    );
     try {
       //search query
       const payload = {};
