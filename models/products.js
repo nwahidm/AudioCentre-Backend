@@ -24,7 +24,9 @@ class Products {
     status,
     isPromo,
   }) {
+    const slug = name.replace(/[^\w\s]/gi, '');
     const newProduct = await this.productModel().insertOne({
+      slug,
       name,
       title,
       description,
@@ -46,6 +48,7 @@ class Products {
 
   static async findAll(payload, searchOrder) {
     let {
+      slug,
       name,
       title,
       brandId,
@@ -59,6 +62,7 @@ class Products {
     } = payload;
     console.log(
       "[ Payload ]",
+      slug,
       name,
       title,
       brandId,
@@ -73,6 +77,8 @@ class Products {
     console.log("[ Order ]", searchOrder);
 
     const where = {};
+    if (!isEmpty(slug))
+      assign(where, { slug: { $regex: slug, $options: "i" } });
     if (!isEmpty(name))
       assign(where, { name: { $regex: name, $options: "i" } });
     if (!isEmpty(title))
@@ -196,6 +202,7 @@ class Products {
 
   static async distinct(payload) {
     const {
+      slug,
       name,
       title,
       categoryId,
@@ -207,7 +214,8 @@ class Products {
       offset,
     } = payload;
     console.log(
-      "[ Payload ]",
+      "[ Payload Distinct ]",
+      slug,
       name,
       title,
       categoryId,
@@ -220,6 +228,8 @@ class Products {
     );
 
     const where = {};
+    if (!isEmpty(slug))
+      assign(where, { slug: { $regex: slug, $options: "i" } });
     if (!isEmpty(name))
       assign(where, { name: { $regex: name, $options: "i" } });
     if (!isEmpty(title))
@@ -250,6 +260,7 @@ class Products {
 
   static async count(payload) {
     const {
+      slug,
       name,
       title,
       brandId,
@@ -262,7 +273,8 @@ class Products {
       offset,
     } = payload;
     console.log(
-      "[ Payload ]",
+      "[ Payload Count ]",
+      slug,
       name,
       title,
       brandId,
@@ -276,6 +288,8 @@ class Products {
     );
 
     const where = {};
+    if (!isEmpty(slug))
+      assign(where, { slug: { $regex: slug, $options: "i" } });
     if (!isEmpty(name))
       assign(where, { name: { $regex: name, $options: "i" } });
     if (!isEmpty(title))

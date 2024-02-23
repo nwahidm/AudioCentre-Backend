@@ -308,6 +308,7 @@ class Product {
 
   static async fetchProducts(req, res) {
     const {
+      slug,
       name,
       title,
       brandId,
@@ -322,6 +323,7 @@ class Product {
     } = req.body;
     console.log(
       "[Fetch All Products]",
+      slug,
       name,
       title,
       brandId,
@@ -346,6 +348,7 @@ class Product {
       const totalProduct = await Products.count(totalPayload);
 
       const filterPayload = {};
+      if (!isEmpty(slug)) assign(filterPayload, { slug });
       if (!isEmpty(name)) assign(filterPayload, { name });
       if (!isEmpty(title)) assign(filterPayload, { title });
       if (!isEmpty(brandId)) assign(filterPayload, { brandId });
@@ -365,9 +368,10 @@ class Product {
       }
 
       allBrand.sort((a, b) => a.brandName.localeCompare(b.brandName));
-      
+
       //search query
       const payload = {};
+      if (!isEmpty(slug)) assign(payload, { slug });
       if (!isEmpty(name)) assign(payload, { name });
       if (!isEmpty(title)) assign(payload, { title });
       if (!isEmpty(brandId)) assign(payload, { brandId });
@@ -540,6 +544,7 @@ class Product {
   static async updateProduct(req, res) {
     const { id } = req.params;
     let {
+      slug,
       name,
       title,
       description,
@@ -696,6 +701,7 @@ class Product {
     console.log(
       "[Update Product]",
       id,
+      slug,
       name,
       title,
       description,
@@ -742,6 +748,7 @@ class Product {
 
       //update data
       const payload = {};
+      if (!isEmpty(slug)) assign(payload, { slug });
       if (!isEmpty(name)) assign(payload, { name });
       if (!isEmpty(title)) assign(payload, { title });
       if (!isEmpty(description)) assign(payload, { description });
