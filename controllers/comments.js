@@ -72,6 +72,8 @@ class Comment {
       if (!isEmpty(productId)) assign(payload, { productId });
       if (!isEmpty(comment)) assign(payload, { comment });
       if (!isEmpty(customerName)) assign(payload, { customerName });
+      if (!isEmpty(startDate)) assign(payload, { startDate });
+      if (!isEmpty(endDate)) assign(payload, { endDate });
       if (!isEmpty(limit)) assign(payload, { limit });
       if (!isEmpty(offset)) assign(payload, { offset });
 
@@ -85,20 +87,9 @@ class Comment {
           result: "",
         };
 
-      let comments;
-      if (!isEmpty(startDate && endDate)) {
-        const newStartDate = moment(startDate).format();
-        const newEndDate = moment(endDate).format();
-
-        comments = data.filter((o) => {
-          return o.createdAt >= newStartDate && o.createdAt < newEndDate;
-        });
-      } else {
-        comments = data;
-      }
       res
         .status(200)
-        .json({ status: true, message: "success", result: comments });
+        .json({ status: true, message: "success", result: data });
     } catch (error) {
       console.log(error);
       if (error.status == false) {

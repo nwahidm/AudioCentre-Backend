@@ -19,19 +19,29 @@ class Articles {
       articleCaption,
       articleDescription,
       articleImage,
-      createdAt: moment().format("MMMM Do YYYY, h:mm:ss a"),
+      createdAt: moment().format(),
     });
     return newArticle;
   }
 
   static async findAll(payload, searchOrder) {
-    const { articleTitle, limit, offset } = payload;
-    console.log("[ Payload ]", articleTitle, limit, offset);
+    const { articleTitle, startDate, endDate, limit, offset } = payload;
+    console.log("[ Payload ]", articleTitle, startDate, endDate, limit, offset);
     console.log("[ Order ]", searchOrder);
 
     const where = {};
     if (!isEmpty(articleTitle))
       assign(where, { articleTitle: { $regex: articleTitle, $options: "i" } });
+      if (!isEmpty(startDate && endDate)) {
+        assign(where, {
+          createdAt: {
+            $gte: moment(startDate).format(),
+            $lt: moment(endDate).format(),
+          },
+        });
+      }
+
+      console.log(where);
 
     return await this.articleModel()
       .find(where)

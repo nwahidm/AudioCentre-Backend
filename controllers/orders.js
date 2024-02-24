@@ -64,13 +64,13 @@ class Order {
 
       const customerPayload = {
         email,
-        phoneNumber
+        phoneNumber,
       };
 
       const targetCustomer = await Customers.findAll(customerPayload);
 
       if (targetCustomer.length < 1) {
-        await Customers.create({name, email, address, phoneNumber});
+        await Customers.create({ name, email, address, phoneNumber });
       }
 
       const orderId = createdOrder.insertedId;
@@ -197,14 +197,28 @@ class Order {
   }
 
   static async fetchOrders(req, res) {
-    const { noOrder, status, user_id, referenceId, order } = req.body;
+    const {
+      noOrder,
+      status,
+      user_id,
+      referenceId,
+      order,
+      startDate,
+      endDate,
+      limit,
+      offset,
+    } = req.body;
     console.log(
       "[Fetch All Orders]",
       noOrder,
       status,
       user_id,
       referenceId,
-      order
+      order,
+      startDate,
+      endDate,
+      limit,
+      offset,
     );
     try {
       //search query
@@ -213,6 +227,10 @@ class Order {
       if (!isEmpty(status)) assign(payload, { status });
       if (!isEmpty(user_id)) assign(payload, { user_id });
       if (!isEmpty(referenceId)) assign(payload, { referenceId });
+      if (!isEmpty(startDate)) assign(payload, { startDate });
+      if (!isEmpty(endDate)) assign(payload, { endDate });
+      if (!isEmpty(limit)) assign(payload, { limit });
+      if (!isEmpty(offset)) assign(payload, { offset });
 
       //order list
       let searchOrder = {};
@@ -251,9 +269,7 @@ class Order {
         order.fixPrice = totalPrice + order.shipping - order.discount;
       }
 
-      res
-        .status(200)
-        .json({ status: true, message: "success", result: orders });
+      res.status(200).json({ status: true, message: "success", result: orders });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);

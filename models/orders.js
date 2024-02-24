@@ -35,7 +35,17 @@ class Orders {
   }
 
   static async findAll(payload, searchOrder) {
-    const { noOrder, name, status, user_id, referenceId, limit } = payload;
+    const {
+      noOrder,
+      name,
+      status,
+      user_id,
+      referenceId,
+      startDate,
+      endDate,
+      limit,
+      offset,
+    } = payload;
     console.log("[ Payload ]", noOrder, name, status, user_id, referenceId);
     console.log("[ Order ]", searchOrder);
 
@@ -54,10 +64,19 @@ class Orders {
     } else if (referenceId == "null") {
       assign(where, { referenceId: null });
     }
+    if (!isEmpty(startDate && endDate)) {
+      assign(where, {
+        createdAt: {
+          $gte: moment(startDate).format(),
+          $lt: moment(endDate).format(),
+        },
+      });
+    }
 
     return await this.orderModel()
       .find(where)
       .sort(searchOrder)
+      .skip(+offset)
       .limit(+limit)
       .toArray();
   }

@@ -24,7 +24,7 @@ class Products {
     status,
     isPromo,
   }) {
-    const slug = name.replace(/[^\w\s]/gi, '');
+    const slug = name.replace(/[^\w]/gi, "");
     const newProduct = await this.productModel().insertOne({
       slug,
       name,

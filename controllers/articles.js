@@ -50,6 +50,8 @@ class Article {
       //search query
       const payload = {};
       if (!isEmpty(articleTitle)) assign(payload, { articleTitle });
+      if (!isEmpty(startDate)) assign(payload, { startDate });
+      if (!isEmpty(endDate)) assign(payload, { endDate });
       if (!isEmpty(limit)) assign(payload, { limit });
       if (!isEmpty(offset)) assign(payload, { offset });
 
@@ -70,28 +72,11 @@ class Article {
         };
 
       map(data, (o) => {
+        o.createdAt = moment(o.createdAt).format("MMMM Do YYYY, h:mm:ss a");
         o.articleImage = `${url}/${o.articleImage}`;
       });
 
-      let articles;
-      if (!isEmpty(startDate && endDate)) {
-        const newStartDate = moment(startDate).format();
-        const newEndDate = moment(endDate).format();
-
-        articles = data.filter((o) => {
-          const newCreatedAt = moment(
-            o.createdAt,
-            "MMMM Do YYYY, h:mm:ss a"
-          ).format("YYYY-MM-DDTHH:mm:ssZ");
-          return newCreatedAt >= newStartDate && newCreatedAt < newEndDate;
-        });
-      } else {
-        articles = data;
-      }
-
-      res
-        .status(200)
-        .json({ status: true, message: "success", result: articles });
+      res.status(200).json({ status: true, message: "success", result: data });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
@@ -119,6 +104,7 @@ class Article {
         };
 
       data.articleImage = `${url}/${data.articleImage}`;
+      data.createdAt = moment(data.createdAt).format("MMMM Do YYYY, h:mm:ss a");
 
       res.status(200).json({ status: true, message: "success", result: data });
     } catch (error) {

@@ -20,7 +20,15 @@ class Comments {
   }
 
   static async findAll(payload) {
-    const { productId, customerName, comment, limit, offset } = payload;
+    const {
+      productId,
+      customerName,
+      comment,
+      startDate,
+      endDate,
+      limit,
+      offset,
+    } = payload;
     console.log("[ Payload ]", productId, customerName, comment, limit, offset);
 
     const where = {};
@@ -34,8 +42,15 @@ class Comments {
       });
     if (!isEmpty(productId))
       assign(where, { productId: new ObjectId(productId) });
+    if (!isEmpty(startDate && endDate)) {
+      assign(where, {
+        createdAt: {
+          $gte: moment(startDate).format(),
+          $lt: moment(endDate).format(),
+        },
+      });
+    }
 
-    // return await this.commentModel().find(where).sort({createdAt: 1}).toArray();
     return await this.commentModel()
       .aggregate([
         {
