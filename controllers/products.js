@@ -501,6 +501,7 @@ class Product {
 
       const Product = {
         _id: data._id,
+        slug: data.slug,
         name: data.name,
         title: data.title ? data.title : "",
         description: data.description,

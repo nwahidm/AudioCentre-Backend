@@ -79,6 +79,7 @@ app.use("/comment", require("./routes/comments"));
 app.use("/pengembalian", require("./routes/pengembalians"));
 app.use("/layanan", require("./routes/layanans"));
 app.use("/faq", require("./routes/faqs"));
+app.use("/customer", require("./routes/customers"));
 app.use("/uploads", express.static(__dirname + `/uploads`));
 
 connect().then(() => {
