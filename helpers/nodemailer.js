@@ -1019,7 +1019,6 @@ const send = (email, payload) => {
                                         "
                                       >
                                         <strong>Address:</strong> ${customerAddress}
-                                        Revolusi
                                       </li>
                                       <li
                                         style="

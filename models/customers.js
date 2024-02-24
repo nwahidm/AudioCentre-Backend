@@ -8,6 +8,7 @@ class Customers {
   }
 
   static async create({ name, email, address, phoneNumber }) {
+    console.log("[CREATE CUSTOMER]", name, email, address, phoneNumber);
     const newCustomer = await this.customersModel().insertOne({
       name,
       email,

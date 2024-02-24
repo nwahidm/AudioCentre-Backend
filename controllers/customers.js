@@ -5,7 +5,6 @@ const moment = require("moment");
 class Customer {
   static async createCustomer(req, res) {
     const { name, email, address, phoneNumber } = req.body;
-    console.log("[Create Customer]", name, email, address, phoneNumber);
     try {
       await Customers.create({
         name,
@@ -50,10 +49,7 @@ class Customer {
       if (!isEmpty(offset)) assign(payload, { offset });
 
       //order list
-      let searchOrder = {};
-      if (!isEmpty(order)) {
-        searchOrder = { name: order[0].dir };
-      }
+      let searchOrder = { name: 1 };
 
       const data = await Customers.findAll(payload, searchOrder);
 
@@ -69,6 +65,7 @@ class Customer {
         .status(200)
         .json({ status: true, message: "success", result: data });
     } catch (error) {
+      console.log(error);
       if (error.status == false) {
         res.status(404).json(error);
       } else {

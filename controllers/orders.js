@@ -1,6 +1,7 @@
 const Orders = require("../models/orders");
 const Users = require("../models/users");
 const Products = require("../models/products");
+const Customers = require("../models/customers");
 const { isEmpty, assign, map } = require("lodash");
 const moment = require("moment");
 const Invoices = require("../models/invoices");
@@ -10,6 +11,7 @@ const send = require("../helpers/nodemailer");
 class Order {
   static async createOrder(req, res) {
     const { product, customerData, comment } = req.body;
+    const { name, email, address, phoneNumber } = customerData[0];
     console.log("[Create Order]", product, customerData);
     try {
       if (!product) {
@@ -60,15 +62,26 @@ class Order {
         comment,
       });
 
+      const customerPayload = {
+        email,
+        phoneNumber
+      };
+
+      const targetCustomer = await Customers.findAll(customerPayload);
+
+      if (targetCustomer.length < 1) {
+        await Customers.create({name, email, address, phoneNumber});
+      }
+
       const orderId = createdOrder.insertedId;
       await Users.pushNotificationOrder(orderId);
 
-      const customerEmail = customerData[0].email;
+      const customerEmail = email;
       const nodeMailerPayload = {
         noOrder: fixNoOrder,
         productName,
-        customerName: customerData[0].name,
-        customerAddress: customerData[0].address,
+        customerName: name,
+        customerAddress: address,
       };
 
       send(customerEmail, nodeMailerPayload);
