@@ -2,6 +2,7 @@ const Invoices = require("../models/invoices");
 const Orders = require("../models/orders");
 const Traffics = require("../models/traffics");
 const Users = require("../models/users");
+const Customers = require("../models/customers");
 
 class Dashboard {
   static async fetchRecapitulation(req, res) {
@@ -52,13 +53,19 @@ class Dashboard {
       const allOrder = await Orders.findAll(payloadTotalOrders);
       const totalOrder = allOrder.length;
 
+      //Recap Customer
+      const customerPayload = {};
+
+      const customers = await Customers.findAll(customerPayload);
+      const totalCustomers = customers.length;
+
       //Recap Traffic
       const trafficPayload = {
-        product_id: null
-      }
+        product_id: null,
+      };
       const searchOrder = { createAt: -1 };
-      const allTraffic = await Traffics.findAll(trafficPayload, searchOrder)
-      const totalTraffic = allTraffic.length
+      const allTraffic = await Traffics.findAll(trafficPayload, searchOrder);
+      const totalTraffic = allTraffic.length;
 
       res.status(200).json({
         status: true,
@@ -66,7 +73,8 @@ class Dashboard {
         result: {
           earnings,
           totalOrder,
-          totalTraffic
+          totalCustomers,
+          totalTraffic,
         },
       });
     } catch (error) {
@@ -82,10 +90,10 @@ class Dashboard {
     try {
       const payloadOrders = {
         noOrder: null,
-        limit: 5
+        limit: 5,
       };
       const searchOrders = {
-        "createdAt": -1,
+        createdAt: -1,
       };
       const orders = await Orders.findAll(payloadOrders, searchOrders);
 
@@ -113,7 +121,7 @@ class Dashboard {
       res.status(200).json({
         status: true,
         message: "success",
-        result: orders
+        result: orders,
       });
     } catch (error) {
       res.status(500).json({
