@@ -56,9 +56,11 @@ class Invoice {
 
         for (let j = 0; j < invoice.orderDetail.product.length; j++) {
           invoice.salesman = await Users.findByPk(invoice.user_id);
-          delete invoice.salesman.notification;
-          delete invoice.salesman.password;
-          delete invoice.salesman.address;
+          if (invoice.salesman) {
+            delete invoice.salesman.notification;
+            delete invoice.salesman.password;
+            delete invoice.salesman.address;
+          }
 
           const o = invoice.orderDetail.product[j];
 
@@ -76,6 +78,7 @@ class Invoice {
         .status(200)
         .json({ status: true, message: "success", result: invoices });
     } catch (error) {
+      console.log(error);
       if (error.status == false) {
         res.status(404).json(error);
       } else {
@@ -106,7 +109,7 @@ class Invoice {
       delete invoice.salesman.notification;
       delete invoice.salesman.password;
       delete invoice.salesman.address;
-      
+
       const orderDetail = await Orders.findByPk(invoice.orderId);
       invoice.orderDetail = orderDetail;
 
