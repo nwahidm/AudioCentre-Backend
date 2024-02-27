@@ -1,6 +1,7 @@
 const { assign, isEmpty } = require("lodash");
 const { getDB } = require("../config");
 const { ObjectId } = require("mongodb");
+const moment = require("moment");
 
 class Invoices {
   static invoiceModel() {
@@ -12,20 +13,47 @@ class Invoices {
       orderId: new ObjectId(orderId),
       user_id: new ObjectId(user_id),
       isPaid: 0,
+      paymentDate: "",
+      paymentMethod: "",
+      paymentProof: "",
+      bank: "",
+      accountName: "",
+      createdAt: moment().format(),
     });
 
     return newInvoice;
   }
 
-  static async findAll(payload) {
-    const { user_id, isPaid } = payload;
-    console.log("[ Payload ]", user_id, isPaid);
+  static async findAll(payload, searchOrder) {
+    const { user_id, isPaid, startDate, endDate, limit, offset } = payload;
+    console.log("[ Payload ]", user_id, isPaid, startDate, endDate);
 
     const where = {};
     if (!isEmpty(isPaid)) assign(where, { isPaid: +isPaid });
     if (!isEmpty(user_id)) assign(where, { user_id: new ObjectId(user_id) });
+    if (!isEmpty(startDate && endDate)) {
+      assign(where, {
+        createdAt: {
+          $gte: moment(startDate).format(),
+          $lt: moment(endDate).format(),
+        },
+      });
+    }
 
-    return await this.invoiceModel().find(where).toArray();
+    if (!isEmpty(searchOrder)) {
+      return await this.invoiceModel()
+        .find(where)
+        .sort(searchOrder)
+        .skip(+offset)
+        .limit(+limit)
+        .toArray();
+    }
+
+    return await this.invoiceModel()
+      .find(where)
+      .skip(+offset)
+      .limit(+limit)
+      .toArray();
   }
 
   static async findByPk(id) {

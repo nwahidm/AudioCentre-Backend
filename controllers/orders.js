@@ -388,7 +388,6 @@ class Order {
 
       if (status == 2) {
         const orderId = targetOrder._id;
-        const user_id = targetOrder.user_id;
         await Invoices.create({ orderId, user_id });
       }
 
@@ -398,6 +397,7 @@ class Order {
         result: "",
       });
     } catch (error) {
+      console.log(error);
       if (error.status == false) {
         res.status(404).json(error);
       } else {

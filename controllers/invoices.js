@@ -2,6 +2,7 @@ const Invoices = require("../models/invoices");
 const { isEmpty, assign, map } = require("lodash");
 const Orders = require("../models/orders");
 const Users = require("../models/users");
+const moment = require("moment");
 
 class Invoice {
   static async createInvoice(req, res) {
@@ -27,13 +28,17 @@ class Invoice {
   }
 
   static async fetchInvoices(req, res) {
-    const { user_id, isPaid } = req.body;
-    console.log("[Fetch All Invoices]", user_id, isPaid);
+    const { user_id, isPaid, startDate, endDate, limit, offset } = req.body;
+    console.log("[Fetch All Invoices]", user_id, isPaid, limit, offset);
     try {
       //search query
       const payload = {};
       if (!isEmpty(isPaid)) assign(payload, { isPaid });
       if (!isEmpty(user_id)) assign(payload, { user_id });
+      if (!isEmpty(startDate)) assign(payload, { startDate });
+      if (!isEmpty(endDate)) assign(payload, { endDate });
+      if (!isEmpty(limit)) assign(payload, { limit });
+      if (!isEmpty(offset)) assign(payload, { offset });
 
       const invoices = await Invoices.findAll(payload);
 
@@ -145,12 +150,32 @@ class Invoice {
 
   static async updateInvoice(req, res) {
     const { id } = req.params;
-    const { isPaid } = req.body;
-    console.log("[Update Order]", id, isPaid);
+    const { isPaid, paymentDate, paymentMethod, bank, accountName } = req.body;
+    let paymentProof;
+    if (req.files) {
+      paymentProof = req.files.images;
+    }
+    console.log(
+      "[Update Order]",
+      id,
+      isPaid,
+      paymentDate,
+      paymentMethod,
+      paymentProof,
+      bank,
+      accountName
+    );
     try {
       //update data
       const payload = {};
       if (!isEmpty(isPaid)) assign(payload, { isPaid: +isPaid });
+      if (!isEmpty(paymentDate))
+        assign(payload, { paymentDate: moment(paymentDate).format() });
+      if (!isEmpty(paymentProof))
+        assign(payload, { paymentProof: paymentProof[0].path });
+      if (!isEmpty(paymentMethod)) assign(payload, { paymentMethod });
+      if (!isEmpty(bank)) assign(payload, { bank });
+      if (!isEmpty(accountName)) assign(payload, { accountName });
 
       //check if the invoice exist or not
       const targetInvoice = await Invoices.findByPk(id);
