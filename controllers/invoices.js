@@ -3,6 +3,7 @@ const { isEmpty, assign, map } = require("lodash");
 const Orders = require("../models/orders");
 const Users = require("../models/users");
 const moment = require("moment");
+const url = "https://backend.audiocentre.co.id";
 
 class Invoice {
   static async createInvoice(req, res) {
@@ -53,6 +54,9 @@ class Invoice {
       for (let i = 0; i < invoices.length; i++) {
         const invoice = invoices[i];
 
+        if (!isEmpty(invoice.paymentProof)) {
+          invoice.paymentProof = `${url}/${invoice.paymentProof}`;
+        }
         let id = invoice.orderId;
         const orderDetail = await Orders.findByPk(id);
         invoice.orderDetail = orderDetail;
@@ -83,7 +87,6 @@ class Invoice {
         .status(200)
         .json({ status: true, message: "success", result: invoices });
     } catch (error) {
-      console.log(error);
       if (error.status == false) {
         res.status(404).json(error);
       } else {
@@ -110,6 +113,9 @@ class Invoice {
           result: "",
         };
 
+      if (!isEmpty(invoice.paymentProof)) {
+        invoice.paymentProof = `${url}/${invoice.paymentProof}`;
+      }
       invoice.salesman = await Users.findByPk(invoice.user_id);
       delete invoice.salesman.notification;
       delete invoice.salesman.password;
