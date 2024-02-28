@@ -3,6 +3,7 @@ const Orders = require("../models/orders");
 const Traffics = require("../models/traffics");
 const Users = require("../models/users");
 const Customers = require("../models/customers");
+const Products = require("../models/products");
 const Articles = require("../models/articles");
 const url = "https://backend.audiocentre.co.id";
 const moment = require("moment");
@@ -183,11 +184,14 @@ class Dashboard {
       const allOrder = await Orders.findAll(payloadTotalOrders);
       const totalOrder = allOrder.length;
 
-      //Recap Customer
-      const customerPayload = {};
+      //Recap Product
+      // const customerPayload = {};
 
-      const customers = await Customers.findAll(customerPayload);
-      const totalCustomers = customers.length;
+      // const customers = await Customers.findAll(customerPayload);
+      // const totalCustomers = customers.length;
+
+      let totalPayload = {};
+      const totalProduct = await Products.count(totalPayload);
 
       //Recap Traffic
       const trafficPayload = {
@@ -283,7 +287,7 @@ class Dashboard {
         result: {
           earnings,
           totalOrder,
-          totalCustomers,
+          totalProduct,
           totalTraffic,
           ordersData,
           invoicesData,

@@ -29,11 +29,13 @@ class Invoice {
   }
 
   static async fetchInvoices(req, res) {
-    const { user_id, isPaid, startDate, endDate, limit, offset } = req.body;
-    console.log("[Fetch All Invoices]", user_id, isPaid, limit, offset);
+    const { noOrder, user_id, isPaid, startDate, endDate, limit, offset } =
+      req.body;
+    console.log("[Fetch All Invoices]", noOrder, user_id, isPaid, limit, offset);
     try {
       //search query
       const payload = {};
+      if (!isEmpty(noOrder)) assign(payload, { noOrder });
       if (!isEmpty(isPaid)) assign(payload, { isPaid });
       if (!isEmpty(user_id)) assign(payload, { user_id });
       if (!isEmpty(startDate)) assign(payload, { startDate });

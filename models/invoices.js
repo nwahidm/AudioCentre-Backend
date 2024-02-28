@@ -8,8 +8,9 @@ class Invoices {
     return getDB().collection("invoices");
   }
 
-  static async create({ orderId, user_id }) {
+  static async create({ noOrder, orderId, user_id }) {
     const newInvoice = await this.invoiceModel().insertOne({
+      noOrder,
       orderId: new ObjectId(orderId),
       user_id: new ObjectId(user_id),
       isPaid: 0,
@@ -25,10 +26,11 @@ class Invoices {
   }
 
   static async findAll(payload, searchOrder) {
-    const { user_id, isPaid, startDate, endDate, limit, offset } = payload;
+    const { noOrder, user_id, isPaid, startDate, endDate, limit, offset } = payload;
     console.log("[ Payload ]", user_id, isPaid, startDate, endDate);
 
     const where = {};
+    if (!isEmpty(noOrder)) assign(where, { noOrder: { $regex: noOrder, $options: "i" } })
     if (!isEmpty(isPaid)) assign(where, { isPaid: +isPaid });
     if (!isEmpty(user_id)) assign(where, { user_id: new ObjectId(user_id) });
     if (!isEmpty(startDate && endDate)) {
