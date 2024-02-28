@@ -41,16 +41,30 @@ class Traffic {
   }
 
   static async fetchTraffics(req, res) {
-    const { product_id } = req.body;
-    console.log("[Fetch All Traffics]", product_id);
+    const { product_id, activity, startDate, endDate, limit, offset } =
+      req.body;
+    console.log(
+      "[Fetch All Traffics]",
+      product_id,
+      activity,
+      startDate,
+      endDate,
+      limit,
+      offset
+    );
     try {
       //search query
       const payload = {};
       if (!isEmpty(product_id)) assign(payload, { product_id });
+      if (!isEmpty(activity)) assign(payload, { activity });
+      if (!isEmpty(startDate)) assign(payload, { startDate });
+      if (!isEmpty(endDate)) assign(payload, { endDate });
+      if (!isEmpty(limit)) assign(payload, { limit });
+      if (!isEmpty(offset)) assign(payload, { offset });
 
       //order list
       const searchOrder = { createAt: -1 };
-      
+
       const traffics = await Traffics.findAll(payload, searchOrder);
 
       if (isEmpty(traffics))
