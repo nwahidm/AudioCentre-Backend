@@ -45,8 +45,8 @@ class Comments {
     if (!isEmpty(startDate && endDate)) {
       assign(where, {
         createdAt: {
-          $gte: moment(startDate).format(),
-          $lt: moment(endDate).format(),
+          $gte: moment(startDate).startOf("day").format(),
+          $lte: moment(endDate).endOf("day").format(),
         },
       });
     }

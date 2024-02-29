@@ -22,15 +22,19 @@ class Notification {
 
       let notification;
       if (!isEmpty(startDate && endDate)) {
-        const newStartDate = moment(startDate).format();
-        const newEndDate = moment(endDate).format();
+        const newStartDate = moment(startDate).startOf("day").format();
+        const newEndDate = moment(endDate).endOf("day").format();
         
         notification = data.filter((o) => {
-          return o.createdAt >= newStartDate && o.createdAt < newEndDate;
+          return o.createdAt >= newStartDate && o.createdAt <= newEndDate;
         });
       } else {
         notification = data;
       }
+
+      notification.sort(function(a,b){
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      });
 
       res
         .status(200)

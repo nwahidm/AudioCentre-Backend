@@ -96,12 +96,12 @@ class Products {
     }
     if (isEmpty(minimumPrice) && !isEmpty(maximumPrice)) {
       assign(where, {
-        price: { $lt: Number(maximumPrice) },
+        price: { $lte: Number(maximumPrice) },
       });
     }
     if (!isEmpty(minimumPrice) && !isEmpty(maximumPrice)) {
       assign(where, {
-        price: { $gt: Number(minimumPrice), $lt: Number(maximumPrice) },
+        price: { $gte: Number(minimumPrice), $lte: Number(maximumPrice) },
       });
     }
     if (isEmpty(limit)) limit = 10000;
@@ -207,6 +207,7 @@ class Products {
       title,
       categoryId,
       subcategoryId,
+      brandId,
       minimumPrice,
       maximumPrice,
       isPromo,
@@ -220,6 +221,7 @@ class Products {
       title,
       categoryId,
       subcategoryId,
+      brandId,
       minimumPrice,
       maximumPrice,
       isPromo,
@@ -238,20 +240,21 @@ class Products {
       assign(where, { categoryId: new ObjectId(categoryId) });
     if (!isEmpty(subcategoryId))
       assign(where, { subcategoryId: new ObjectId(subcategoryId) });
+    if (!isEmpty(brandId)) assign(where, { brandId: new ObjectId(brandId) });
     if (!isEmpty(isPromo)) assign(where, { isPromo });
     if (!isEmpty(minimumPrice) && isEmpty(maximumPrice)) {
       assign(where, {
-        price: { $gt: Number(minimumPrice) },
+        price: { $gte: Number(minimumPrice) },
       });
     }
     if (isEmpty(minimumPrice) && !isEmpty(maximumPrice)) {
       assign(where, {
-        price: { $lt: Number(maximumPrice) },
+        price: { $lte: Number(maximumPrice) },
       });
     }
     if (!isEmpty(minimumPrice) && !isEmpty(maximumPrice)) {
       assign(where, {
-        price: { $gt: Number(minimumPrice), $lt: Number(maximumPrice) },
+        price: { $gte: Number(minimumPrice), $lte: Number(maximumPrice) },
       });
     }
 
@@ -307,12 +310,12 @@ class Products {
     }
     if (isEmpty(minimumPrice) && !isEmpty(maximumPrice)) {
       assign(where, {
-        price: { $lt: Number(maximumPrice) },
+        price: { $lte: Number(maximumPrice) },
       });
     }
     if (!isEmpty(minimumPrice) && !isEmpty(maximumPrice)) {
       assign(where, {
-        price: { $gt: Number(minimumPrice), $lt: Number(maximumPrice) },
+        price: { $gte: Number(minimumPrice), $lte: Number(maximumPrice) },
       });
     }
 
