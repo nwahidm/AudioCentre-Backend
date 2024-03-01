@@ -337,7 +337,7 @@ class Product {
     );
     try {
       //order list
-      let searchOrder = {};
+      let searchOrder = { _id: -1 };
       if (!isEmpty(order)) {
         if (order[0].column == 1) searchOrder = { name: order[0].dir };
         else if (order[0].column == 2) searchOrder = { price: order[0].dir };
