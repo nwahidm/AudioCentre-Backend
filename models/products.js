@@ -237,10 +237,17 @@ class Products {
     );
 
     const where = {};
-    if (!isEmpty(slug))
-      assign(where, { slug: { $regex: slug, $options: "i" } });
-    if (!isEmpty(name))
-      assign(where, { name: { $regex: name, $options: "i" } });
+    if (!isEmpty(slug) && !isEmpty(name))
+    assign(where, {
+      $or: [
+        { slug: { $regex: slug, $options: "i" } },
+        { name: { $regex: name, $options: "i" } },
+      ],
+    });
+  if (!isEmpty(slug) && isEmpty(name))
+    assign(where, { slug: { $regex: slug, $options: "i" } });
+  if (!isEmpty(name) && isEmpty(slug))
+    assign(where, { name: { $regex: name, $options: "i" } });
     if (!isEmpty(title))
       assign(where, { title: { $regex: title, $options: "i" } });
     if (!isEmpty(categoryId))
@@ -298,10 +305,17 @@ class Products {
     );
 
     const where = {};
-    if (!isEmpty(slug))
-      assign(where, { slug: { $regex: slug, $options: "i" } });
-    if (!isEmpty(name))
-      assign(where, { name: { $regex: name, $options: "i" } });
+    if (!isEmpty(slug) && !isEmpty(name))
+    assign(where, {
+      $or: [
+        { slug: { $regex: slug, $options: "i" } },
+        { name: { $regex: name, $options: "i" } },
+      ],
+    });
+  if (!isEmpty(slug) && isEmpty(name))
+    assign(where, { slug: { $regex: slug, $options: "i" } });
+  if (!isEmpty(name) && isEmpty(slug))
+    assign(where, { name: { $regex: name, $options: "i" } });
     if (!isEmpty(title))
       assign(where, { title: { $regex: title, $options: "i" } });
     if (!isEmpty(brandId)) assign(where, { brandId: new ObjectId(brandId) });
