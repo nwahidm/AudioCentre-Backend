@@ -40,6 +40,12 @@ class Brands {
       .toArray();
   }
 
+  static async find(brandIds) {
+    return await this.brandModel()
+      .find({ _id: { $in: brandIds } })
+      .toArray();
+  }
+
   static async findOne({ brandName }) {
     return await this.brandModel().findOne({ brandName });
   }

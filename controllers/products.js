@@ -361,11 +361,13 @@ class Product {
       const totalFilteredProduct = await Products.count(filterPayload);
       const brandIds = await Products.distinct(filterPayload);
 
-      let allBrand = [];
-      for (let i of brandIds) {
-        const targetBrand = await Brands.findByPk(i);
-        allBrand.push(targetBrand);
-      }
+      let allBrand = await Brands.find(brandIds);
+      // for (let i of brandIds) {
+      //   const targetBrand = await Brands.findByPk(i);
+      //   allBrand.push(targetBrand);
+      // }
+
+      console.log(allBrand);
 
       allBrand.sort((a, b) => a.brandName.localeCompare(b.brandName));
 
@@ -564,6 +566,7 @@ class Product {
       deletedImagesVariant1,
       deletedImagesVariant2,
       deletedImagesVariant3,
+      imageCover
     } = req.body;
 
     if (!isEmpty(deletedImages)) {
@@ -829,6 +832,12 @@ class Product {
           targetImages.push(targetProduct.images[e]);
         }
         await Products.remove(id, targetImages);
+      }
+
+      if (!isEmpty(imageCover)) {
+        let cover = targetProduct.images[imageCover]
+        await Products.remove(id, [cover])
+        await Products.setCover(id, cover)
       }
 
       let targetImagesVariant1 = [];

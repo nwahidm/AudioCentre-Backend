@@ -65,7 +65,6 @@ class Customer {
         .status(200)
         .json({ status: true, message: "success", result: data });
     } catch (error) {
-      console.log(error);
       if (error.status == false) {
         res.status(404).json(error);
       } else {

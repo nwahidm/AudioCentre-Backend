@@ -254,7 +254,6 @@ class Products {
       assign(where, { categoryId: new ObjectId(categoryId) });
     if (!isEmpty(subcategoryId))
       assign(where, { subcategoryId: new ObjectId(subcategoryId) });
-    if (!isEmpty(brandId)) assign(where, { brandId: new ObjectId(brandId) });
     if (!isEmpty(isPromo)) assign(where, { isPromo });
     if (!isEmpty(minimumPrice) && isEmpty(maximumPrice)) {
       assign(where, {
@@ -370,6 +369,20 @@ class Products {
       {
         $pullAll: {
           images: payload,
+        },
+      }
+    );
+  }
+
+  static async setCover(id, payload) {
+    return await this.productModel().updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $push: {
+          images: {
+            $each: [`${payload}`],
+            $position: 0
+          },
         },
       }
     );

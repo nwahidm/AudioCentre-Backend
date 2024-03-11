@@ -6,7 +6,7 @@ const { isEmpty, assign, map } = require("lodash");
 const moment = require("moment");
 const Invoices = require("../models/invoices");
 const { ObjectId } = require("mongodb");
-const send = require("../helpers/nodemailer");
+const { send, sendAdmin } = require("../helpers/nodemailer");
 
 class Order {
   static async createOrder(req, res) {
@@ -77,6 +77,7 @@ class Order {
       await Users.pushNotificationOrder(orderId);
 
       const customerEmail = email;
+      const adminEmail = "audiocentre.id@gmail.com";
       const nodeMailerPayload = {
         noOrder: fixNoOrder,
         productName,
@@ -85,6 +86,7 @@ class Order {
       };
 
       send(customerEmail, nodeMailerPayload);
+      sendAdmin(adminEmail, nodeMailerPayload);
 
       res.status(201).json({
         status: true,
@@ -218,7 +220,7 @@ class Order {
       startDate,
       endDate,
       limit,
-      offset,
+      offset
     );
     try {
       //search query
@@ -269,7 +271,9 @@ class Order {
         order.fixPrice = totalPrice + order.shipping - order.discount;
       }
 
-      res.status(200).json({ status: true, message: "success", result: orders });
+      res
+        .status(200)
+        .json({ status: true, message: "success", result: orders });
     } catch (error) {
       if (error.status == false) {
         res.status(404).json(error);
@@ -388,7 +392,7 @@ class Order {
 
       if (status == 2) {
         const orderId = targetOrder._id;
-        const noOrder = targetOrder.noOrder
+        const noOrder = targetOrder.noOrder;
         await Invoices.create({ noOrder, orderId, user_id });
       }
 
