@@ -362,13 +362,6 @@ class Product {
       const brandIds = await Products.distinct(filterPayload);
 
       let allBrand = await Brands.find(brandIds);
-      // for (let i of brandIds) {
-      //   const targetBrand = await Brands.findByPk(i);
-      //   allBrand.push(targetBrand);
-      // }
-
-      console.log(allBrand);
-
       allBrand.sort((a, b) => a.brandName.localeCompare(b.brandName));
 
       //search query
