@@ -59,8 +59,8 @@ class Users {
   }
 
   static async pushNotificationOrder(orderId) {
-    return await this.userModel().updateOne(
-      { _id: new ObjectId("653b330e8eb5866dda7cee25") },
+    return await this.userModel().updateMany(
+      { kewenangan: 1 },
       {
         $push: {
           notification: {
@@ -74,8 +74,8 @@ class Users {
   }
 
   static async pushNotificationComment(commentId) {
-    return await this.userModel().updateOne(
-      { _id: new ObjectId("653b330e8eb5866dda7cee25") },
+    return await this.userModel().updateMany(
+      { kewenangan: 1 },
       {
         $push: {
           notification: {
