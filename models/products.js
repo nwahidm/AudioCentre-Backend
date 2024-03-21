@@ -95,7 +95,7 @@ class Products {
       assign(where, { categoryId: new ObjectId(categoryId) });
     if (!isEmpty(subcategoryId))
       assign(where, { subcategoryId: new ObjectId(subcategoryId) });
-    if (!isEmpty(isPromo)) assign(where, { isPromo });
+    if (!isEmpty(isPromo)) assign(where, { isPromo: +isPromo });
     if (!isEmpty(minimumPrice) && isEmpty(maximumPrice)) {
       assign(where, {
         price: { $gt: Number(minimumPrice) },
@@ -254,7 +254,7 @@ class Products {
       assign(where, { categoryId: new ObjectId(categoryId) });
     if (!isEmpty(subcategoryId))
       assign(where, { subcategoryId: new ObjectId(subcategoryId) });
-    if (!isEmpty(isPromo)) assign(where, { isPromo });
+    if (!isEmpty(isPromo)) assign(where, { isPromo: +isPromo });
     if (!isEmpty(minimumPrice) && isEmpty(maximumPrice)) {
       assign(where, {
         price: { $gte: Number(minimumPrice) },
@@ -322,7 +322,7 @@ class Products {
       assign(where, { categoryId: new ObjectId(categoryId) });
     if (!isEmpty(subcategoryId))
       assign(where, { subcategoryId: new ObjectId(subcategoryId) });
-    if (!isEmpty(isPromo)) assign(where, { isPromo });
+    if (!isEmpty(isPromo)) assign(where, { isPromo: +isPromo });
     if (!isEmpty(minimumPrice) && isEmpty(maximumPrice)) {
       assign(where, {
         price: { $gt: Number(minimumPrice) },
