@@ -5,11 +5,12 @@ const url = "https://backend.audiocentre.co.id";
 
 class Banner {
   static async createBanner(req, res) {
-    const { bannerName, bannerUrl, status } = req.body;
+    const { index, bannerName, bannerUrl, status } = req.body;
     const bannerCover = req.files.images;
-    console.log("[Create Banner]", bannerName, bannerCover, status);
+    console.log("[Create Banner]", index, bannerName, bannerCover, status);
     try {
       await Banners.create({
+        index,
         bannerName,
         bannerUrl,
         bannerCover: bannerCover[0].path,
@@ -49,7 +50,7 @@ class Banner {
       //order list
       let searchOrder = {};
       if (!isEmpty(order)) {
-        searchOrder = { bannerName: order[0].dir };
+        searchOrder = { index: order[0].dir };
       }
 
       const banners = await Banners.findAll(payload, searchOrder);
@@ -123,7 +124,7 @@ class Banner {
 
   static async updateBanner(req, res) {
     const { id } = req.params;
-    const { bannerName, bannerUrl, status } = req.body;
+    const { index, bannerName, bannerUrl, status } = req.body;
     let bannerCover;
     if (req.files) {
       bannerCover = req.files.images;
@@ -131,6 +132,7 @@ class Banner {
     console.log(
       "[Update Banner]",
       id,
+      index,
       bannerName,
       bannerUrl,
       status,
@@ -139,6 +141,7 @@ class Banner {
     try {
       //update data
       const payload = {};
+      if (!isEmpty(index)) assign(payload, { index });
       if (!isEmpty(bannerName)) assign(payload, { bannerName });
       if (!isEmpty(bannerUrl)) assign(payload, { bannerUrl });
       if (!isEmpty(bannerCover))

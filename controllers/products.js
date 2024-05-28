@@ -321,9 +321,14 @@ class Product {
       limit,
       offset,
     } = req.body;
+    const targetSlug = slug.replace(
+      / /g,
+      ""
+  );
     console.log(
       "[Fetch All Products]",
       slug,
+      targetSlug,
       name,
       title,
       brandId,
@@ -348,7 +353,7 @@ class Product {
       const totalProduct = await Products.count(totalPayload);
 
       const filterPayload = {};
-      if (!isEmpty(slug)) assign(filterPayload, { slug });
+      if (!isEmpty(slug)) assign(filterPayload, { slug: targetSlug });
       if (!isEmpty(name)) assign(filterPayload, { name });
       if (!isEmpty(title)) assign(filterPayload, { title });
       if (!isEmpty(brandId)) assign(filterPayload, { brandId });
@@ -366,7 +371,7 @@ class Product {
 
       //search query
       const payload = {};
-      if (!isEmpty(slug)) assign(payload, { slug });
+      if (!isEmpty(slug)) assign(payload, { slug: targetSlug });
       if (!isEmpty(name)) assign(payload, { name });
       if (!isEmpty(title)) assign(payload, { title });
       if (!isEmpty(brandId)) assign(payload, { brandId });

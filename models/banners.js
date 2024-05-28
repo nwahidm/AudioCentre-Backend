@@ -9,6 +9,7 @@ class Banners {
 
   static async create({ bannerName, bannerCover, bannerUrl, status }) {
     const newBanner = await this.bannerModel().insertOne({
+      index,
       bannerName,
       bannerCover,
       bannerUrl,
