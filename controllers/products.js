@@ -321,10 +321,10 @@ class Product {
       limit,
       offset,
     } = req.body;
-    const targetSlug = slug.replace(
-      / /g,
-      ""
-  );
+    let targetSlug;
+    if (!isEmpty(slug)) {
+      targetSlug = slug.replace(/ /g, "");
+    }
     console.log(
       "[Fetch All Products]",
       slug,
@@ -564,7 +564,7 @@ class Product {
       deletedImagesVariant1,
       deletedImagesVariant2,
       deletedImagesVariant3,
-      imageCover
+      imageCover,
     } = req.body;
 
     if (!isEmpty(deletedImages)) {
@@ -833,9 +833,9 @@ class Product {
       }
 
       if (!isEmpty(imageCover)) {
-        let cover = targetProduct.images[imageCover]
-        await Products.remove(id, [cover])
-        await Products.setCover(id, cover)
+        let cover = targetProduct.images[imageCover];
+        await Products.remove(id, [cover]);
+        await Products.setCover(id, cover);
       }
 
       let targetImagesVariant1 = [];
