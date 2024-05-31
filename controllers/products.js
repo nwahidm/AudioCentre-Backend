@@ -323,7 +323,7 @@ class Product {
     } = req.body;
     let targetSlug;
     if (!isEmpty(slug)) {
-      targetSlug = slug.replace(/ /g, "");
+      targetSlug = slug.split(" ");
     }
     console.log(
       "[Fetch All Products]",
